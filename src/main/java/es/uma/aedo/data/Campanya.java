@@ -2,18 +2,14 @@ package es.uma.aedo.data;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Campanya {
+public class Campanya extends AbstractEntity {
     //------------Atributos------------   
-    @Id
-    private String campID;
     private String nombre;
     @Column(name="fecha_inicio")
     private LocalDate inicio;
@@ -29,10 +25,7 @@ public class Campanya {
     //------------Constructor------------
     public Campanya() {}
     
-    //------------Getters y Setters------------
-    public String getID() { return campID; }
-    public void setID(String campID) { this.campID = campID; }
-    
+    //------------Getters y Setters------------  
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     
@@ -58,17 +51,5 @@ public class Campanya {
     @Override
     public String toString(){
         return nombre;
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(campID);
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Campanya c)) return false;
-
-        return campID.equals(c.getID());
     }
 }

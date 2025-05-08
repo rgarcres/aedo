@@ -1,18 +1,14 @@
 package es.uma.aedo.data;
 
 import java.util.List;
-import java.util.Objects;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Region {
+public class Region extends AbstractEntity {
     //------------Atributos------------
-    @Id
-    private String regionID;
     @Column(name="localidad",nullable=false)
     private String localidad;
     @Column(name="provincia",nullable=false)
@@ -27,9 +23,6 @@ public class Region {
     }
 
     //------------Getters y Setters------------
-    public String getID() { return regionID; }
-    public void setID(String regionID) { this.regionID = regionID; }
-
     public String getLocalidad() { return localidad; }
     public void setLocalidad(String localidad) { this.localidad = localidad; }
     
@@ -46,17 +39,5 @@ public class Region {
     @Override
     public String toString(){
         return localidad + '-' + provincia + '-' + comunidadAutonoma;
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(regionID);
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Region r)) return false;
-
-        return regionID.equals(r.getID());
     }
 }

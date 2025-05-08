@@ -7,7 +7,6 @@ import es.uma.aedo.data.enumerados.ENivelEstudios;
 import es.uma.aedo.data.enumerados.ESituacionLaboral;
 import es.uma.aedo.data.enumerados.ESituacionPersonal;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,10 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Usuario {
+public class Usuario extends AbstractEntity{
     //------------Atributos------------
-    @Id
-    private String usuarioID;
     private String alias;
     private Long passHash;
     private LocalDate fechaNacimiento;
@@ -41,12 +38,9 @@ public class Usuario {
     private Campanya camp;
 
     //------------Constructor------------
-    public Usuario(){}
+    public Usuario() {}
 
     //------------Getters y Setters------------
-    public String getID() { return usuarioID; }
-    public void setID(String ID) { this.usuarioID = ID; }
-
     public String getAlias() { return alias; }
     public void setAlias(String alias) { this.alias = alias; }
     
@@ -78,17 +72,5 @@ public class Usuario {
     @Override
     public String toString(){
         return alias;
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Usuario u)) return false;
-
-        return usuarioID.equals(u.getID());
-    }
-
-    @Override
-    public int hashCode(){
-        return super.hashCode() + alias.hashCode();
     }
 }
