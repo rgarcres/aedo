@@ -1,0 +1,8 @@
+@import url('./main-layout.css');
+@import url('./views/dashboard-view.css');
+@import url('./views/campañas-view.css');
+@import url('./views/usuarios-view.css');
+@import url('./views/grupos-view.css');
+@import url('./views/preguntas-view.css');
+@import url('./views/bloques-view.css');
+@import url('./views/regiones-view.css');
