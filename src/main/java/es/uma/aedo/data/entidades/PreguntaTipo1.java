@@ -1,4 +1,4 @@
-package es.uma.aedo.data;
+package es.uma.aedo.data.entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

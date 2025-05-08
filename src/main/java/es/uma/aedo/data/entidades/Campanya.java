@@ -1,4 +1,4 @@
-package es.uma.aedo.data;
+package es.uma.aedo.data.entidades;
 
 import java.time.LocalDate;
 import java.util.List;

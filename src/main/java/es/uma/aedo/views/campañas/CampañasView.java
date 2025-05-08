@@ -23,7 +23,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import es.uma.aedo.data.SamplePerson;
+import es.uma.aedo.data.entidades.SamplePerson;
 import es.uma.aedo.services.SamplePersonService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

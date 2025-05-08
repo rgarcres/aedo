@@ -1,7 +1,8 @@
 package es.uma.aedo.services;
 
-import es.uma.aedo.data.SamplePerson;
-import es.uma.aedo.data.SamplePersonRepository;
+import es.uma.aedo.data.entidades.SamplePerson;
+import es.uma.aedo.data.repositorios.SamplePersonRepository;
+
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,9 @@ package es.uma.aedo;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
-import es.uma.aedo.data.SamplePersonRepository;
+
+import es.uma.aedo.data.repositorios.SamplePersonRepository;
+
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
