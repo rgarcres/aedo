@@ -28,13 +28,13 @@ public class Usuario extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private ESituacionPersonal situacionPersonal;
     @ManyToOne
-    @JoinColumn(name = "regionID")
+    @JoinColumn(name = "region_id")
     private Region region;
     @ManyToOne
-    @JoinColumn(name="grupoID")
+    @JoinColumn(name="grupo_id")
     private Grupo grupo;
     @ManyToOne
-    @JoinColumn(name="campID")
+    @JoinColumn(name="camp_id")
     private Campanya camp;
 
     //------------Constructor------------

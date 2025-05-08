@@ -12,7 +12,7 @@ public class Pregunta extends AbstractEntity {
     //------------Atributos------------   
     private String enunciado;
     @ManyToOne
-    @JoinColumn(name="bloqueID")
+    @JoinColumn(name="bloque_id")
     private Bloque bloque;
     //------------Constructor------------
     public Pregunta(){}

@@ -15,7 +15,7 @@ public class Bloque extends AbstractEntity{
     @OneToMany(mappedBy = "bloque")
     private List<Pregunta> preguntas;
     @ManyToOne
-    @JoinColumn(name="campID")
+    @JoinColumn(name="camp_id")
     private Campanya camp;
 
     //------------Constructor------------
