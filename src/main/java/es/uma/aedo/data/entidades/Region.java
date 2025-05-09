@@ -19,7 +19,9 @@ public class Region extends AbstractEntity {
     private List<Usuario> usuarios;
 
     //------------Constructor------------
-    public Region(){
+    public Region() {}
+    public Region(String ID){
+        this.setId(ID);
     }
 
     //------------Getters y Setters------------
@@ -38,6 +40,6 @@ public class Region extends AbstractEntity {
     //------------Métodos------------
     @Override
     public String toString(){
-        return localidad + '-' + provincia + '-' + comunidadAutonoma;
+         return localidad + '-' + provincia + '-' + comunidadAutonoma;
     }
 }
