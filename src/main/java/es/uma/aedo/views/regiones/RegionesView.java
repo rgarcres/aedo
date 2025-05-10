@@ -19,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
@@ -75,8 +76,14 @@ public class RegionesView extends Div {
         borrarRegionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         crearRegionButton.addClickListener(e -> {
-            crearRegionButton.getUI().ifPresent(
-                ui -> ui.navigate("regiones/crear-region"));
+            crearRegionButton.getUI().ifPresent(ui -> ui.navigate("regiones/crear-region"));
+        });
+
+        editarRegionButton.addClickListener(e -> {
+            if(regionSeleccionada != null){
+                VaadinSession.getCurrent().setAttribute("regionEditar", regionSeleccionada);
+                editarRegionButton.getUI().ifPresent(ui -> ui.navigate("regiones/editar-region"));
+            }
         });
 
         borrarRegionButton.addClickListener(e -> {
@@ -196,6 +203,11 @@ public class RegionesView extends Div {
         );
         grid.addItemClickListener(e -> {
             regionSeleccionada = e.getItem();
+        });
+        grid.addItemDoubleClickListener(e -> {
+            regionSeleccionada = e.getItem();
+            VaadinSession.getCurrent().setAttribute("regionEditar", regionSeleccionada);
+            getUI().ifPresent(ui -> ui.navigate("regiones/editar-region")); 
         });
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
