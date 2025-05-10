@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import es.uma.aedo.data.entidades.Region;
 import es.uma.aedo.data.repositorios.RegionRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class RegionService {
@@ -37,6 +38,7 @@ public class RegionService {
         return repository.findAllComunidades();
     }
 
+    @Transactional
     public Region save(Region region){
         return repository.save(region);
     }

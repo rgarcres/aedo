@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -47,11 +48,33 @@ public class RegionesView extends Div {
         addClassNames("regiones-view");
 
         filters = new Filters(() -> refreshGrid(), regionService);
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
+        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);
+    }
+
+    private HorizontalLayout createButtons(){
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setWidthFull();
+        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
+        buttonsLayout.addClassName("buttons-layout");
+        buttonsLayout.setAlignItems(Alignment.CENTER);
+        
+        Button crearRegionButton = new Button("Añadir Región");
+        Button editarRegionButton = new Button("Editar Región");
+        Button borrarRegionButton = new Button("Borrar Región");
+        crearRegionButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        editarRegionButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        borrarRegionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        crearRegionButton.addClickListener(e -> {
+            crearRegionButton.getUI().ifPresent(
+                ui -> ui.navigate("regiones/crear-region"));
+        });
+        buttonsLayout.add(crearRegionButton, editarRegionButton, borrarRegionButton);
+        return buttonsLayout;
     }
 
     private HorizontalLayout createMobileFilters() {
