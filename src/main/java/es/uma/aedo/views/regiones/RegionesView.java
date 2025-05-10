@@ -8,8 +8,11 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -21,6 +24,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Region;
 import es.uma.aedo.services.RegionService;
+import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -41,6 +45,7 @@ public class RegionesView extends Div {
 
     private Filters filters;
     private final RegionService regionService;
+    private Region regionSeleccionada;
 
     public RegionesView(RegionService service) {
         this.regionService = service;
@@ -72,6 +77,14 @@ public class RegionesView extends Div {
         crearRegionButton.addClickListener(e -> {
             crearRegionButton.getUI().ifPresent(
                 ui -> ui.navigate("regiones/crear-region"));
+        });
+
+        borrarRegionButton.addClickListener(e -> {
+            if(regionSeleccionada != null){
+                borrarRegion();
+            } else {
+                NotificacionesConfig.crearNotificacionError("Seleccione una región", "No hay ninguna región seleccionada, seleccione una región para poder borrarla");
+            }
         });
         buttonsLayout.add(crearRegionButton, editarRegionButton, borrarRegionButton);
         return buttonsLayout;
@@ -181,6 +194,9 @@ public class RegionesView extends Div {
         grid.setItems(query -> regionService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
             .stream()
         );
+        grid.addItemClickListener(e -> {
+            regionSeleccionada = e.getItem();
+        });
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 
@@ -189,5 +205,34 @@ public class RegionesView extends Div {
 
     private void refreshGrid() {
         grid.getDataProvider().refreshAll();
+    }
+
+    private void borrarRegion(){
+        Notification noti = new Notification();
+        H3 tit = new H3("Cofirme transacción");
+        Div texto = new Div("¿Está seguro de querer borrar esta región?");
+        Button confirmar = new Button("Confirmar");
+        Button cancelar = new Button("Cancelar");
+        VerticalLayout layout = new VerticalLayout();
+        HorizontalLayout botonesLayout = new HorizontalLayout();
+                
+        layout.setAlignItems(Alignment.CENTER);
+        noti.addThemeVariants(NotificationVariant.LUMO_WARNING);
+        confirmar.getStyle().set("background-color", "#fff799");
+
+        confirmar.addClickListener(e -> {
+            regionService.delete(regionSeleccionada.getId());
+            refreshGrid();
+            NotificacionesConfig.crearNotificacionExito("¡Región eliminada!", "La región ha sido eliminada con éxito");
+            noti.close();
+        });
+        cancelar.addClickListener(e -> {
+            noti.close();
+        });
+        botonesLayout.add(confirmar, cancelar);
+        layout.add(tit, texto, botonesLayout);
+        noti.add(layout);
+        noti.setPosition(Notification.Position.MIDDLE);
+        noti.open();
     }
 }
