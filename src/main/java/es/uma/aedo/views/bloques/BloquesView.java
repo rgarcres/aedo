@@ -1,20 +1,14 @@
 package es.uma.aedo.views.bloques;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -23,11 +17,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import es.uma.aedo.data.entidades.SamplePerson;
-import es.uma.aedo.services.SamplePersonService;
+
+import es.uma.aedo.data.entidades.Bloque;
+import es.uma.aedo.services.BloqueService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
@@ -41,13 +35,13 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @Uses(Icon.class)
 public class BloquesView extends Div {
 
-    private Grid<SamplePerson> grid;
+    private Grid<Bloque> grid;
 
     private Filters filters;
-    private final SamplePersonService samplePersonService;
+    private final BloqueService bloqueService;
 
-    public BloquesView(SamplePersonService SamplePersonService) {
-        this.samplePersonService = SamplePersonService;
+    public BloquesView(BloqueService service) {
+        this.bloqueService = service;
         setSizeFull();
         addClassNames("bloques-view");
 
@@ -83,38 +77,23 @@ public class BloquesView extends Div {
         return mobileFilters;
     }
 
-    public static class Filters extends Div implements Specification<SamplePerson> {
+    public static class Filters extends Div implements Specification<Bloque> {
 
-        private final TextField name = new TextField("Name");
-        private final TextField phone = new TextField("Phone");
-        private final DatePicker startDate = new DatePicker("Date of Birth");
-        private final DatePicker endDate = new DatePicker();
-        private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
-        private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
-
+        private final TextField nombre = new TextField("Nombre*");
+        
         public Filters(Runnable onSearch) {
-
+            
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
-            name.setPlaceholder("First or last name");
 
-            occupations.setItems("Insurance Clerk", "Mortarman", "Beer Coil Cleaner", "Scale Attendant");
-
-            roles.setItems("Worker", "Supervisor", "Manager", "External");
-            roles.addClassName("double-width");
 
             // Action buttons
             Button resetBtn = new Button("Reset");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
-                name.clear();
-                phone.clear();
-                startDate.clear();
-                endDate.clear();
-                occupations.clear();
-                roles.clear();
+
                 onSearch.run();
             });
             Button searchBtn = new Button("Search");
@@ -125,113 +104,36 @@ public class BloquesView extends Div {
             actions.addClassName(LumoUtility.Gap.SMALL);
             actions.addClassName("actions");
 
-            add(name, phone, createDateRangeFilter(), occupations, roles, actions);
-        }
-
-        private Component createDateRangeFilter() {
-            startDate.setPlaceholder("From");
-
-            endDate.setPlaceholder("To");
-
-            // For screen readers
-            startDate.setAriaLabel("From date");
-            endDate.setAriaLabel("To date");
-
-            FlexLayout dateRangeComponent = new FlexLayout(startDate, new Text(" – "), endDate);
-            dateRangeComponent.setAlignItems(FlexComponent.Alignment.BASELINE);
-            dateRangeComponent.addClassName(LumoUtility.Gap.XSMALL);
-
-            return dateRangeComponent;
+            add(nombre, actions);
         }
 
         @Override
-        public Predicate toPredicate(Root<SamplePerson> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        public Predicate toPredicate(Root<Bloque> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (!name.isEmpty()) {
-                String lowerCaseFilter = name.getValue().toLowerCase();
-                Predicate firstNameMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")),
-                        lowerCaseFilter + "%");
-                Predicate lastNameMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")),
-                        lowerCaseFilter + "%");
-                predicates.add(criteriaBuilder.or(firstNameMatch, lastNameMatch));
+            if(!nombre.isEmpty()){
+                String dbColumn = "nombre";
+                Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get(dbColumn)), nombre.getValue().toLowerCase() + "%");
+                predicates.add(p);
             }
-            if (!phone.isEmpty()) {
-                String databaseColumn = "phone";
-                String ignore = "- ()";
 
-                String lowerCaseFilter = ignoreCharacters(ignore, phone.getValue().toLowerCase());
-                Predicate phoneMatch = criteriaBuilder.like(
-                        ignoreCharacters(ignore, criteriaBuilder, criteriaBuilder.lower(root.get(databaseColumn))),
-                        "%" + lowerCaseFilter + "%");
-                predicates.add(phoneMatch);
-
-            }
-            if (startDate.getValue() != null) {
-                String databaseColumn = "dateOfBirth";
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(databaseColumn),
-                        criteriaBuilder.literal(startDate.getValue())));
-            }
-            if (endDate.getValue() != null) {
-                String databaseColumn = "dateOfBirth";
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(endDate.getValue()),
-                        root.get(databaseColumn)));
-            }
-            if (!occupations.isEmpty()) {
-                String databaseColumn = "occupation";
-                List<Predicate> occupationPredicates = new ArrayList<>();
-                for (String occupation : occupations.getValue()) {
-                    occupationPredicates
-                            .add(criteriaBuilder.equal(criteriaBuilder.literal(occupation), root.get(databaseColumn)));
-                }
-                predicates.add(criteriaBuilder.or(occupationPredicates.toArray(Predicate[]::new)));
-            }
-            if (!roles.isEmpty()) {
-                String databaseColumn = "role";
-                List<Predicate> rolePredicates = new ArrayList<>();
-                for (String role : roles.getValue()) {
-                    rolePredicates.add(criteriaBuilder.equal(criteriaBuilder.literal(role), root.get(databaseColumn)));
-                }
-                predicates.add(criteriaBuilder.or(rolePredicates.toArray(Predicate[]::new)));
-            }
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
-
-        private String ignoreCharacters(String characters, String in) {
-            String result = in;
-            for (int i = 0; i < characters.length(); i++) {
-                result = result.replace("" + characters.charAt(i), "");
-            }
-            return result;
-        }
-
-        private Expression<String> ignoreCharacters(String characters, CriteriaBuilder criteriaBuilder,
-                Expression<String> inExpression) {
-            Expression<String> expression = inExpression;
-            for (int i = 0; i < characters.length(); i++) {
-                expression = criteriaBuilder.function("replace", String.class, expression,
-                        criteriaBuilder.literal(characters.charAt(i)), criteriaBuilder.literal(""));
-            }
-            return expression;
-        }
-
     }
 
     private Component createGrid() {
-        grid = new Grid<>(SamplePerson.class, false);
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("occupation").setAutoWidth(true);
-        grid.addColumn("role").setAutoWidth(true);
+        grid = new Grid<>(Bloque.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("nombre").setAutoWidth(true);
+        grid.addColumn("descripcion").setAutoWidth(true);
 
-        grid.setItems(query -> samplePersonService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-                .stream());
+        grid.setItems(query -> bloqueService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+                 .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
+        grid.addItemDoubleClickListener(e -> {
+            getUI().ifPresent(ui -> ui.navigate("preguntas"));
+        });
         return grid;
     }
 

@@ -124,7 +124,7 @@ public class PreguntasView extends Div {
     }
 
     public static class Filters extends Div implements Specification<Pregunta> {
-
+        
         private final TextField enunciado = new TextField("Enunciado");
         private final CheckboxGroup<Integer> tipo = new CheckboxGroup<>("Tipo");
         private final MultiSelectComboBox<Bloque> bloque = new MultiSelectComboBox<>("Bloque");
