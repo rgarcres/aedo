@@ -9,20 +9,26 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.PreguntaService;
+import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -40,6 +46,7 @@ public class PreguntasView extends Div {
 
     private Grid<Pregunta> grid;
 
+    private Pregunta preguntaSeleccionada;
     private Filters filters;
     private final PreguntaService preguntaService;
 
@@ -49,11 +56,47 @@ public class PreguntasView extends Div {
         addClassNames("preguntas-view");
 
         filters = new Filters(() -> refreshGrid());
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
+        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);
+    }
+
+    private HorizontalLayout createButtons(){
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setWidthFull();
+        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
+        buttonsLayout.addClassName("buttons-layout");
+        buttonsLayout.setAlignItems(Alignment.CENTER);
+        
+        Button crearPreguntaButton = new Button("Añadir Pregunta");
+        Button editarPreguntaButton = new Button("Editar Pregunta");
+        Button borrarPreguntaButton = new Button("Borrar Pregunta");
+        crearPreguntaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        editarPreguntaButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        borrarPreguntaButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        crearPreguntaButton.addClickListener(e -> {
+            crearPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas/crear-pregunta"));
+        });
+
+        editarPreguntaButton.addClickListener(e -> {
+            if(preguntaSeleccionada != null){
+                VaadinSession.getCurrent().setAttribute("preguntaEditar", preguntaSeleccionada);
+                editarPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas/editar-pregunta"));
+            }
+        });
+
+        borrarPreguntaButton.addClickListener(e -> {
+            if(preguntaSeleccionada != null){
+                borrarPregunta();
+            } else {
+                NotificacionesConfig.crearNotificacionError("Seleccione una pregunta", "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
+            }
+        });
+        buttonsLayout.add(crearPreguntaButton, editarPreguntaButton, borrarPreguntaButton);
+        return buttonsLayout;
     }
 
     private HorizontalLayout createMobileFilters() {
@@ -158,4 +201,32 @@ public class PreguntasView extends Div {
         grid.getDataProvider().refreshAll();
     }
 
+    private void borrarPregunta(){
+                Notification noti = new Notification();
+        H3 tit = new H3("Cofirme transacción");
+        Div texto = new Div("¿Está seguro de querer borrar esta región?");
+        Button confirmar = new Button("Confirmar");
+        Button cancelar = new Button("Cancelar");
+        VerticalLayout layout = new VerticalLayout();
+        HorizontalLayout botonesLayout = new HorizontalLayout();
+                
+        layout.setAlignItems(Alignment.CENTER);
+        noti.addThemeVariants(NotificationVariant.LUMO_WARNING);
+        confirmar.getStyle().set("background-color", "#fff799");
+
+        confirmar.addClickListener(e -> {
+            preguntaService.delete(preguntaSeleccionada);
+            refreshGrid();
+            NotificacionesConfig.crearNotificacionExito("¡Región eliminada!", "La región ha sido eliminada con éxito");
+            noti.close();
+        });
+        cancelar.addClickListener(e -> {
+            noti.close();
+        });
+        botonesLayout.add(confirmar, cancelar);
+        layout.add(tit, texto, botonesLayout);
+        noti.add(layout);
+        noti.setPosition(Notification.Position.MIDDLE);
+        noti.open();
+    }
 }

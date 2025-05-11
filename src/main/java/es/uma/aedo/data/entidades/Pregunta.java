@@ -2,6 +2,7 @@ package es.uma.aedo.data.entidades;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,7 +16,7 @@ public class Pregunta extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name="bloque_id")
     private Bloque bloque;
-    @OneToMany
+    @OneToMany(mappedBy = "pregunta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Respuesta> respuestas;
 
     //------------Constructor------------
