@@ -2,10 +2,12 @@ package es.uma.aedo.data.entidades;
 
 import java.util.HashMap;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("4")
 public class PreguntaTipo4 extends Pregunta{
     //------------Atributos------------
     @ElementCollection   

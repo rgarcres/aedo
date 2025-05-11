@@ -23,8 +23,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.entidades.SamplePerson;
-import es.uma.aedo.services.SamplePersonService;
+import es.uma.aedo.services.PreguntaService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -41,13 +43,13 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @Uses(Icon.class)
 public class PreguntasView extends Div {
 
-    private Grid<SamplePerson> grid;
+    private Grid<Pregunta> grid;
 
     private Filters filters;
-    private final SamplePersonService samplePersonService;
+    private final PreguntaService preguntaService;
 
-    public PreguntasView(SamplePersonService SamplePersonService) {
-        this.samplePersonService = SamplePersonService;
+    public PreguntasView(PreguntaService service) {
+        this.preguntaService = service;
         setSizeFull();
         addClassNames("preguntas-view");
 
@@ -85,6 +87,9 @@ public class PreguntasView extends Div {
 
     public static class Filters extends Div implements Specification<SamplePerson> {
 
+        private final TextField enunciado = new TextField("Enunciado");
+        private final CheckboxGroup<Integer> tipo = new CheckboxGroup<>("Tipo");
+        
         private final TextField name = new TextField("Name");
         private final TextField phone = new TextField("Phone");
         private final DatePicker startDate = new DatePicker("Date of Birth");
@@ -218,17 +223,13 @@ public class PreguntasView extends Div {
     }
 
     private Component createGrid() {
-        grid = new Grid<>(SamplePerson.class, false);
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("occupation").setAutoWidth(true);
-        grid.addColumn("role").setAutoWidth(true);
+        grid = new Grid<>(Pregunta.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("enunciado").setAutoWidth(true);
+        grid.addColumn("bloque").setAutoWidth(true);
 
-        grid.setItems(query -> samplePersonService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-                .stream());
+        // grid.setItems(query -> preguntaService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+        //         .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 

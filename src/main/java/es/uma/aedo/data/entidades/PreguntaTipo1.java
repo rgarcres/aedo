@@ -1,10 +1,12 @@
 package es.uma.aedo.data.entidades;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
 @Entity
+@DiscriminatorValue("1")
 public class PreguntaTipo1 extends Pregunta{
     //------------Atributos------------   
     public enum RespuestaSiNo {

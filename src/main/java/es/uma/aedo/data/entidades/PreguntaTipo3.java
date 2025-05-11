@@ -2,10 +2,12 @@ package es.uma.aedo.data.entidades;
 
 import java.util.List;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("3")
 public class PreguntaTipo3 extends Pregunta{
     //------------Atributos------------   
     @ElementCollection

@@ -91,7 +91,7 @@ public class UsuariosView extends Div {
         private final DatePicker endDate = new DatePicker();
         private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
         private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
-
+        
         public Filters(Runnable onSearch) {
 
             setWidthFull();
