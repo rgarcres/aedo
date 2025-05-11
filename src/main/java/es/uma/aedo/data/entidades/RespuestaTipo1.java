@@ -7,7 +7,7 @@ import jakarta.persistence.Enumerated;
 
 @Entity
 @DiscriminatorValue("1")
-public class PreguntaTipo1 extends Pregunta{
+public class RespuestaTipo1 extends Respuesta{
     //------------Atributos------------   
     public enum RespuestaSiNo {
         SI,
@@ -18,7 +18,7 @@ public class PreguntaTipo1 extends Pregunta{
     private RespuestaSiNo respuesta;
 
     //------------Constructor------------  
-    public PreguntaTipo1(){}
+    public RespuestaTipo1(){}
 
     //------------Getters y Setters------------  
     public RespuestaSiNo getRespuesta() { return respuesta; }

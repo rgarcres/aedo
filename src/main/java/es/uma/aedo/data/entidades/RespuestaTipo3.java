@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("3")
-public class PreguntaTipo3 extends Pregunta{
+public class RespuestaTipo3 extends Respuesta{
     //------------Atributos------------   
     @ElementCollection
     private List<String> opciones;
@@ -16,7 +16,7 @@ public class PreguntaTipo3 extends Pregunta{
     private List<String> seleccionadas;
     
     //------------Constructor------------
-    public PreguntaTipo3() {}
+    public RespuestaTipo3() {}
 
     //------------Getters y Setters------------
     public List<String> getOpciones() { return seleccionadas; }

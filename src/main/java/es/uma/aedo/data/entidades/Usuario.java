@@ -1,6 +1,7 @@
 package es.uma.aedo.data.entidades;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import es.uma.aedo.data.enumerados.EGenero;
 import es.uma.aedo.data.enumerados.ENivelEstudios;
@@ -12,6 +13,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Usuario extends AbstractEntity{
@@ -36,6 +38,8 @@ public class Usuario extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name="camp_id")
     private Campanya camp;
+    @OneToMany
+    private List<Respuesta> respuestas;
 
     //------------Constructor------------
     public Usuario() {}
@@ -67,7 +71,9 @@ public class Usuario extends AbstractEntity{
 
     public Grupo getGrupo() { return grupo; }
     public void setGrupo(Grupo grupo) { this.grupo = grupo; }
-
+    
+    public List<Respuesta> getRespuestas() { return respuestas; }
+    public void setRespuestas(List<Respuesta> respuestas) { this.respuestas = respuestas; }
     //------------Métodos------------
     @Override
     public String toString(){

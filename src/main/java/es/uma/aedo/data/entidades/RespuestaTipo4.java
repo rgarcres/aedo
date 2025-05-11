@@ -8,13 +8,13 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("4")
-public class PreguntaTipo4 extends Pregunta{
+public class RespuestaTipo4 extends Respuesta{
     //------------Atributos------------
     @ElementCollection   
     private HashMap<String, Integer> respuestas;
 
     //------------Constructor------------
-    public PreguntaTipo4() {}
+    public RespuestaTipo4() {}
 
     //------------Getters y Setters------------
     public HashMap<String, Integer> getRespuestas() { return respuestas; }

@@ -4,10 +4,10 @@ package es.uma.aedo.data.repositorios;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import es.uma.aedo.data.entidades.Pregunta;
+import es.uma.aedo.data.entidades.Respuesta;
 
-public interface PreguntaRepository  
+public interface RespuestaRepository  
         extends
-            JpaRepository<Pregunta, String>,
-            JpaSpecificationExecutor<Pregunta> {
+            JpaRepository<Respuesta, String>,
+            JpaSpecificationExecutor<Respuesta> {
 }

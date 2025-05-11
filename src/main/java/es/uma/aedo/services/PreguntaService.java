@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.repositorios.PreguntaRepository;
 
+@Service
 public class PreguntaService {
     private final PreguntaRepository repository;
 
@@ -23,19 +25,6 @@ public class PreguntaService {
 
     public List<Pregunta> getAll(){
         return repository.findAll();
-    }
-
-    public List<Pregunta> getAllTipo1(){
-        return repository.findAllTipo1();
-    }
-    public List<Pregunta> getAllTipo2(){
-        return repository.findAllTipo2();
-    }
-    public List<Pregunta> getAllTipo3(){
-        return repository.findAllTipo3();
-    }
-    public List<Pregunta> getAllTipo4(){
-        return repository.findAllTipo4();
     }
 
     public Pregunta save(Pregunta p){
