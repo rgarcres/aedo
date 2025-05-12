@@ -7,6 +7,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -18,7 +20,31 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uma.aedo.data.entidades.AbstractEntity;
 import es.uma.aedo.services.IService;
 
-public class LayaoutConfig {
+public class LayoutConfig {
+
+    public static HorizontalLayout createMobileFilters(Div filters) {
+        // Mobile version
+        HorizontalLayout mobileFilters = new HorizontalLayout();
+        mobileFilters.setWidthFull();
+        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
+                LumoUtility.AlignItems.CENTER);
+        mobileFilters.addClassName("mobile-filters");
+
+        Icon mobileIcon = new Icon("lumo", "plus");
+        Span filtersHeading = new Span("Filters");
+        mobileFilters.add(mobileIcon, filtersHeading);
+        mobileFilters.setFlexGrow(1, filtersHeading);
+        mobileFilters.addClickListener(e -> {
+            if (filters.getClassNames().contains("visible")) {
+                filters.removeClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
+            } else {
+                filters.addClassName("visible");
+                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
+            }
+        });
+        return mobileFilters;
+    }
 
     public static <T> HorizontalLayout createButtons(Supplier<? extends AbstractEntity> entitySupplier, String entityName, 
                                                      String mainRoute, IService<T> service, Grid<T> grid)
