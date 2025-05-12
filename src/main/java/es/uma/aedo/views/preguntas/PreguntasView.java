@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -49,13 +48,15 @@ public class PreguntasView extends Div {
     private Pregunta preguntaSeleccionada;
     private Filters filters;
     private final PreguntaService preguntaService;
+    private final Bloque bloqueSeleccionado;
 
-    public PreguntasView(PreguntaService service) {
+    public PreguntasView(PreguntaService service, Bloque bloque) {
         this.preguntaService = service;
+        this.bloqueSeleccionado = bloque;
         setSizeFull();
         addClassNames("preguntas-view");
 
-        filters = new Filters(() -> refreshGrid());
+        filters = new Filters(() -> refreshGrid(), bloqueSeleccionado);
         VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
         layout.setSizeFull();
         layout.setPadding(false);
@@ -127,10 +128,9 @@ public class PreguntasView extends Div {
         
         private final TextField enunciado = new TextField("Enunciado");
         private final CheckboxGroup<Integer> tipo = new CheckboxGroup<>("Tipo");
-        private final MultiSelectComboBox<Bloque> bloque = new MultiSelectComboBox<>("Bloque");
-
-        public Filters(Runnable onSearch) {
-
+        private final Bloque bloque;
+        public Filters(Runnable onSearch, Bloque b) {
+            this.bloque = b;
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
@@ -145,7 +145,6 @@ public class PreguntasView extends Div {
             resetBtn.addClickListener(e -> {
                 enunciado.clear();
                 tipo.clear();
-                bloque.clear();
                 onSearch.run();
             });
             Button searchBtn = new Button("Search");
@@ -156,7 +155,7 @@ public class PreguntasView extends Div {
             actions.addClassName(LumoUtility.Gap.SMALL);
             actions.addClassName("actions");
 
-            add(enunciado, tipo, bloque, actions);
+            add(enunciado, tipo, actions);
         }
 
         @Override
@@ -173,9 +172,7 @@ public class PreguntasView extends Div {
                 predicates.add(root.get("tipo").in(tipo.getValue()));
             }
 
-            if(!bloque.isEmpty()){
-                predicates.add(root.get("bloque").in(bloque.getValue()));
-            }
+            predicates.add(criteriaBuilder.equal(root.get("bloque"), bloque));
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
@@ -215,7 +212,7 @@ public class PreguntasView extends Div {
         confirmar.getStyle().set("background-color", "#fff799");
 
         confirmar.addClickListener(e -> {
-            preguntaService.delete(preguntaSeleccionada);
+            preguntaService.delete(preguntaSeleccionada.getId());
             refreshGrid();
             NotificacionesConfig.crearNotificacionExito("¡Región eliminada!", "La región ha sido eliminada con éxito");
             noti.close();

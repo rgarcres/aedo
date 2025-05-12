@@ -78,7 +78,7 @@ public class CrearPreguntaView extends Div{
     private void crearPregunta(String id, String enunciado, Integer tipo){
         if(id.isBlank() || enunciado.isBlank() || tipo == null){
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
-        } else if (preguntaService.getById(id).isPresent()){
+        } else if (preguntaService.get(id).isPresent()){
             NotificacionesConfig.crearNotificacionError("El ID ya existe","Introduzca un ID nuevo que sea único");
         } else {
             Pregunta p = new Pregunta();

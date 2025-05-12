@@ -13,7 +13,7 @@ import es.uma.aedo.data.repositorios.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements IService<Usuario>{
     private final UsuarioRepository repository;
 
     public UsuarioService(UsuarioRepository repo){
@@ -29,8 +29,8 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void save(Usuario user){
-        repository.save(user);
+    public Usuario save(Usuario user){
+        return repository.save(user);
     }
 
     public void delete(String id) {

@@ -13,7 +13,7 @@ import es.uma.aedo.data.repositorios.RegionRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class RegionService {
+public class RegionService implements IService<Region> {
     private final RegionRepository repository;
 
     public RegionService(RegionRepository repository){

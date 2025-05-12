@@ -25,6 +25,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Region;
 import es.uma.aedo.services.RegionService;
+import es.uma.aedo.views.utilidades.LayaoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -54,7 +55,9 @@ public class RegionesView extends Div {
         addClassNames("regiones-view");
 
         filters = new Filters(() -> refreshGrid(), regionService);
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
+        VerticalLayout layout = 
+        new VerticalLayout(createMobileFilters(), filters, createGrid(), 
+        LayaoutConfig.createButtons(() -> regionSeleccionada, "Region", "regiones", this.regionService, grid));
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);

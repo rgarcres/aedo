@@ -9,17 +9,20 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.services.BloqueService;
+import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -30,7 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Bloques")
-@Route("grid-with-filters5")
+@Route("bloques")
 @Menu(order = 5, icon = LineAwesomeIconUrl.CLIPBOARD_LIST_SOLID)
 @Uses(Icon.class)
 public class BloquesView extends Div {
@@ -39,6 +42,7 @@ public class BloquesView extends Div {
 
     private Filters filters;
     private final BloqueService bloqueService;
+    private Bloque bloqueSeleccionado;
 
     public BloquesView(BloqueService service) {
         this.bloqueService = service;
@@ -46,7 +50,7 @@ public class BloquesView extends Div {
         addClassNames("bloques-view");
 
         filters = new Filters(() -> refreshGrid());
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
+        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
@@ -75,6 +79,42 @@ public class BloquesView extends Div {
             }
         });
         return mobileFilters;
+    }
+
+    private HorizontalLayout createButtons(){
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setWidthFull();
+        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
+        buttonsLayout.addClassName("buttons-layout");
+        buttonsLayout.setAlignItems(Alignment.CENTER);
+
+        Button crearBloqueButton = new Button("Añadir Bloque");
+        Button editarBloqueButton = new Button("Editar Bloque");
+        Button borrarBloqueButton = new Button("Borrar Bloque");
+        crearBloqueButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        editarBloqueButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        borrarBloqueButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        crearBloqueButton.addClickListener(e -> {
+            crearBloqueButton.getUI().ifPresent(ui -> ui.navigate("preguntas/crear-pregunta"));
+        });
+
+        editarBloqueButton.addClickListener(e -> {
+            if(bloqueSeleccionado != null){
+                VaadinSession.getCurrent().setAttribute("preguntaEditar", bloqueSeleccionado);
+                editarBloqueButton.getUI().ifPresent(ui -> ui.navigate("preguntas/editar-pregunta"));
+            }
+        });
+
+        borrarBloqueButton.addClickListener(e -> {
+            if(bloqueSeleccionado != null){
+                
+            } else {
+                NotificacionesConfig.crearNotificacionError("Seleccione una pregunta", "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
+            }
+        });
+        buttonsLayout.add(crearBloqueButton, editarBloqueButton, borrarBloqueButton);
+        return buttonsLayout;
     }
 
     public static class Filters extends Div implements Specification<Bloque> {
@@ -131,9 +171,7 @@ public class BloquesView extends Div {
                  .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-        grid.addItemDoubleClickListener(e -> {
-            getUI().ifPresent(ui -> ui.navigate("preguntas"));
-        });
+
         return grid;
     }
 

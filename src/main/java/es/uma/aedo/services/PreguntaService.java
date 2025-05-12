@@ -12,14 +12,14 @@ import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.repositorios.PreguntaRepository;
 
 @Service
-public class PreguntaService {
+public class PreguntaService implements IService<Pregunta> {
     private final PreguntaRepository repository;
 
     public PreguntaService(PreguntaRepository repo){
         this.repository = repo;
     }
 
-    public Optional<Pregunta> getById(String id){
+    public Optional<Pregunta> get(String id){
         return repository.findById(id);
     }
 
@@ -31,8 +31,8 @@ public class PreguntaService {
         return repository.save(p);
     }
 
-    public void delete(Pregunta p){
-        repository.delete(p);
+    public void delete(String id){
+        repository.deleteById(id);
     }
 
     public Page<Pregunta> list(Pageable pageable) {
