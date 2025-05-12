@@ -71,8 +71,8 @@ public class EditarRegionView extends Div{
         if(regionService.get(id).isPresent() && !id.equals(regionEditar.getId())){
             NotificacionesConfig.crearNotificacionError("El ID ya existe","Introduzca un ID nuevo que sea único");
         } else if (!comprobarRegion(regiones, localidad, provincia, comunidad)){
-            NotificacionesConfig.crearNotificacionError("Localidad ya existe", 
-            "La localidad que está intentado introducir ya existe en la base de datos");
+            NotificacionesConfig.crearNotificacionError("La región ya existe", 
+            "La región que está intentado introducir ya existe en la base de datos");
         } else {
             regionEditar.setId(id);
             regionEditar.setLocalidad(localidad);

@@ -80,8 +80,7 @@ public class LayoutConfig {
             if(entity != null){
                 borrarEntidad(service, entity, grid);
             } else {
-                NotificacionesConfig.crearNotificacionError("Seleccione una " + name, "No hay ninguna " 
-                + name + " seleccionada, seleccione una " + name + " para poder borrarla");
+                NotificacionesConfig.crearNotificacionError("Seleccione una fila", "No hay ninguna entidad seleccionada, seleccione una para poder borrarla");
             }
         });
         buttonsLayout.add(crearButton, editarButton, borrarButton);
@@ -105,7 +104,7 @@ public class LayoutConfig {
             service.delete(entity.getId());
             grid.getDataProvider().refreshAll();
             NotificacionesConfig.crearNotificacionExito("¡Entidad eliminada!", 
-            "La entidad" + entity.toString() + " ha sido eliminada con éxito");
+            "La entidad " + entity.toString() + " ha sido eliminada con éxito");
             noti.close();
         });
         cancelar.addClickListener(e -> {

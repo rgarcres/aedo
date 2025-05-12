@@ -7,11 +7,10 @@ import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -22,6 +21,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.services.BloqueService;
+import es.uma.aedo.views.utilidades.BotonesConfig;
+import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -50,71 +51,21 @@ public class BloquesView extends Div {
         addClassNames("bloques-view");
 
         filters = new Filters(() -> refreshGrid());
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
+        VerticalLayout layout = new VerticalLayout(
+            LayoutConfig.createMobileFilters(filters), 
+            filters, 
+            createGrid(), 
+            LayoutConfig.createButtons(() -> bloqueSeleccionado, "Bloque", 
+            "bloques", this.bloqueService, grid), 
+            crearBotonesPregunta()
+        );
+
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
+        layout.setAlignItems(Alignment.CENTER);
+        layout.setHorizontalComponentAlignment(Alignment.CENTER);
         add(layout);
-    }
-
-    private HorizontalLayout createMobileFilters() {
-        // Mobile version
-        HorizontalLayout mobileFilters = new HorizontalLayout();
-        mobileFilters.setWidthFull();
-        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
-                LumoUtility.AlignItems.CENTER);
-        mobileFilters.addClassName("mobile-filters");
-
-        Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
-        mobileFilters.add(mobileIcon, filtersHeading);
-        mobileFilters.setFlexGrow(1, filtersHeading);
-        mobileFilters.addClickListener(e -> {
-            if (filters.getClassNames().contains("visible")) {
-                filters.removeClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-            } else {
-                filters.addClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
-            }
-        });
-        return mobileFilters;
-    }
-
-    private HorizontalLayout createButtons(){
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setWidthFull();
-        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
-        buttonsLayout.addClassName("buttons-layout");
-        buttonsLayout.setAlignItems(Alignment.CENTER);
-
-        Button crearBloqueButton = new Button("Añadir Bloque");
-        Button editarBloqueButton = new Button("Editar Bloque");
-        Button borrarBloqueButton = new Button("Borrar Bloque");
-        crearBloqueButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        editarBloqueButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-        borrarBloqueButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-        crearBloqueButton.addClickListener(e -> {
-            crearBloqueButton.getUI().ifPresent(ui -> ui.navigate("preguntas/crear-pregunta"));
-        });
-
-        editarBloqueButton.addClickListener(e -> {
-            if(bloqueSeleccionado != null){
-                VaadinSession.getCurrent().setAttribute("preguntaEditar", bloqueSeleccionado);
-                editarBloqueButton.getUI().ifPresent(ui -> ui.navigate("preguntas/editar-pregunta"));
-            }
-        });
-
-        borrarBloqueButton.addClickListener(e -> {
-            if(bloqueSeleccionado != null){
-                
-            } else {
-                NotificacionesConfig.crearNotificacionError("Seleccione una pregunta", "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
-            }
-        });
-        buttonsLayout.add(crearBloqueButton, editarBloqueButton, borrarBloqueButton);
-        return buttonsLayout;
     }
 
     public static class Filters extends Div implements Specification<Bloque> {
@@ -161,6 +112,27 @@ public class BloquesView extends Div {
         }
     }
 
+    /*
+     * Layout que muestra los botones correspondientes a la navegación de las preguntas
+     * de cada bloque
+     */
+    private HorizontalLayout crearBotonesPregunta(){
+        HorizontalLayout layout = new HorizontalLayout();
+        Button verPreguntas = BotonesConfig.crearBotonPrincipal("Ver preguntas");
+        verPreguntas.addClickListener(e -> {
+            if(bloqueSeleccionado != null){
+                VaadinSession.getCurrent().setAttribute("bloquePregunta", bloqueSeleccionado);
+                getUI().ifPresent(ui -> ui.navigate("preguntas"));
+            } else {
+                NotificacionesConfig.crearNotificacionError("Selecciona un bloque", "No hay ningún bloque seleccionado");
+            }
+        });
+        verPreguntas.getStyle().set("background-color", "#94fa70");
+        layout.add(verPreguntas);
+
+        return layout;
+    }
+
     private Component createGrid() {
         grid = new Grid<>(Bloque.class, false);
         grid.addColumn("id").setAutoWidth(true);
@@ -169,6 +141,9 @@ public class BloquesView extends Div {
 
         grid.setItems(query -> bloqueService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
                  .stream());
+        grid.addItemClickListener(e -> {
+            bloqueSeleccionado = e.getItem();
+        });
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
 

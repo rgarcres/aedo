@@ -34,6 +34,6 @@ public class Bloque extends AbstractEntity{
     //------------Métodos------------
     @Override
     public String toString(){
-        return nombre;
+        return nombre + ": " + descripcion;
     }
 }
