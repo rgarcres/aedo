@@ -116,6 +116,4 @@ public class LayoutConfig {
         noti.setPosition(Notification.Position.MIDDLE);
         noti.open();
     }
-
-
 }

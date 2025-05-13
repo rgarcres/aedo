@@ -119,16 +119,28 @@ public class BloquesView extends Div {
     private HorizontalLayout crearBotonesPregunta(){
         HorizontalLayout layout = new HorizontalLayout();
         Button verPreguntas = BotonesConfig.crearBotonPrincipal("Ver preguntas");
+        Button todasPreguntas = BotonesConfig.crearBotonSecundario("Ver todas las preguntas");
+
         verPreguntas.addClickListener(e -> {
             if(bloqueSeleccionado != null){
                 VaadinSession.getCurrent().setAttribute("bloquePregunta", bloqueSeleccionado);
-                getUI().ifPresent(ui -> ui.navigate("preguntas"));
+                getUI().ifPresent(ui -> ui.navigate("preguntas-bloque"));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona un bloque", "No hay ningún bloque seleccionado");
             }
         });
+
+        todasPreguntas.addClickListener(e-> {
+            /*
+             * Atributo crudPregunta:
+             *      false: NO activa los botones CRUD de la entidad pregunta
+             *      true: activa los botones necesarios para CRUD de preguntas
+             */
+            VaadinSession.getCurrent().setAttribute("crudPregunta", true);
+            todasPreguntas.getUI().ifPresent(ui -> ui.navigate("preguntas"));
+        });
         verPreguntas.getStyle().set("background-color", "#94fa70");
-        layout.add(verPreguntas);
+        layout.add(verPreguntas, todasPreguntas);
 
         return layout;
     }

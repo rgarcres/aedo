@@ -1,32 +1,25 @@
 package es.uma.aedo.views.preguntas;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.PreguntaService;
+import es.uma.aedo.views.utilidades.BotonesConfig;
+import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -35,13 +28,10 @@ import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
-import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Preguntas")
-@Route("preguntas")
-@Menu(order = 4, icon = LineAwesomeIconUrl.QUESTION_SOLID)
-@Uses(Icon.class)
-public class PreguntasView extends Div {
+@Route("preguntas-bloque")
+public class PreguntasBloqueView extends Div {
 
     private Grid<Pregunta> grid;
 
@@ -50,18 +40,37 @@ public class PreguntasView extends Div {
     private final PreguntaService preguntaService;
     private final Bloque bloqueSeleccionado;
 
-    public PreguntasView(PreguntaService service, Bloque bloque) {
+    /*
+     * Vista en la que se muestras todas las preguntas de un único bloque
+     */
+    public PreguntasBloqueView(PreguntaService service) {
         this.preguntaService = service;
-        this.bloqueSeleccionado = bloque;
+        this.bloqueSeleccionado = (Bloque) VaadinSession.getCurrent().getAttribute("bloquePregunta");
         setSizeFull();
-        addClassNames("preguntas-view");
+        addClassNames("preguntas-bloque-view");
 
         filters = new Filters(() -> refreshGrid(), bloqueSeleccionado);
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid(), createButtons());
+        VerticalLayout layout = new VerticalLayout(
+            createTituloLayout(), 
+            LayoutConfig.createMobileFilters(filters), 
+            filters, 
+            GestionPregunta.createGrid(grid, service, filters), 
+            createButtons()
+        );
+
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);
+    }
+
+    private HorizontalLayout createTituloLayout(){
+        HorizontalLayout layout = new HorizontalLayout();
+        H2 titulo = new H2("Preguntas del " + bloqueSeleccionado.getNombre());
+        Button atrasButton = BotonesConfig.crearBotonSecundario("<", "bloques");
+        layout.add(atrasButton, titulo);
+
+        return layout;
     }
 
     private HorizontalLayout createButtons(){
@@ -71,15 +80,21 @@ public class PreguntasView extends Div {
         buttonsLayout.addClassName("buttons-layout");
         buttonsLayout.setAlignItems(Alignment.CENTER);
         
-        Button crearPreguntaButton = new Button("Añadir Pregunta");
-        Button editarPreguntaButton = new Button("Editar Pregunta");
-        Button borrarPreguntaButton = new Button("Borrar Pregunta");
+        Button crearPreguntaButton = new Button("Añadir pregunta al bloque");
+        Button editarPreguntaButton = new Button("Editar pregunta");
+        Button borrarPreguntaButton = new Button("Eliminar pregunta del bloque");
         crearPreguntaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         editarPreguntaButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
         borrarPreguntaButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         crearPreguntaButton.addClickListener(e -> {
-            crearPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas/crear-pregunta"));
+            /*
+             * Atributo crudPregunta:
+             *      false: NO activa los botones CRUD de la entidad pregunta
+             *      true: activa los botones necesarios para CRUD de preguntas
+             */
+            VaadinSession.getCurrent().setAttribute("crudPregunta", false);
+            crearPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas"));
         });
 
         editarPreguntaButton.addClickListener(e -> {
@@ -91,37 +106,15 @@ public class PreguntasView extends Div {
 
         borrarPreguntaButton.addClickListener(e -> {
             if(preguntaSeleccionada != null){
-                borrarPregunta();
+                preguntaSeleccionada.setBloque(null);
+                preguntaService.save(preguntaSeleccionada);
+                NotificacionesConfig.crearNotificacionExito("Pregunta eliminada del "+bloqueSeleccionado.toString().toLowerCase(), "La pregunta se ha eliminado correctamente de este bloque");
             } else {
                 NotificacionesConfig.crearNotificacionError("Seleccione una pregunta", "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
             }
         });
         buttonsLayout.add(crearPreguntaButton, editarPreguntaButton, borrarPreguntaButton);
         return buttonsLayout;
-    }
-
-    private HorizontalLayout createMobileFilters() {
-        // Mobile version
-        HorizontalLayout mobileFilters = new HorizontalLayout();
-        mobileFilters.setWidthFull();
-        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
-                LumoUtility.AlignItems.CENTER);
-        mobileFilters.addClassName("mobile-filters");
-
-        Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
-        mobileFilters.add(mobileIcon, filtersHeading);
-        mobileFilters.setFlexGrow(1, filtersHeading);
-        mobileFilters.addClickListener(e -> {
-            if (filters.getClassNames().contains("visible")) {
-                filters.removeClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-            } else {
-                filters.addClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
-            }
-        });
-        return mobileFilters;
     }
 
     public static class Filters extends Div implements Specification<Pregunta> {
@@ -179,51 +172,7 @@ public class PreguntasView extends Div {
 
     }
 
-    private Component createGrid() {
-        grid = new Grid<>(Pregunta.class, false);
-        grid.addColumn("id").setAutoWidth(true);
-        grid.addColumn("enunciado").setAutoWidth(true);
-        grid.addColumn("tipo").setAutoWidth(true);
-        grid.addColumn("bloque").setAutoWidth(true);
-
-        grid.setItems(query -> preguntaService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-                .stream());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
-        return grid;
-    }
-
     private void refreshGrid() {
         grid.getDataProvider().refreshAll();
-    }
-
-    private void borrarPregunta(){
-                Notification noti = new Notification();
-        H3 tit = new H3("Cofirme transacción");
-        Div texto = new Div("¿Está seguro de querer borrar esta región?");
-        Button confirmar = new Button("Confirmar");
-        Button cancelar = new Button("Cancelar");
-        VerticalLayout layout = new VerticalLayout();
-        HorizontalLayout botonesLayout = new HorizontalLayout();
-                
-        layout.setAlignItems(Alignment.CENTER);
-        noti.addThemeVariants(NotificationVariant.LUMO_WARNING);
-        confirmar.getStyle().set("background-color", "#fff799");
-
-        confirmar.addClickListener(e -> {
-            preguntaService.delete(preguntaSeleccionada.getId());
-            refreshGrid();
-            NotificacionesConfig.crearNotificacionExito("¡Región eliminada!", "La región ha sido eliminada con éxito");
-            noti.close();
-        });
-        cancelar.addClickListener(e -> {
-            noti.close();
-        });
-        botonesLayout.add(confirmar, cancelar);
-        layout.add(tit, texto, botonesLayout);
-        noti.add(layout);
-        noti.setPosition(Notification.Position.MIDDLE);
-        noti.open();
     }
 }

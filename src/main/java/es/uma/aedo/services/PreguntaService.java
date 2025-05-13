@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.repositorios.PreguntaRepository;
 
@@ -27,6 +28,9 @@ public class PreguntaService implements IService<Pregunta> {
         return repository.findAll();
     }
 
+    public List<Bloque> getAllBloques(){
+        return repository.findAllBloques();
+    }
     public Pregunta save(Pregunta p){
         return repository.save(p);
     }
