@@ -51,24 +51,30 @@ public class TodasPreguntasView extends Div {
         addClassNames("preguntas-view");
         crudPregunta = (boolean) VaadinSession.getCurrent().getAttribute("crudPregunta");
         filters = new Filters(() -> refreshGrid());
+        Button back;
+        HorizontalLayout botonesLayout = new HorizontalLayout();
+
+        if(crudPregunta){
+            back = BotonesConfig.crearBotonSecundario("<", "bloques");
+            botonesLayout = LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
+        } else {
+            back = BotonesConfig.crearBotonSecundario("<", "preguntas-bloque");
+            botonesLayout = crearBotonesLayout();
+        }
+    
         // Crear layout
         VerticalLayout layout = new VerticalLayout(
+                back,
                 LayoutConfig.createMobileFilters(filters),
                 filters,
-                createGrid()
+                createGrid(),
+                botonesLayout
         );
-
+ 
         // Comportamiento al hacer click en una fila del grid
         grid.addItemClickListener(e -> {
             preguntaSeleccionada = e.getItem();
         });
-
-        if (crudPregunta) {
-            layout.add(LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService,
-                    grid));
-        } else {
-            layout.add(crearBotonesLayout());
-        }
 
         layout.setAlignItems(Alignment.CENTER);
         layout.setPadding(true);
