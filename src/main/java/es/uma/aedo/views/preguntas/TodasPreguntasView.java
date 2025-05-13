@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,6 +20,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
@@ -35,7 +38,7 @@ import jakarta.persistence.criteria.Root;
 @Route("preguntas")
 public class TodasPreguntasView extends Div {
 
-    private Grid<Pregunta> grid = new Grid<>();
+    private Grid<Pregunta> grid;
     private final PreguntaService preguntaService;
     private Filters filters;
     private boolean crudPregunta = true;
@@ -52,7 +55,7 @@ public class TodasPreguntasView extends Div {
         VerticalLayout layout = new VerticalLayout(
                 LayoutConfig.createMobileFilters(filters),
                 filters,
-                GestionPregunta.createGrid(grid, preguntaService, filters)
+                createGrid()
         );
 
         // Comportamiento al hacer click en una fila del grid
@@ -144,6 +147,21 @@ public class TodasPreguntasView extends Div {
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
+    }
+
+    public Component createGrid() {
+        grid = new Grid<>(Pregunta.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("enunciado").setAutoWidth(true);
+        grid.addColumn("tipo").setAutoWidth(true);
+        grid.addColumn("bloque").setAutoWidth(true);
+
+        grid.setItems(query -> preguntaService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+                .stream());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+
+        return grid;
     }
 
     private void refreshGrid() {
