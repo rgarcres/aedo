@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,6 +23,7 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
@@ -48,38 +51,42 @@ public class TodasPreguntasView extends Div {
     private Bloque bloqueSeleccionado;
 
     public TodasPreguntasView(PreguntaService service) {
-        //Instanciar atributos
+        // Instanciar atributos
         this.preguntaService = service;
         this.bloqueSeleccionado = (Bloque) VaadinSession.getCurrent().getAttribute("bloquePregunta");
         addClassNames("preguntas-view");
 
-        if(VaadinSession.getCurrent().getAttribute("crudPregunta") != null){
+        if (VaadinSession.getCurrent().getAttribute("crudPregunta") != null) {
             crudPregunta = (boolean) VaadinSession.getCurrent().getAttribute("crudPregunta");
         }
 
         filters = new Filters(() -> refreshGrid());
         HorizontalLayout botonesLayout = new HorizontalLayout();
         HorizontalLayout tituloLayout = new HorizontalLayout();
+        grid = GestionPregunta.createGrid(preguntaService, filters);
+        grid.addItemClickListener(e -> {
+            preguntaSeleccionada = e.getItem();
+        });
 
-        //Comprobar si hay que mostrar todos los bloques y los botones CRUD
-        //o si solo hay que añadir y quitar del bloque
-        if(crudPregunta){
+        // Comprobar si hay que mostrar todos los bloques y los botones CRUD
+        // o si solo hay que añadir y quitar del bloque
+        if (crudPregunta) {
             tituloLayout = LayoutConfig.createTituloLayout("Preguntas", "bloques");
-            botonesLayout = LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
+            botonesLayout = LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas",
+                    preguntaService, grid);
         } else {
-            tituloLayout = LayoutConfig.createTituloLayout("Preguntas del bloque: "+bloqueSeleccionado, "preguntas-bloque");
+            tituloLayout = LayoutConfig.createTituloLayout("Preguntas del bloque: " + bloqueSeleccionado,
+                    "preguntas-bloque");
             botonesLayout = crearBotonesLayout();
         }
-        
-        grid = GestionPregunta.createGrid(preguntaService, filters);
+
         // Crear layout
         VerticalLayout layout = new VerticalLayout(
                 tituloLayout,
                 LayoutConfig.createMobileFilters(filters),
                 filters,
                 grid,
-                botonesLayout
-        );
+                botonesLayout);
 
         layout.setPadding(true);
         layout.setSpacing(true);
@@ -157,6 +164,21 @@ public class TodasPreguntasView extends Div {
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
+    }
+
+    public Component createGrid() {
+        Grid<Pregunta> grid = new Grid<>(Pregunta.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("enunciado").setAutoWidth(true);
+        grid.addColumn("tipo").setAutoWidth(true);
+        grid.addColumn("bloque").setAutoWidth(true);
+
+        grid.setItems(query -> preguntaService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+                .stream());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+
+        return grid;
     }
 
     private void refreshGrid() {

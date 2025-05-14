@@ -32,46 +32,44 @@ public class GestionPregunta {
 
         TextField idField = new TextField("ID*");
         TextField enunciadoField = new TextField("Enunciado*");
-        ComboBox<Integer> tipoComboBox = new ComboBox<>("Tipo*");
         ComboBox<Bloque> bloqueComboBox = new ComboBox<>("Bloque*");
 
-        Button crearEditar;
+        Button siguiente;
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "preguntas");
 
-        tipoComboBox.setItems(1, 2, 3, 4);
         bloqueComboBox.setItems(bloqueService.getAll());
 
         if (pregunta == null) {
-            crearEditar = BotonesConfig.crearBotonPrincipal("Crear pregunta");
+            siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
         } else {
             idField.setValue(pregunta.getId());
             enunciadoField.setValue(pregunta.getEnunciado());
-            tipoComboBox.setValue(pregunta.getTipo());
             bloqueComboBox.setValue(pregunta.getBloque());
-            crearEditar = BotonesConfig.crearBotonPrincipal("Editar pregunta");
+            siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
         }
 
         camposLayout.setResponsiveSteps(
                 new ResponsiveStep("0", 1),
                 new ResponsiveStep("500px", 2));
 
-        crearEditar.addClickListener(e -> {
+        siguiente.addClickListener(e -> {
             boolean exito = false;
+            String id = idField.getValue();
+            Bloque bloque = bloqueComboBox.getValue();
+            String enunciado = enunciadoField.getValue();
 
             if (pregunta == null) {
-                exito = crearPregunta(preguntaService, bloqueComboBox.getValue(), idField.getValue(),
-                        enunciadoField.getValue(), tipoComboBox.getValue());
+                exito = crearPregunta(preguntaService, bloque, id, enunciado);
             } else {
-                exito = editarPregunta(pregunta, preguntaService, bloqueComboBox.getValue(), idField.getValue(),
-                        enunciadoField.getValue(), tipoComboBox.getValue());
+                exito = editarPregunta(pregunta, preguntaService, bloque, id, enunciado);
             }
 
             if(exito){
-                crearEditar.getUI().ifPresent(ui -> ui.navigate("preguntas"));
+                siguiente.getUI().ifPresent(ui -> ui.navigate("preguntas/seleccionar-opciones/"+id));
             }
         });
-        camposLayout.add(idField, enunciadoField, tipoComboBox, bloqueComboBox);
-        botonesLayout.add(crearEditar, cancelar);
+        camposLayout.add(idField, enunciadoField, bloqueComboBox);
+        botonesLayout.add(siguiente, cancelar);
         layout.add(camposLayout, botonesLayout);
 
         return layout;
@@ -96,9 +94,8 @@ public class GestionPregunta {
         return grid;
     }
 
-    private static boolean crearPregunta(PreguntaService preguntaService, Bloque bloque, String id, String enunciado,
-            Integer tipo) {
-        if (id.isBlank() || enunciado.isBlank() || tipo == null) {
+    private static boolean crearPregunta(PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
+        if (id.isBlank() || enunciado.isBlank()) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
             return false;
         } else if (preguntaService.get(id).isPresent()) {
@@ -108,17 +105,16 @@ public class GestionPregunta {
             Pregunta p = new Pregunta();
             p.setId(id);
             p.setEnunciado(enunciado);
-            p.setTipo(tipo);
             p.setBloque(bloque);
-            NotificacionesConfig.crearNotificacionExito("¡Pregunta creada!", "La pregunta se ha creado con éxito");
+            //Tipo 0 indica que la pregunta está siendo creada
+            p.setTipo(0);
             preguntaService.save(p);
             return true;
         }
     }
 
-    private static boolean editarPregunta(Pregunta pregunta, PreguntaService preguntaService, Bloque bloque, String id, String enunciado,
-            Integer tipo) {
-        if (id.isBlank() || enunciado.isBlank() || tipo == null) {
+    private static boolean editarPregunta(Pregunta pregunta, PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
+        if (id.isBlank() || enunciado.isBlank()) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
             return false;
         } else if (preguntaService.get(id).isPresent() && !id.equals(pregunta.getId())) {
@@ -127,9 +123,7 @@ public class GestionPregunta {
         } else {
             pregunta.setId(id);
             pregunta.setEnunciado(enunciado);
-            pregunta.setTipo(tipo);
             pregunta.setBloque(bloque);
-            NotificacionesConfig.crearNotificacionExito("¡Pregunta editada!", "La pregunta se ha editado con éxito");
             preguntaService.save(pregunta);
             return true;
         }

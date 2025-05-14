@@ -11,7 +11,7 @@ import es.uma.aedo.services.PreguntaService;
 
 @PageTitle("Crear Pregunta")
 @Route("preguntas/crear-pregunta")
-public class CrearPreguntaView extends Div{
+public class CrearPreguntaView extends Div {
     
     private final PreguntaService preguntaService;
     private final BloqueService bloqueService;

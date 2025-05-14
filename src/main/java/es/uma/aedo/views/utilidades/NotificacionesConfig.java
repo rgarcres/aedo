@@ -4,18 +4,19 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class NotificacionesConfig {
-    public static void crearNotificacionError(String titulo, String text){
+    public static void crearNotificacionError(String titulo, String text) {
         Notification errorNoti = new Notification();
         H3 msg = new H3(titulo);
         Div texto = new Div(text);
         Button cerrar = new Button("Cerrar");
         VerticalLayout layout = new VerticalLayout();
-        
+
         layout.setAlignItems(Alignment.CENTER);
         errorNoti.addThemeVariants(NotificationVariant.LUMO_ERROR);
         cerrar.getStyle().set("background-color", "#fe6a6a");
@@ -28,13 +29,13 @@ public class NotificacionesConfig {
         errorNoti.open();
     }
 
-    public static void crearNotificacionExito(String titulo, String text){
+    public static void crearNotificacionExito(String titulo, String text) {
         Notification noti = new Notification();
         H3 msg = new H3(titulo);
         Div texto = new Div(text);
         Button cerrar = new Button("Cerrar");
         VerticalLayout layout = new VerticalLayout();
-        
+
         layout.setAlignItems(Alignment.CENTER);
         noti.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         cerrar.getStyle().set("background-color", "#91ff9f");
@@ -47,17 +48,29 @@ public class NotificacionesConfig {
         noti.open();
     }
 
-    // public static void crearNotificiacionConfirmacion(String titulo, String text){
-    //     Notification noti = new Notification();
-    //     H3 tit = new H3(titulo);
-    //     Div texto = new Div(text);
-    //     Button confirmar = new Button("Confirmar");
-    //     Button cancelar = new Button("Cancelar");
-    //     VerticalLayout layout = new VerticalLayout();
-        
-    //     layout.setAlignItems(Alignment.CENTER);
-    //     noti.addThemeVariants(NotificationVariant.LUMO_WARNING);
-    //     confirmar.getStyle().set("background-color", "#fff799");
+    public static void notificar(String text) {
+        Notification noti = new Notification();
+        noti.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+        H3 h3 = new H3(text);
+        h3.getStyle().set("color", "#ffffff");
+        noti.setPosition(Position.MIDDLE);
+        noti.add(h3);
+        noti.open();
+        noti.setDuration(5000);
+    }
+
+    // public static void crearNotificiacionConfirmacion(String titulo, String
+    // text){
+    // Notification noti = new Notification();
+    // H3 tit = new H3(titulo);
+    // Div texto = new Div(text);
+    // Button confirmar = new Button("Confirmar");
+    // Button cancelar = new Button("Cancelar");
+    // VerticalLayout layout = new VerticalLayout();
+
+    // layout.setAlignItems(Alignment.CENTER);
+    // noti.addThemeVariants(NotificationVariant.LUMO_WARNING);
+    // confirmar.getStyle().set("background-color", "#fff799");
 
     // }
 }
