@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -21,6 +22,16 @@ import es.uma.aedo.data.entidades.AbstractEntity;
 import es.uma.aedo.services.IService;
 
 public class LayoutConfig {
+
+    public static HorizontalLayout createTituloLayout(String titulo, String route){
+        HorizontalLayout layout = new HorizontalLayout();
+        H2 h2 = new H2(titulo);
+        Button back = BotonesConfig.crearBotonSecundario("<", route);
+        
+        layout.add(back, h2);
+
+        return layout;
+    }
 
     public static HorizontalLayout createMobileFilters(Div filters) {
         // Mobile version

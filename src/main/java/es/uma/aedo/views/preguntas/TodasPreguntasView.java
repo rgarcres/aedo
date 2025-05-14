@@ -46,28 +46,32 @@ public class TodasPreguntasView extends Div {
     private Bloque bloqueSeleccionado;
 
     public TodasPreguntasView(PreguntaService service) {
+        //Instanciar atributos
         this.preguntaService = service;
         this.bloqueSeleccionado = (Bloque) VaadinSession.getCurrent().getAttribute("bloquePregunta");
         addClassNames("preguntas-view");
         crudPregunta = (boolean) VaadinSession.getCurrent().getAttribute("crudPregunta");
         filters = new Filters(() -> refreshGrid());
-        Button back;
+        grid = new Grid<>();
         HorizontalLayout botonesLayout = new HorizontalLayout();
+        HorizontalLayout tituloLayout = new HorizontalLayout();
 
+        //Comprobar si hay que mostrar todos los bloques y los botones CRUD
+        //o si solo hay que añadir y quitar del bloque
         if(crudPregunta){
-            back = BotonesConfig.crearBotonSecundario("<", "bloques");
+            tituloLayout = LayoutConfig.createTituloLayout("Preguntas", "bloques");
             botonesLayout = LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
         } else {
-            back = BotonesConfig.crearBotonSecundario("<", "preguntas-bloque");
+            tituloLayout = LayoutConfig.createTituloLayout("Preguntas del bloque: "+bloqueSeleccionado, "preguntas-bloque");
             botonesLayout = crearBotonesLayout();
         }
     
         // Crear layout
         VerticalLayout layout = new VerticalLayout(
-                back,
+                tituloLayout,
                 LayoutConfig.createMobileFilters(filters),
                 filters,
-                createGrid(),
+                GestionPregunta.createGrid(grid, preguntaService, filters),
                 botonesLayout
         );
  

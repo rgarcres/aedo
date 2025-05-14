@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +17,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.PreguntaService;
-import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -51,10 +49,9 @@ public class PreguntasBloqueView extends Div {
 
         filters = new Filters(() -> refreshGrid(), bloqueSeleccionado);
         VerticalLayout layout = new VerticalLayout(
-            createTituloLayout(), 
-            LayoutConfig.createMobileFilters(filters), 
+            LayoutConfig.createTituloLayout("Preguntas del "+bloqueSeleccionado, "bloques"), 
             filters, 
-            GestionPregunta.createGrid(grid, service, filters), 
+            GestionPregunta.createGrid(grid, preguntaService, filters), 
             createButtons()
         );
 
@@ -62,15 +59,6 @@ public class PreguntasBloqueView extends Div {
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);
-    }
-
-    private HorizontalLayout createTituloLayout(){
-        HorizontalLayout layout = new HorizontalLayout();
-        H2 titulo = new H2("Preguntas del " + bloqueSeleccionado.getNombre());
-        Button atrasButton = BotonesConfig.crearBotonSecundario("<", "bloques");
-        layout.add(atrasButton, titulo);
-
-        return layout;
     }
 
     private HorizontalLayout createButtons(){
