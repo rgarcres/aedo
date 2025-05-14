@@ -2,7 +2,6 @@ package es.uma.aedo.views.preguntas;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -81,9 +80,9 @@ public class GestionPregunta {
     /*
      * Crea el componente grid que contiene todas las preguntas
      */
-    public static Component createGrid(Grid<Pregunta> grid, PreguntaService preguntaService,
+    public static Grid<Pregunta> createGrid(PreguntaService preguntaService,
             Specification<Pregunta> filters) {
-        grid = new Grid<>(Pregunta.class, false);
+        Grid <Pregunta> grid = new Grid<>(Pregunta.class, false);
         grid.addColumn("id").setAutoWidth(true);
         grid.addColumn("enunciado").setAutoWidth(true);
         grid.addColumn("tipo").setAutoWidth(true);

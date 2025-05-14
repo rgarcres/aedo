@@ -27,6 +27,6 @@ public abstract class Respuesta extends AbstractEntity{
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
     
-    public Pregunta gPregunta() { return pregunta; }
+    public Pregunta getPregunta() { return pregunta; }
     public void setPregunta(Pregunta pregunta) {this.pregunta = pregunta; }
 }

@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Bloque;
@@ -36,6 +36,8 @@ import jakarta.persistence.criteria.Root;
 
 @PageTitle("Preguntas")
 @Route("preguntas")
+@Menu(order = 6, icon = LineAwesomeIconUrl.QUESTION_SOLID)
+@Uses(Icon.class)
 public class TodasPreguntasView extends Div {
 
     private Grid<Pregunta> grid;
@@ -50,9 +52,12 @@ public class TodasPreguntasView extends Div {
         this.preguntaService = service;
         this.bloqueSeleccionado = (Bloque) VaadinSession.getCurrent().getAttribute("bloquePregunta");
         addClassNames("preguntas-view");
-        crudPregunta = (boolean) VaadinSession.getCurrent().getAttribute("crudPregunta");
+
+        if(VaadinSession.getCurrent().getAttribute("crudPregunta") != null){
+            crudPregunta = (boolean) VaadinSession.getCurrent().getAttribute("crudPregunta");
+        }
+
         filters = new Filters(() -> refreshGrid());
-        grid = new Grid<>();
         HorizontalLayout botonesLayout = new HorizontalLayout();
         HorizontalLayout tituloLayout = new HorizontalLayout();
 
@@ -65,22 +70,17 @@ public class TodasPreguntasView extends Div {
             tituloLayout = LayoutConfig.createTituloLayout("Preguntas del bloque: "+bloqueSeleccionado, "preguntas-bloque");
             botonesLayout = crearBotonesLayout();
         }
-    
+        
+        grid = GestionPregunta.createGrid(preguntaService, filters);
         // Crear layout
         VerticalLayout layout = new VerticalLayout(
                 tituloLayout,
                 LayoutConfig.createMobileFilters(filters),
                 filters,
-                GestionPregunta.createGrid(grid, preguntaService, filters),
+                grid,
                 botonesLayout
         );
- 
-        // Comportamiento al hacer click en una fila del grid
-        grid.addItemClickListener(e -> {
-            preguntaSeleccionada = e.getItem();
-        });
 
-        layout.setAlignItems(Alignment.CENTER);
         layout.setPadding(true);
         layout.setSpacing(true);
         add(layout);
@@ -157,21 +157,6 @@ public class TodasPreguntasView extends Div {
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
-    }
-
-    public Component createGrid() {
-        grid = new Grid<>(Pregunta.class, false);
-        grid.addColumn("id").setAutoWidth(true);
-        grid.addColumn("enunciado").setAutoWidth(true);
-        grid.addColumn("tipo").setAutoWidth(true);
-        grid.addColumn("bloque").setAutoWidth(true);
-
-        grid.setItems(query -> preguntaService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-                .stream());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
-        return grid;
     }
 
     private void refreshGrid() {

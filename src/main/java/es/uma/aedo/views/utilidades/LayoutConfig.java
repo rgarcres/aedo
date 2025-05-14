@@ -15,7 +15,6 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.AbstractEntity;
@@ -23,6 +22,17 @@ import es.uma.aedo.services.IService;
 
 public class LayoutConfig {
 
+    public static VerticalLayout createNotFoundLayout(){
+        VerticalLayout layout = new VerticalLayout();
+        H2 h2 = new H2("Not Found");
+        Div div = new Div("El recurso al que se intenta acceder no está disponible");
+        Button volver = BotonesConfig.crearBotonPrincipal("Volver", "");
+        
+        layout.setAlignItems(Alignment.CENTER);
+        layout.setHorizontalComponentAlignment(Alignment.CENTER);
+        layout.add(h2, div, volver);
+        return layout;
+    }
     public static HorizontalLayout createTituloLayout(String titulo, String route){
         HorizontalLayout layout = new HorizontalLayout();
         H2 h2 = new H2(titulo);
@@ -81,8 +91,7 @@ public class LayoutConfig {
         editarButton.addClickListener(e -> {
             AbstractEntity entity = entitySupplier.get();
             if(entity != null){
-                VaadinSession.getCurrent().setAttribute(name+"Editar", entity);
-                editarButton.getUI().ifPresent(ui -> ui.navigate(mainRoute + "/editar-"+name));
+                editarButton.getUI().ifPresent(ui -> ui.navigate(mainRoute + "/editar-"+ name + "/"+ entity.getId()));
             }
         });
 

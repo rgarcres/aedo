@@ -16,7 +16,7 @@ public class CrearBloqueView extends Div{
         this.bloqueService = service;
         setSizeFull();
         addClassNames("crear-bloque-view");
-        VerticalLayout layout = new VerticalLayout(CrearEditarBloque.crearCamposLayout(null, bloqueService));
+        VerticalLayout layout = new VerticalLayout(GestionBloque.crearCamposLayout(null, bloqueService));
 
         layout.setSizeFull();
         add(layout);

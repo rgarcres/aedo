@@ -11,7 +11,7 @@ import es.uma.aedo.services.BloqueService;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 
-public class CrearEditarBloque {
+public class GestionBloque {
 
     public static VerticalLayout crearCamposLayout(Bloque bloque, BloqueService bloqueService) {
         // ------------Layouts------------

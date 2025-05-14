@@ -10,7 +10,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -52,6 +51,7 @@ public class BloquesView extends Div {
 
         filters = new Filters(() -> refreshGrid());
         VerticalLayout layout = new VerticalLayout(
+            LayoutConfig.createTituloLayout("Bloques", ""),
             LayoutConfig.createMobileFilters(filters), 
             filters, 
             createGrid(), 
@@ -61,10 +61,8 @@ public class BloquesView extends Div {
         );
 
         layout.setSizeFull();
-        layout.setPadding(false);
+        layout.setPadding(true);
         layout.setSpacing(false);
-        layout.setAlignItems(Alignment.CENTER);
-        layout.setHorizontalComponentAlignment(Alignment.CENTER);
         add(layout);
     }
 

@@ -48,11 +48,12 @@ public class PreguntasBloqueView extends Div {
         addClassNames("preguntas-bloque-view");
 
         filters = new Filters(() -> refreshGrid(), bloqueSeleccionado);
+        grid = GestionPregunta.createGrid(preguntaService, filters);
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Preguntas del "+bloqueSeleccionado, "bloques"), 
-            filters, 
-            GestionPregunta.createGrid(grid, preguntaService, filters), 
-            createButtons()
+                LayoutConfig.createTituloLayout("Preguntas del " + bloqueSeleccionado, "bloques"),
+                filters,
+                grid,
+                createButtons()
         );
 
         layout.setSizeFull();
@@ -61,13 +62,14 @@ public class PreguntasBloqueView extends Div {
         add(layout);
     }
 
-    private HorizontalLayout createButtons(){
+    private HorizontalLayout createButtons() {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidthFull();
-        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER, LumoUtility.AlignItems.CENTER);
+        buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
+                LumoUtility.AlignItems.CENTER);
         buttonsLayout.addClassName("buttons-layout");
         buttonsLayout.setAlignItems(Alignment.CENTER);
-        
+
         Button crearPreguntaButton = new Button("Añadir pregunta al bloque");
         Button editarPreguntaButton = new Button("Editar pregunta");
         Button borrarPreguntaButton = new Button("Eliminar pregunta del bloque");
@@ -78,27 +80,30 @@ public class PreguntasBloqueView extends Div {
         crearPreguntaButton.addClickListener(e -> {
             /*
              * Atributo crudPregunta:
-             *      false: NO activa los botones CRUD de la entidad pregunta
-             *      true: activa los botones necesarios para CRUD de preguntas
+             * false: NO activa los botones CRUD de la entidad pregunta
+             * true: activa los botones necesarios para CRUD de preguntas
              */
             VaadinSession.getCurrent().setAttribute("crudPregunta", false);
             crearPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas"));
         });
 
         editarPreguntaButton.addClickListener(e -> {
-            if(preguntaSeleccionada != null){
+            if (preguntaSeleccionada != null) {
                 VaadinSession.getCurrent().setAttribute("preguntaEditar", preguntaSeleccionada);
                 editarPreguntaButton.getUI().ifPresent(ui -> ui.navigate("preguntas/editar-pregunta"));
             }
         });
 
         borrarPreguntaButton.addClickListener(e -> {
-            if(preguntaSeleccionada != null){
+            if (preguntaSeleccionada != null) {
                 preguntaSeleccionada.setBloque(null);
                 preguntaService.save(preguntaSeleccionada);
-                NotificacionesConfig.crearNotificacionExito("Pregunta eliminada del "+bloqueSeleccionado.toString().toLowerCase(), "La pregunta se ha eliminado correctamente de este bloque");
+                NotificacionesConfig.crearNotificacionExito(
+                        "Pregunta eliminada del " + bloqueSeleccionado.toString().toLowerCase(),
+                        "La pregunta se ha eliminado correctamente de este bloque");
             } else {
-                NotificacionesConfig.crearNotificacionError("Seleccione una pregunta", "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
+                NotificacionesConfig.crearNotificacionError("Seleccione una pregunta",
+                        "No hay ninguna pregunta seleccionada, seleccione una pregunta para poder borrarla");
             }
         });
         buttonsLayout.add(crearPreguntaButton, editarPreguntaButton, borrarPreguntaButton);
@@ -106,10 +111,11 @@ public class PreguntasBloqueView extends Div {
     }
 
     public static class Filters extends Div implements Specification<Pregunta> {
-        
+
         private final TextField enunciado = new TextField("Enunciado");
         private final CheckboxGroup<Integer> tipo = new CheckboxGroup<>("Tipo");
         private final Bloque bloque;
+
         public Filters(Runnable onSearch, Bloque b) {
             this.bloque = b;
             setWidthFull();
@@ -117,8 +123,7 @@ public class PreguntasBloqueView extends Div {
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
 
-
-            tipo.setItems(1, 2 , 3, 4);
+            tipo.setItems(1, 2, 3, 4);
 
             // Action buttons
             Button resetBtn = new Button("Reset");
@@ -143,13 +148,13 @@ public class PreguntasBloqueView extends Div {
         public Predicate toPredicate(Root<Pregunta> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if(!enunciado.isEmpty()){
+            if (!enunciado.isEmpty()) {
                 String enunciadoLimpio = enunciado.getValue().toLowerCase();
                 Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get("enunciado")), enunciadoLimpio + "%");
                 predicates.add(p);
             }
 
-            if(!tipo.isEmpty()){
+            if (!tipo.isEmpty()) {
                 predicates.add(root.get("tipo").in(tipo.getValue()));
             }
 
