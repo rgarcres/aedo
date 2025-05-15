@@ -56,7 +56,7 @@ public class NotificacionesConfig {
         noti.setPosition(Position.MIDDLE);
         noti.add(h3);
         noti.open();
-        noti.setDuration(5000);
+        noti.setDuration(2000);
     }
 
     // public static void crearNotificiacionConfirmacion(String titulo, String

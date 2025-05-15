@@ -1,10 +1,9 @@
 package es.uma.aedo.views.respuestas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -16,6 +15,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.entidades.RespuestaTipo1.RespuestaSiNo;
@@ -34,7 +34,8 @@ import es.uma.aedo.views.utilidades.NotificacionesConfig;
 public class SeleccionarOpcionesView extends Div implements HasUrlParameter<String> {
 
     private final PreguntaService preguntaService;
-    private final List<String> opciones = new ArrayList<>();
+    private Grid<String> grid;
+    private String respuestaSeleccionada;
     private Pregunta pregunta;
 
     public SeleccionarOpcionesView(PreguntaService pService) {
@@ -45,7 +46,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
     public void setParameter(BeforeEvent event, String id) {
         if (id != null) {
             if (preguntaService.get(id).isPresent()) {
-                pregunta = preguntaService.get(id).get();
+                pregunta = preguntaService.getConOpciones(id).get();
 
                 add(crearLayout());
             } else {
@@ -71,11 +72,11 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         // ------------Comportamiento tipoBox------------
         tipoBox.setItems(1, 2, 3, 4);
         Integer tipo = pregunta.getTipo();
-        if(tipo != 0){
+        if (tipo != 0) {
             tipoBox.setValue(pregunta.getTipo());
-            if(tipo == 1 || tipo == 2){
+            if (tipo == 1 || tipo == 2) {
                 contenido.add(crearContenidoTipo1Y2(tipo));
-            } else if(tipo == 3 || tipo == 4){
+            } else if (tipo == 3 || tipo == 4) {
                 contenido.add(crearContenidoTipo3Y4(tipo));
             }
         }
@@ -123,46 +124,65 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         return layout;
     }
 
+    /*
+     * Si el tipo es 3 o 4 se carga un layout donde se pueden añadir y quitar
+     * respuestas
+     * de la lista de posibles respuestas que tiene esa pregunta
+     */
     private VerticalLayout crearContenidoTipo3Y4(Integer t) {
         VerticalLayout layout = new VerticalLayout();
+        HorizontalLayout botonesLayout = new HorizontalLayout();
+
         H3 h3 = new H3("Respuestas tipo " + t);
         TextField respuestasField = new TextField("Posible respuesta");
-        Div respuestasText = new Div();
-        Button anadir = BotonesConfig.crearBotonPrincipal("Añadir posible respuesta");
-        respuestasField.setPlaceholder("Introduzca una posible respuesta...");
 
-        respuestasText.setText(opciones.toString());
+        Button anadir = BotonesConfig.crearBotonPrincipal("Añadir posible respuesta");
+        Button eliminar = BotonesConfig.crearBotonSecundario("Eliminar");
+
+        respuestasField.setPlaceholder("Introduzca una posible respuesta...");
+        crearGrid();
 
         anadir.addClickListener(e -> {
             String res = respuestasField.getValue();
             if (!res.isBlank()) {
-                opciones.add(res);
-                respuestasText.removeAll();
-                respuestasText.setText(opciones.toString());
+                pregunta.getOpciones().add(res);
                 NotificacionesConfig.notificar("Respuesta: " + res + " añadida");
+                refreshGrid();
             } else {
                 NotificacionesConfig.crearNotificacionError("Respuesta vacía",
                         "No puede añadir una respuesta vacía. Introduzca una respuesta válida");
             }
         });
+        eliminar.addClickListener(e->{
+            if(respuestaSeleccionada != null){
+                pregunta.getOpciones().remove(respuestaSeleccionada);
+                refreshGrid();
+                NotificacionesConfig.notificar("Respuesta: "+ respuestaSeleccionada + " eliminada");
+            } else {
+                NotificacionesConfig.crearNotificacionError("Selecciona una respuesta", "No ha seleccionado ninguna respuesta");
+            }
+        });
 
         layout.setAlignItems(Alignment.CENTER);
-        layout.add(h3, respuestasField, anadir, respuestasText);
+        botonesLayout.add(anadir, eliminar);
+        layout.add(h3, respuestasField, grid, botonesLayout);
         return layout;
     }
 
     /*
      * Método para cancelar la transacción
-     *      Si está creando: se borra la pregunta a medio crear de la base de datos
-     *      Si está editando: se obtiene el valor de la pregunta antes de que fuera editada y 
-     *                          se vuelve a guarda en la BD
-     */     
+     * Si está creando: se borra la pregunta a medio crear de la base de datos
+     * Si está editando: se obtiene el valor de la pregunta antes de que fuera
+     * editada y
+     * se vuelve a guarda en la BD
+     */
     private void cancelar() {
-        //Tipo = 0 -> pregunta a medio crear
+        // Tipo = 0 -> pregunta a medio crear
         if (pregunta.getTipo() == 0) {
             preguntaService.delete(pregunta.getId());
             NotificacionesConfig.notificar("La pregunta: " + pregunta + " no se ha creado.");
-        //Comprobar que el atributo de sesión de la pregunta original antes de editar no esté a null
+            // Comprobar que el atributo de sesión de la pregunta original antes de editar
+            // no esté a null
         } else if (VaadinSession.getCurrent().getAttribute("preguntaSinEditar") != null) {
             Pregunta p = (Pregunta) VaadinSession.getCurrent().getAttribute("preguntaSinEditar");
             pregunta.setId(p.getId());
@@ -171,7 +191,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
             preguntaService.save(pregunta);
             NotificacionesConfig.notificar("La pregunta: " + pregunta + " no se ha editado.");
         }
-        //Navegar
+        // Navegar
         getUI().ifPresent(ui -> ui.navigate("preguntas"));
     }
 
@@ -180,20 +200,33 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
      */
     private void crear(Integer t) {
         if (t != null) {
-            //Establecer el tipo y, si fuese necesario, las opciones a elegir 
+            // Establecer el tipo y, si fuese necesario, las opciones a elegir
             pregunta.setTipo(t);
-            if (t == 3 || t == 4) {
-                pregunta.setOpciones(opciones);
-            }
-            //Guardar la pregunta en la BD
+            // Guardar la pregunta en la BD
             preguntaService.save(pregunta);
-            //Notificar y navegar
+            // Notificar y navegar
             NotificacionesConfig.crearNotificacionExito("¡Pregunta creada!", "La pregunta se ha creado con éxito");
             getUI().ifPresent(ui -> ui.navigate("preguntas"));
         } else {
-            //Notificar error
+            // Notificar error
             NotificacionesConfig.crearNotificacionError("Selecciona un tipo",
                     "No hay ningún tipo seleccionado, por favor seleccione un tipo.");
         }
+    }
+
+    private void crearGrid() {
+        grid = new Grid<>(String.class, false);
+        grid.addColumn(s -> s).setHeader("Respuesta").setAutoWidth(true);
+        grid.setItems(pregunta.getOpciones());
+
+        grid.addItemClickListener(e -> {
+            respuestaSeleccionada = e.getItem();
+        });
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+    }
+
+    private void refreshGrid() {
+        grid.setItems(pregunta.getOpciones());
     }
 }

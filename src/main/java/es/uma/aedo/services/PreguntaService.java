@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.data.repositorios.PreguntaRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class PreguntaService implements IService<Pregunta> {
@@ -24,6 +25,14 @@ public class PreguntaService implements IService<Pregunta> {
         return repository.findById(id);
     }
 
+    @Transactional
+    public Optional<Pregunta> getConOpciones(String id){
+        Optional<Pregunta> pregunta = repository.findById(id);
+        if(pregunta.isPresent()){
+            pregunta.get().getOpciones().size();
+        }
+        return pregunta;
+    }
     public List<Pregunta> getAll(){
         return repository.findAll();
     }

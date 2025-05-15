@@ -1,5 +1,6 @@
 package es.uma.aedo.data.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -19,7 +20,7 @@ public class Pregunta extends AbstractEntity {
     //Solo para las preguntas de tipo 3 y 4
     @Column(name="opciones", nullable = true)
     @ElementCollection
-    private List<String> opciones;
+    private List<String> opciones = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="bloque_id")
