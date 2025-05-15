@@ -114,9 +114,9 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         H3 h3 = new H3("Respuestas tipo " + t);
         Div div = new Div();
         if (t == 1) {
-            div.setText(RespuestaSiNo.values().toString());
+            div.setText(RespuestaSiNo.listToString());
         } else {
-            div.setText(RespuestaSiNoIntensidad.values().toString());
+            div.setText(RespuestaSiNoIntensidad.listToString());
         }
 
         layout.setAlignItems(Alignment.CENTER);

@@ -10,9 +10,34 @@ import jakarta.persistence.Enumerated;
 public class RespuestaTipo1 extends Respuesta{
     //------------Atributos------------   
     public enum RespuestaSiNo {
-        SI,
-        NO,
-        OCASIONALMENTE
+        SI("Sí"),
+        NO("No"),
+        OCASIONALMENTE("Ocasionalmente");
+
+        private final String text;
+
+        private RespuestaSiNo(String txt){
+            this.text = txt;
+        }
+
+        @Override
+        public String toString(){
+            return text;
+        }
+
+        public static String listToString(){
+            StringBuilder sb = new StringBuilder("[");
+
+            for(RespuestaSiNo r: RespuestaSiNo.values()){
+                sb.append(r.toString() +", ");
+            }
+            //Quitar la última coma
+            if(sb.length() > 1){
+                sb.setLength(sb.length() - 2);
+            }
+            sb.append("]");
+            return sb.toString();
+        }
     }
     @Enumerated(EnumType.STRING)
     private RespuestaSiNo respuesta;
