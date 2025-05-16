@@ -50,15 +50,15 @@ public class PreguntasBloqueView extends Div {
         filters = new Filters(() -> refreshGrid(), bloqueSeleccionado);
         grid = GestionPregunta.createGrid(preguntaService, filters);
         VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Preguntas del " + bloqueSeleccionado, "bloques"),
+                LayoutConfig.createTituloLayout("Preguntas del " + bloqueSeleccionado.getNombre(), "bloques"),
                 filters,
                 grid,
                 createButtons()
         );
 
         layout.setSizeFull();
-        layout.setPadding(false);
-        layout.setSpacing(false);
+        layout.setPadding(true);
+        layout.setSpacing(true);
         add(layout);
     }
 
@@ -140,7 +140,7 @@ public class PreguntasBloqueView extends Div {
             Div actions = new Div(resetBtn, searchBtn);
             actions.addClassName(LumoUtility.Gap.SMALL);
             actions.addClassName("actions");
-
+            
             add(enunciado, tipo, actions);
         }
 

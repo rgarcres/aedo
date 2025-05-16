@@ -19,7 +19,6 @@ import jakarta.persistence.OneToMany;
 public class Usuario extends AbstractEntity{
     //------------Atributos------------
     private String alias;
-    private Long passHash;
     private LocalDate fechaNacimiento;
     @Enumerated(EnumType.STRING)
     private EGenero genero;
@@ -47,9 +46,6 @@ public class Usuario extends AbstractEntity{
     //------------Getters y Setters------------
     public String getAlias() { return alias; }
     public void setAlias(String alias) { this.alias = alias; }
-    
-    public Long getPassHash() { return passHash; }
-    public void setPassHash(Long passHash) { this.passHash = passHash; }
 
     public LocalDate getFechaNacimiento() { return fechaNacimiento; }
     public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
