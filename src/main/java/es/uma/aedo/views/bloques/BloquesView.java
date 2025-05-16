@@ -82,7 +82,7 @@ public class BloquesView extends Div {
             Button resetBtn = new Button("Reset");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
-
+                nombre.clear();
                 onSearch.run();
             });
             Button searchBtn = new Button("Search");
