@@ -10,6 +10,7 @@ import com.vaadin.flow.router.Route;
 import es.uma.aedo.data.entidades.Bloque;
 import es.uma.aedo.services.BloqueService;
 import es.uma.aedo.views.utilidades.LayoutConfig;
+import es.uma.aedo.views.utilidades.OtrasConfig;
 
 @PageTitle("Editar Bloque")
 @Route("bloques/editar-bloque/")
@@ -24,18 +25,17 @@ public class EditarBloqueView extends Div implements HasUrlParameter<String> {
 
     @Override
     public void setParameter(BeforeEvent event, String id) {
-        if (id != null) {
-            if (bloqueService.get(id).isPresent()) {
-                bloque = bloqueService.get(id).get();
-                setSizeFull();
-                addClassNames("editar-bloque-view");
-                VerticalLayout layout = new VerticalLayout(GestionBloque.crearCamposLayout(bloque, bloqueService));
+        bloque = (Bloque) OtrasConfig.getEntidadPorParametro(id, bloqueService);
 
-                layout.setSizeFull();
-                add(layout);
-            } else {
-                add(LayoutConfig.createNotFoundLayout());
-            }
+        if (bloque != null) {
+            setSizeFull();
+            addClassNames("editar-bloque-view");
+            VerticalLayout layout = new VerticalLayout(GestionBloque.crearCamposLayout(bloque, bloqueService));
+
+            layout.setSizeFull();
+            layout.setPadding(true);
+            layout.setSpacing(true);
+            add(layout);
         } else {
             add(LayoutConfig.createNotFoundLayout());
         }

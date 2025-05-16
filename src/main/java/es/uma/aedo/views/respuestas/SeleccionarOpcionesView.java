@@ -24,6 +24,7 @@ import es.uma.aedo.services.PreguntaService;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
+import es.uma.aedo.views.utilidades.OtrasConfig;
 
 @PageTitle("Selccionar Opciones")
 @Route("preguntas/seleccionar-opciones/")
@@ -44,14 +45,11 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
 
     @Override
     public void setParameter(BeforeEvent event, String id) {
-        if (id != null) {
-            if (preguntaService.get(id).isPresent()) {
-                pregunta = preguntaService.getConOpciones(id).get();
+        pregunta = (Pregunta) OtrasConfig.getEntidadPorParametro(id, preguntaService);
 
-                add(crearLayout());
-            } else {
-                add(LayoutConfig.createNotFoundLayout());
-            }
+        if (pregunta != null) {
+            pregunta = preguntaService.getConOpciones(id).get();
+            add(crearLayout());
         } else {
             add(LayoutConfig.createNotFoundLayout());
         }
@@ -153,13 +151,14 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
                         "No puede añadir una respuesta vacía. Introduzca una respuesta válida");
             }
         });
-        eliminar.addClickListener(e->{
-            if(respuestaSeleccionada != null){
+        eliminar.addClickListener(e -> {
+            if (respuestaSeleccionada != null) {
                 pregunta.getOpciones().remove(respuestaSeleccionada);
                 refreshGrid();
-                NotificacionesConfig.notificar("Respuesta: "+ respuestaSeleccionada + " eliminada");
+                NotificacionesConfig.notificar("Respuesta: " + respuestaSeleccionada + " eliminada");
             } else {
-                NotificacionesConfig.crearNotificacionError("Selecciona una respuesta", "No ha seleccionado ninguna respuesta");
+                NotificacionesConfig.crearNotificacionError("Selecciona una respuesta",
+                        "No ha seleccionado ninguna respuesta");
             }
         });
 

@@ -13,6 +13,7 @@ import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.BloqueService;
 import es.uma.aedo.services.PreguntaService;
 import es.uma.aedo.views.utilidades.LayoutConfig;
+import es.uma.aedo.views.utilidades.OtrasConfig;
 
 @PageTitle("Editar pregunta")
 @Route("preguntas/editar-pregunta/")
@@ -29,23 +30,22 @@ public class EditarPreguntaView extends Div implements HasUrlParameter<String> {
 
     @Override
     public void setParameter(BeforeEvent event, String id) {
-        if (id != null) {
-            if (preguntaService.get(id).isPresent()) {
-                preguntaEditar = preguntaService.get(id).get();
-                VaadinSession.getCurrent().setAttribute("preguntaSinEditar", preguntaEditar);
+        preguntaEditar = (Pregunta) OtrasConfig.getEntidadPorParametro(id, preguntaService);
+        if(preguntaEditar != null){
+            VaadinSession.getCurrent().setAttribute("preguntaSinEditar", preguntaEditar);
+            addClassName("editar-regiones-view");
 
-                addClassNames("crear-regiones-view");
+            VerticalLayout layout = new VerticalLayout(
+                LayoutConfig.createTituloLayout("Editar pregunta "+preguntaEditar.getId(), "preguntas"),
+                GestionPregunta.crearCamposRellenar(preguntaService, bloqueService, preguntaEditar)
+            );
 
-                VerticalLayout layout = new VerticalLayout(
-                        GestionPregunta.crearCamposRellenar(preguntaService, bloqueService, preguntaEditar));
-                layout.setAlignItems(Alignment.CENTER);
-                layout.setPadding(true);
-                layout.setSpacing(true);
-
-                add(layout);
-            }
+            layout.setAlignItems(Alignment.CENTER);
+            layout.setPadding(true);
+            layout.setSpacing(true);
+            add(layout);
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            LayoutConfig.createNotFoundLayout();
         }
     }
 }
