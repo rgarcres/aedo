@@ -11,7 +11,7 @@ import es.uma.aedo.services.RegionService;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 
-public class CrearEditarRegion {
+public class GestionRegion {
     public static VerticalLayout crearCamposLayout(Region region, RegionService service) {
         // ------------Layouts------------
         VerticalLayout mainLayout = new VerticalLayout();

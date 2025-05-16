@@ -18,7 +18,7 @@ public class CrearRegionView extends Div{
         setSizeFull();
         addClassNames("crear-regiones-view");
 
-        VerticalLayout layout = new VerticalLayout(CrearEditarRegion.crearCamposLayout(null, regionService));
+        VerticalLayout layout = new VerticalLayout(GestionRegion.crearCamposLayout(null, regionService));
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
