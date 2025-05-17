@@ -9,6 +9,7 @@ public class BotonesConfig {
         boton.setWidth("min-content");
         boton.getStyle().set("cursor", "pointer");
         boton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        boton.getStyle().set("background-color", "#6654ff");
         boton.addClickListener(e -> boton.getUI().ifPresent(
             ui -> ui.navigate(ruta)   
            ));
@@ -21,6 +22,7 @@ public class BotonesConfig {
         boton.getStyle().set("cursor", "pointer");
         boton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+        boton.getStyle().set("background-color", "#6654ff");
         return boton;
     }
 
@@ -32,6 +34,7 @@ public class BotonesConfig {
             ui -> ui.navigate(ruta)   
            ));
 
+        boton.getStyle().set("color", "#6654ff");
         return boton;
     }
     public static Button crearBotonSecundario(String nombre){
@@ -39,6 +42,7 @@ public class BotonesConfig {
         boton.setWidth("min-content");
         boton.getStyle().set("cursor", "pointer");
 
+        boton.getStyle().set("color", "#6654ff");
         return boton;
     }
 }

@@ -1,9 +1,9 @@
 package es.uma.aedo.data.entidades;
 import java.util.List;
 
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Grupo extends AbstractEntity{
@@ -12,7 +12,7 @@ public class Grupo extends AbstractEntity{
     private String nombre;
     @Column(name="descripcion",nullable = true)
     private String descripcion;
-    @OneToMany(mappedBy="grupo")
+    @ManyToMany(mappedBy="grupos")
     private List<Usuario> usuarios;
 
     //------------Constructor------------

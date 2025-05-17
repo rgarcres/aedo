@@ -45,7 +45,7 @@ public class EditarPreguntaView extends Div implements HasUrlParameter<String> {
             layout.setSpacing(true);
             add(layout);
         } else {
-            LayoutConfig.createNotFoundLayout();
+            add(LayoutConfig.createNotFoundLayout());
         }
     }
 }

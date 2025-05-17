@@ -8,7 +8,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -18,7 +20,9 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Grupo;
 import es.uma.aedo.services.GrupoService;
+import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
+import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -57,7 +61,8 @@ public class GruposView extends Div {
                 "grupos", 
                 grupoService, 
                 grid
-            )
+            ),
+            crearBotonesUsuarios()
         );
 
         layout.setSizeFull();
@@ -109,6 +114,25 @@ public class GruposView extends Div {
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
+    }
+
+    private HorizontalLayout crearBotonesUsuarios(){
+        HorizontalLayout layout = new HorizontalLayout();
+
+        Button anadir = BotonesConfig.crearBotonPrincipal("Añadir usuarios al grupo");
+        Button verTodos = BotonesConfig.crearBotonSecundario("Ver todos los usuarios", "usuarios");
+
+        anadir.addClickListener(e-> {
+            if(grupoSeleccionado != null){
+                getUI().ifPresent(ui -> ui.navigate("usuarios/"+grupoSeleccionado.getId()));
+            } else {
+                NotificacionesConfig.crearNotificacionError("Selecciona un grupo", "No hay ningún grupo seleccionado");
+            }
+        });
+
+        layout.setAlignItems(Alignment.CENTER);
+        layout.add(anadir, verTodos);
+        return layout;
     }
 
     private Component createGrid() {

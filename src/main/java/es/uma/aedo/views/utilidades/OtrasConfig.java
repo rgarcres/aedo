@@ -8,13 +8,10 @@ public class OtrasConfig {
         if (id != null) {
             if (service.get(id).isPresent()) {
                 return (AbstractEntity) service.get(id).get();
-            } else {
-                LayoutConfig.createNotFoundLayout();
-                return null;
             }
-        } else {
-            LayoutConfig.createNotFoundLayout();
             return null;
+
         }
+        return null;
     }
 }

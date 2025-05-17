@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -61,6 +62,7 @@ public class BloquesView extends Div {
         );
 
         layout.setSizeFull();
+        layout.setAlignItems(Alignment.CENTER);
         layout.setPadding(true);
         layout.setSpacing(false);
         add(layout);
@@ -137,7 +139,7 @@ public class BloquesView extends Div {
             VaadinSession.getCurrent().setAttribute("crudPregunta", true);
             todasPreguntas.getUI().ifPresent(ui -> ui.navigate("preguntas"));
         });
-        verPreguntas.getStyle().set("background-color", "#94fa70");
+        verPreguntas.getStyle().set("background-color", "#6654ff");
         layout.add(verPreguntas, todasPreguntas);
 
         return layout;

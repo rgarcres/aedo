@@ -95,7 +95,7 @@ public class GestionPregunta {
     }
 
     private static boolean crearPregunta(PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
-        if (id.isBlank() || enunciado.isBlank()) {
+        if (id.isBlank() || enunciado.isBlank() || bloque == null) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
             return false;
         } else if (preguntaService.get(id).isPresent()) {
@@ -114,7 +114,7 @@ public class GestionPregunta {
     }
 
     private static boolean editarPregunta(Pregunta pregunta, PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
-        if (id.isBlank() || enunciado.isBlank()) {
+        if (id.isBlank() || enunciado.isBlank() || bloque == null) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
             return false;
         } else if (preguntaService.get(id).isPresent() && !id.equals(pregunta.getId())) {
