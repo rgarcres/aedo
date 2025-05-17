@@ -5,12 +5,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 
 import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.services.UsuarioService;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
 
+@PageTitle("Editar usuario")
+@Route("usuarios/editar-usuario")
 public class EditarUsuarioView extends Div implements HasUrlParameter<String>{
 
     private final UsuarioService usuarioService;

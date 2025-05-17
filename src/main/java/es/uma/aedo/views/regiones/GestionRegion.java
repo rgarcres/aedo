@@ -1,10 +1,16 @@
 package es.uma.aedo.views.regiones;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Region;
 import es.uma.aedo.services.RegionService;
@@ -72,6 +78,20 @@ public class GestionRegion {
         botonesLayout.add(crearButton, cancelarButton);
         mainLayout.add(camposLayout, botonesLayout);
         return mainLayout;
+    }
+
+    public static Grid<Region> crearGrid(RegionService regionService, Specification<Region> filters) {
+        Grid<Region> grid = new Grid<>(Region.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("localidad").setAutoWidth(true);
+        grid.addColumn("provincia").setAutoWidth(true);
+        grid.addColumn("comunidadAutonoma").setAutoWidth(true);
+
+        grid.setItems(query -> regionService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+                .stream());
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+        return grid;
     }
 
     private static void crearRegion(RegionService service, String id, String localidad, String provincia,

@@ -154,7 +154,7 @@ public class GestionUsuario {
     }
 
     private static boolean comprobarFecha(LocalDate date) {
-        return date.isBefore(LocalDate.now());
+        return date.isAfter(LocalDate.now());
     }
 
     private static boolean comprobarId(String id, UsuarioService service) {

@@ -1,20 +1,16 @@
 package es.uma.aedo.views.regiones;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Region;
@@ -48,9 +44,24 @@ public class RegionesView extends Div {
         addClassNames("regiones-view");
 
         filters = new Filters(() -> refreshGrid(), regionService);
+        grid = GestionRegion.crearGrid(regionService, filters);
+        grid.addItemClickListener(e -> {
+            regionSeleccionada = e.getItem();
+        });
+
         VerticalLayout layout = 
-        new VerticalLayout(LayoutConfig.createMobileFilters(filters), filters, createGrid(), 
-        LayoutConfig.createButtons(() -> regionSeleccionada, "Region", "regiones", this.regionService, grid));
+        new VerticalLayout(
+            LayoutConfig.createMobileFilters(filters), 
+            filters, 
+            grid, 
+            LayoutConfig.createButtons(
+                () -> regionSeleccionada, 
+                "Region", 
+                "regiones", 
+                this.regionService, 
+                grid
+            )
+        );
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
@@ -125,30 +136,6 @@ public class RegionesView extends Div {
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
-    }
-
-    private Component createGrid() {
-        grid = new Grid<>(Region.class, false);
-        grid.addColumn("id").setAutoWidth(true);
-        grid.addColumn("localidad").setAutoWidth(true);
-        grid.addColumn("provincia").setAutoWidth(true);
-        grid.addColumn("comunidadAutonoma").setAutoWidth(true);
-
-        grid.setItems(query -> regionService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-            .stream()
-        );
-        grid.addItemClickListener(e -> {
-            regionSeleccionada = e.getItem();
-        });
-        grid.addItemDoubleClickListener(e -> {
-            regionSeleccionada = e.getItem();
-            VaadinSession.getCurrent().setAttribute("regionEditar", regionSeleccionada);
-            getUI().ifPresent(ui -> ui.navigate("regiones/editar-region")); 
-        });
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
-        return grid;
     }
 
     private void refreshGrid() {
