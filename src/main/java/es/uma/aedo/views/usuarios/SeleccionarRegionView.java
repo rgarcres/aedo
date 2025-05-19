@@ -16,7 +16,6 @@ import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.services.RegionService;
 import es.uma.aedo.services.UsuarioService;
 import es.uma.aedo.views.regiones.GestionRegion;
-import es.uma.aedo.views.regiones.RegionesView;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
@@ -52,7 +51,7 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
                 route = "usuarios/editar-usuario/"+usuario.getId();
             }
 
-            RegionesView.Filters filters = new RegionesView.Filters(() -> refreshGrid(), regionService);
+            GestionRegion.Filters filters = new GestionRegion.Filters(() -> refreshGrid(), regionService);
             
             grid = GestionRegion.crearGrid(regionService, filters);
             grid.addItemClickListener(e -> {

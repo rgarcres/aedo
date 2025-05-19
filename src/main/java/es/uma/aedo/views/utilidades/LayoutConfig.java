@@ -1,8 +1,10 @@
 package es.uma.aedo.views.utilidades;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -26,6 +28,26 @@ import es.uma.aedo.data.entidades.AbstractEntity;
 import es.uma.aedo.services.IService;
 
 public class LayoutConfig {
+
+    public static  Div crearBotonesFiltros(Runnable onSearch, List<HasValue<?,?>> fields) {
+        Button buscar = BotonesConfig.crearBotonPrincipal("Buscar");
+        Button reset = BotonesConfig.crearBotonSecundario("Limpiar");
+
+        reset.addClickListener(e -> {
+            for(HasValue<?,?> f: fields){
+                f.clear();
+            }
+            onSearch.run();
+        });
+
+        buscar.addClickListener(e -> onSearch.run());
+        
+        Div actions = new Div(reset, buscar);
+        actions.addClassName(LumoUtility.Gap.SMALL);
+        actions.addClassName("actions");
+
+        return actions;
+    }
 
     public static Component crearRangoFechas(DatePicker start, DatePicker end) {
         start.setPlaceholder("desde...");

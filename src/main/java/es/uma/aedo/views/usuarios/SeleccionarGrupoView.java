@@ -20,7 +20,6 @@ import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.services.GrupoService;
 import es.uma.aedo.services.UsuarioService;
 import es.uma.aedo.views.grupos.GestionGrupo;
-import es.uma.aedo.views.grupos.GruposView;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
@@ -48,7 +47,7 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
         if (usuario != null) {
             setWidthFull();
 
-            GruposView.Filters filters = new GruposView.Filters(() -> refreshGrid());
+            GestionGrupo.Filters filters = new GestionGrupo.Filters(() -> refreshGrid());
             grid = GestionGrupo.createGrid(grupoService, filters);
             grid.setSelectionMode(SelectionMode.MULTI);
             VerticalLayout layout = new VerticalLayout(

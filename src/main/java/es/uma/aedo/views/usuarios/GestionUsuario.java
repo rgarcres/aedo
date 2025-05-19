@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -34,6 +34,7 @@ import es.uma.aedo.services.UsuarioService;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
+import es.uma.aedo.views.utilidades.OtrasConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -73,39 +74,27 @@ public class GestionUsuario {
             desdePicker.addValueChangeListener(e -> {
                 hastaPicker.setMin(desdePicker.getValue().plusDays(1));
             });
+            List<HasValue<?, ?>> fields = new ArrayList<>();
+            fields.add(aliasField);
+            fields.add(desdePicker);
+            fields.add(hastaPicker);
+            fields.add(generoBox);
+            fields.add(estudiosBox);
+            fields.add(laboralBox);
+            fields.add(personalBox);
+            fields.add(regionBox);
 
-            // Action buttons
-            Button resetBtn = new Button("Reset");
-            resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            resetBtn.addClickListener(e -> {
-                aliasField.clear();
-                desdePicker.clear();
-                hastaPicker.clear();
-                generoBox.clear();
-                estudiosBox.clear();
-                laboralBox.clear();
-                personalBox.clear();
-                regionBox.clear();
-                onSearch.run();
-            });
-            Button searchBtn = new Button("Search");
-            searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            searchBtn.addClickListener(e -> onSearch.run());
+            Div actions = LayoutConfig.crearBotonesFiltros(onSearch, fields);
 
-            Div actions = new Div(resetBtn, searchBtn);
-            actions.addClassName(LumoUtility.Gap.SMALL);
-            actions.addClassName("actions");
-
-            add (
-                aliasField,
-                LayoutConfig.crearRangoFechas(desdePicker, hastaPicker),
-                generoBox,
-                estudiosBox,
-                laboralBox,
-                personalBox,
-                regionBox,
-                actions
-            );
+            add(
+                    aliasField,
+                    LayoutConfig.crearRangoFechas(desdePicker, hastaPicker),
+                    generoBox,
+                    estudiosBox,
+                    laboralBox,
+                    personalBox,
+                    regionBox,
+                    actions);
         }
 
         @Override
@@ -115,7 +104,7 @@ public class GestionUsuario {
             if (!aliasField.isEmpty()) {
                 String dbColumn = "alias";
                 String aliasMinus = aliasField.getValue().toLowerCase();
-                Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get(dbColumn)), aliasMinus);
+                Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get(dbColumn)), "%" + aliasMinus + "%");
                 predicates.add(p);
             }
 
@@ -153,10 +142,9 @@ public class GestionUsuario {
                 predicates.add(root.get("region").in(regionBox.getValue()));
             }
 
-            if (grupoFiltro != null){
+            if (grupoFiltro != null) {
                 predicates.add(criteriaBuilder.literal(grupoFiltro).in(root.get("grupos")));
             }
-            
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
@@ -216,17 +204,11 @@ public class GestionUsuario {
             ESituacionLaboral laboral = laboralBox.getValue();
             ESituacionPersonal personal = personalBox.getValue();
 
-            Boolean exito = false;
-            // ------------Crear/Editar usuario------------
-            if (usuario == null) {
-                exito = crear(usuarioService, id, alias, nacimiento, genero, estudios, laboral, personal);
-            } else {
-                exito = editar(usuario, usuarioService, id, alias, nacimiento, genero, estudios, laboral, personal);
-            }
+            Boolean exito = crearUsuario(usuario, usuarioService, id, alias, nacimiento, genero, estudios, laboral,
+                    personal);
 
-            // ------------Navegar------------
             if (exito) {
-                siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/seleccionar-region/"+id));
+                siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/seleccionar-region/" + id));
             }
         });
 
@@ -239,7 +221,7 @@ public class GestionUsuario {
         return layout;
     }
 
-    public static Grid<Usuario> crearGrid(UsuarioService usuarioService, Specification<Usuario> filters){
+    public static Grid<Usuario> crearGrid(UsuarioService usuarioService, Specification<Usuario> filters) {
         Grid<Usuario> grid = new Grid<>(Usuario.class, false);
         grid.addColumn("id").setAutoWidth(true);
         grid.addColumn("alias").setAutoWidth(true);
@@ -256,68 +238,49 @@ public class GestionUsuario {
 
         return grid;
     }
-    private static boolean crear(UsuarioService usuarioService, String id, String alias, LocalDate nacimiento,
-            EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal) {
-        if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal)) {
-            NotificacionesConfig.crearNotificacionError("Campos vacíos", "Los campos no pueden estar vacíos");
-            return false;
-        } else if (comprobarFecha(nacimiento)) {
-            NotificacionesConfig.crearNotificacionError("Fecha incorecta", "La fecha introducida no es válida");
-            return false;
-        } else if (comprobarId(id, usuarioService)) {
-            NotificacionesConfig.crearNotificacionError("El ID ya existe", "Introduzca un ID nuevo que sea único");
-            return false;
-        } else {
-            Usuario usuario = new Usuario();
-            usuario.setId(id);
-            usuario.setAlias(alias);
-            usuario.setFechaNacimiento(nacimiento);
-            usuario.setGenero(genero);
-            usuario.setNivelEstudios(estudios);
-            usuario.setSituacionLaboral(laboral);
-            usuario.setSituacionPersonal(personal);
-            usuarioService.save(usuario);
-            return true;
-        }
-    }
 
-    private static boolean editar(Usuario usuario, UsuarioService usuarioService, String id, String alias,
+    private static boolean crearUsuario(Usuario usuario, UsuarioService usuarioService, String id, String alias,
             LocalDate nacimiento,
             EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal) {
 
         if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal)) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Los campos no pueden estar vacíos");
             return false;
-        } else if (comprobarFecha(nacimiento)) {
+        } else if (!OtrasConfig.comprobarFecha(nacimiento)) {
             NotificacionesConfig.crearNotificacionError("Fecha incorecta", "La fecha introducida no es válida");
             return false;
-        } else if (comprobarId(id, usuarioService) && !id.equals(usuarioService.get(id).get().getId())) {
+        } else if (OtrasConfig.comprobarId(id, usuarioService, usuario)) {
             NotificacionesConfig.crearNotificacionError("El ID ya existe", "Introduzca un ID nuevo que sea único");
             return false;
         } else {
-            usuario.setId(id);
-            usuario.setAlias(alias);
-            usuario.setFechaNacimiento(nacimiento);
-            usuario.setGenero(genero);
-            usuario.setNivelEstudios(estudios);
-            usuario.setSituacionLaboral(laboral);
-            usuario.setSituacionPersonal(personal);
-            usuarioService.save(usuario);
+            if (usuario == null) {
+                Usuario nuevoUsuario = new Usuario();
+                nuevoUsuario.setId(id);
+                nuevoUsuario.setAlias(alias);
+                nuevoUsuario.setFechaNacimiento(nacimiento);
+                nuevoUsuario.setGenero(genero);
+                nuevoUsuario.setNivelEstudios(estudios);
+                nuevoUsuario.setSituacionLaboral(laboral);
+                nuevoUsuario.setSituacionPersonal(personal);
+                usuarioService.save(nuevoUsuario);
+            } else {
+                usuario.setId(id);
+                usuario.setAlias(alias);
+                usuario.setFechaNacimiento(nacimiento);
+                usuario.setGenero(genero);
+                usuario.setNivelEstudios(estudios);
+                usuario.setSituacionLaboral(laboral);
+                usuario.setSituacionPersonal(personal);
+                usuarioService.save(usuario);
+            }
             return true;
         }
     }
 
     private static boolean camposVacios(String id, String alias, LocalDate nacimiento,
             EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal) {
-        return id.isBlank() || alias.isBlank() || nacimiento == null || genero == null || estudios == null || laboral == null
+        return id.isBlank() || alias.isBlank() || nacimiento == null || genero == null || estudios == null
+                || laboral == null
                 || personal == null;
-    }
-
-    private static boolean comprobarFecha(LocalDate date) {
-        return date.isAfter(LocalDate.now());
-    }
-
-    private static boolean comprobarId(String id, UsuarioService service) {
-        return service.get(id).isPresent();
     }
 }
