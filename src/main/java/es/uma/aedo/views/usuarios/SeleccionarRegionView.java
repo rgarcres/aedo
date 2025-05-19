@@ -37,12 +37,14 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
         this.usuarioService = uService;
         this.regionService = rService;
     }
+
     @Override
     public void setParameter(BeforeEvent event, String id) {
         usuario = (Usuario) OtrasConfig.getEntidadPorParametro(id, usuarioService);
         if(usuario != null){
             setWidthFull();
-
+            addClassName("usuarios-seleccionar-region-view");
+            
             String route;
             if(usuario.getRegion() == null){
                 route = "usuarios/crear-usuario";
@@ -51,7 +53,7 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
             }
 
             RegionesView.Filters filters = new RegionesView.Filters(() -> refreshGrid(), regionService);
-
+            
             grid = GestionRegion.crearGrid(regionService, filters);
             grid.addItemClickListener(e -> {
                 regionSeleccionada = e.getItem();
@@ -63,6 +65,10 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
                 grid,
                 crearBotonesLayout()
             );
+
+            layout.setAlignItems(Alignment.CENTER);
+            layout.setPadding(true);
+            layout.setSpacing(true);
             add(layout);
         } else {
             add(LayoutConfig.createNotFoundLayout());
@@ -78,6 +84,7 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
         siguiente.addClickListener(e -> {
             if(regionSeleccionada != null){
                 usuario.setRegion(regionSeleccionada);
+                usuarioService.save(usuario);
                 siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/seleccionar-grupos/"+usuario.getId()));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona una región", "No hay ninguna región seleccionada");

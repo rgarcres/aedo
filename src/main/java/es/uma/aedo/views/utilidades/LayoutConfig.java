@@ -88,8 +88,7 @@ public class LayoutConfig {
     }
 
     public static <T> HorizontalLayout createButtons(Supplier<? extends AbstractEntity> entitySupplier,
-            String entityName,
-            String mainRoute, IService<T> service, Grid<T> grid) {
+            String entityName, String mainRoute, IService<T> service, Grid<T> grid) {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidthFull();
         buttonsLayout.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
@@ -98,11 +97,9 @@ public class LayoutConfig {
         buttonsLayout.setAlignItems(Alignment.CENTER);
         String name = entityName.toLowerCase();
 
-        Button crearButton = new Button("Añadir " + name);
-        Button editarButton = new Button("Editar " + name);
+        Button crearButton = BotonesConfig.crearBotonPrincipal("Añadir " + name);
+        Button editarButton = BotonesConfig.crearBotonSecundario("Editar " + name);
         Button borrarButton = new Button("Borrar " + name);
-        crearButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        editarButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
         borrarButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         crearButton.addClickListener(e -> {
@@ -125,6 +122,8 @@ public class LayoutConfig {
                         "No hay ninguna entidad seleccionada, seleccione una para poder borrarla");
             }
         });
+
+        buttonsLayout.setAlignItems(Alignment.CENTER);
         buttonsLayout.add(crearButton, editarButton, borrarButton);
         return buttonsLayout;
     }

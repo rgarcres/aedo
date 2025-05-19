@@ -1,11 +1,17 @@
 package es.uma.aedo.views.grupos;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Grupo;
 import es.uma.aedo.services.GrupoService;
@@ -53,6 +59,21 @@ public class GestionGrupo {
         layout.setAlignItems(Alignment.CENTER);
         layout.add(camposLayout, botonesLayout);
         return layout;
+    }
+
+    public static Grid<Grupo> createGrid(GrupoService grupoService, Specification<Grupo> filters) {
+        Grid<Grupo> grid = new Grid<>(Grupo.class, false);
+        grid.addColumn("id").setAutoWidth(true);
+        grid.addColumn("nombre").setAutoWidth(true);
+        grid.addColumn("descripcion").setAutoWidth(true);
+
+        grid.setItems(query -> grupoService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
+                .stream());
+
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+
+        return grid;
     }
 
     private static boolean crear(GrupoService service, String id, String nombre, String descripcion) {

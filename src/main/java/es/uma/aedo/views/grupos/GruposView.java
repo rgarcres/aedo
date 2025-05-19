@@ -1,11 +1,9 @@
 package es.uma.aedo.views.grupos;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,7 +13,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.Grupo;
@@ -50,16 +47,20 @@ public class GruposView extends Div {
         addClassNames("grupos-view");
 
         filters = new Filters(() -> refreshGrid());
+        grid = GestionGrupo.createGrid(service, filters);
+        grid.addItemClickListener(e -> {
+            grupoSeleccionado = e.getItem();
+        });
         VerticalLayout layout = new VerticalLayout(
             LayoutConfig.createTituloLayout("Grupos", ""),
             LayoutConfig.createMobileFilters(filters),
-            filters, 
-            createGrid(),
+            filters,
+            grid,
             LayoutConfig.createButtons(
-                () -> grupoSeleccionado, 
-                "grupo", 
-                "grupos", 
-                grupoService, 
+                () -> grupoSeleccionado,
+                "grupo",
+                "grupos",
+                grupoService,
                 grid
             ),
             crearBotonesUsuarios()
@@ -81,7 +82,6 @@ public class GruposView extends Div {
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
-
 
             // Action buttons
             Button resetBtn = new Button("Reset");
@@ -105,7 +105,7 @@ public class GruposView extends Div {
         public Predicate toPredicate(Root<Grupo> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if(!nombre.isEmpty()){
+            if (!nombre.isEmpty()) {
                 String dbColumn = "nombre";
                 String nombreMinus = nombre.getValue().toLowerCase();
                 Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get(dbColumn)), nombreMinus);
@@ -116,15 +116,15 @@ public class GruposView extends Div {
         }
     }
 
-    private HorizontalLayout crearBotonesUsuarios(){
+    private HorizontalLayout crearBotonesUsuarios() {
         HorizontalLayout layout = new HorizontalLayout();
 
         Button anadir = BotonesConfig.crearBotonPrincipal("Añadir usuarios al grupo");
         Button verTodos = BotonesConfig.crearBotonSecundario("Ver todos los usuarios", "usuarios");
 
-        anadir.addClickListener(e-> {
-            if(grupoSeleccionado != null){
-                getUI().ifPresent(ui -> ui.navigate("usuarios/"+grupoSeleccionado.getId()));
+        anadir.addClickListener(e -> {
+            if (grupoSeleccionado != null) {
+                getUI().ifPresent(ui -> ui.navigate("usuarios/" + grupoSeleccionado.getId()));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona un grupo", "No hay ningún grupo seleccionado");
             }
@@ -133,23 +133,6 @@ public class GruposView extends Div {
         layout.setAlignItems(Alignment.CENTER);
         layout.add(anadir, verTodos);
         return layout;
-    }
-
-    private Component createGrid() {
-        grid = new Grid<>(Grupo.class, false);
-        grid.addColumn("id").setAutoWidth(true);
-        grid.addColumn("nombre").setAutoWidth(true);
-        grid.addColumn("descripcion").setAutoWidth(true);
-
-        grid.setItems(query -> grupoService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
-                .stream());
-        grid.addItemClickListener(e -> {
-            grupoSeleccionado = e.getItem();
-        });
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
-
-        return grid;
     }
 
     private void refreshGrid() {
