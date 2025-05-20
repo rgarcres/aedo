@@ -135,7 +135,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         TextField respuestasField = new TextField("Posible respuesta");
 
         Button anadir = BotonesConfig.crearBotonPrincipal("Añadir posible respuesta");
-        Button eliminar = BotonesConfig.crearBotonSecundario("Eliminar");
+        Button eliminar = BotonesConfig.crearBotonError("Eliminar");
 
         respuestasField.setPlaceholder("Introduzca una posible respuesta...");
         crearGrid();

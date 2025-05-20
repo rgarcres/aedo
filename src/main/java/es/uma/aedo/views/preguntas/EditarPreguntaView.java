@@ -7,7 +7,6 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 
 import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.BloqueService;
@@ -32,7 +31,6 @@ public class EditarPreguntaView extends Div implements HasUrlParameter<String> {
     public void setParameter(BeforeEvent event, String id) {
         preguntaEditar = (Pregunta) OtrasConfig.getEntidadPorParametro(id, preguntaService);
         if(preguntaEditar != null){
-            VaadinSession.getCurrent().setAttribute("preguntaSinEditar", preguntaEditar);
             addClassName("editar-regiones-view");
 
             VerticalLayout layout = new VerticalLayout(

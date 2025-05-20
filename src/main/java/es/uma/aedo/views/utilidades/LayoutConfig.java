@@ -7,7 +7,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -121,8 +120,7 @@ public class LayoutConfig {
 
         Button crearButton = BotonesConfig.crearBotonPrincipal("Añadir " + name);
         Button editarButton = BotonesConfig.crearBotonSecundario("Editar " + name);
-        Button borrarButton = new Button("Borrar " + name);
-        borrarButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        Button borrarButton = BotonesConfig.crearBotonError("Borrar " + name);
 
         crearButton.addClickListener(e -> {
             crearButton.getUI().ifPresent(ui -> ui.navigate(mainRoute + "/crear-" + name));

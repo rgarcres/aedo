@@ -55,7 +55,7 @@ public class GruposView extends Div {
             crearBotonesUsuarios()
         );
 
-        layout.setSizeFull();
+        layout.setAlignItems(Alignment.CENTER);
         layout.setPadding(false);
         layout.setSpacing(false);
         add(layout);

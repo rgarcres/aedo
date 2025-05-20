@@ -1,13 +1,20 @@
 package es.uma.aedo.views.preguntas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.jpa.domain.Specification;
 
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -19,13 +26,82 @@ import es.uma.aedo.data.entidades.Pregunta;
 import es.uma.aedo.services.BloqueService;
 import es.uma.aedo.services.PreguntaService;
 import es.uma.aedo.views.utilidades.BotonesConfig;
+import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
+import es.uma.aedo.views.utilidades.OtrasConfig;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public class GestionPregunta {
+    public static class Filters extends Div implements Specification<Pregunta> {
+
+        private final TextField enunciado = new TextField("Enunciado");
+        private final CheckboxGroup<Integer> tipo = new CheckboxGroup<>("Tipo");
+        private final MultiSelectComboBox<Bloque> bloque = new MultiSelectComboBox<>("Bloque");
+
+        private final Bloque bloqueSeleccionado;
+
+        public Filters(Runnable onSearch, Bloque b, BloqueService bloqueService) {
+            this.bloqueSeleccionado = b;
+
+            setWidthFull();
+            addClassName("filter-layout");
+            addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
+                    LumoUtility.BoxSizing.BORDER);
+
+            tipo.setItems(1, 2, 3, 4);
+            bloque.setItems(bloqueService.getAll());
+
+            List<HasValue<?, ?>> fields = new ArrayList<>();
+            fields.add(enunciado);
+            fields.add(tipo);
+            if (bloqueSeleccionado == null) {
+                fields.add(bloque);
+            }
+
+            Div actions = LayoutConfig.crearBotonesFiltros(onSearch, fields);
+
+            add(enunciado, tipo);
+            if (bloqueSeleccionado == null) {
+                add(bloque);
+            }
+            add(actions);
+        }
+
+        @Override
+        public Predicate toPredicate(Root<Pregunta> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (!enunciado.isEmpty()) {
+                String enunciadoLimpio = enunciado.getValue().toLowerCase();
+                Predicate p = criteriaBuilder.like(criteriaBuilder.lower(root.get("enunciado")),
+                        "%" + enunciadoLimpio + "%");
+                predicates.add(p);
+            }
+
+            if (!tipo.isEmpty()) {
+                predicates.add(root.get("tipo").in(tipo.getValue()));
+            }
+
+            if (bloqueSeleccionado == null) {
+                if (!bloque.isEmpty()) {
+                    predicates.add(root.get("bloque").in(bloque.getValue()));
+                }
+            } else {
+                predicates.add(criteriaBuilder.equal(root.get("bloque"), bloqueSeleccionado));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        }
+    }
+
     /*
      * Crea el layout con los campos a rellenar a la hora de crear una pregunta
      */
-    public static VerticalLayout crearCamposRellenar(PreguntaService preguntaService, BloqueService bloqueService, Pregunta pregunta) {
+    public static VerticalLayout crearCamposRellenar(PreguntaService preguntaService, BloqueService bloqueService,
+            Pregunta pregunta) {
         VerticalLayout layout = new VerticalLayout();
         FormLayout camposLayout = new FormLayout();
         HorizontalLayout botonesLayout = new HorizontalLayout();
@@ -34,18 +110,16 @@ public class GestionPregunta {
         TextField enunciadoField = new TextField("Enunciado*");
         ComboBox<Bloque> bloqueComboBox = new ComboBox<>("Bloque*");
 
-        Button siguiente;
+        Button siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
+        
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "preguntas");
 
         bloqueComboBox.setItems(bloqueService.getAll());
 
-        if (pregunta == null) {
-            siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
-        } else {
+        if (pregunta != null) {
             idField.setValue(pregunta.getId());
             enunciadoField.setValue(pregunta.getEnunciado());
             bloqueComboBox.setValue(pregunta.getBloque());
-            siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
         }
 
         camposLayout.setResponsiveSteps(
@@ -53,19 +127,14 @@ public class GestionPregunta {
                 new ResponsiveStep("500px", 2));
 
         siguiente.addClickListener(e -> {
-            boolean exito = false;
             String id = idField.getValue();
             Bloque bloque = bloqueComboBox.getValue();
             String enunciado = enunciadoField.getValue();
 
-            if (pregunta == null) {
-                exito = crearPregunta(preguntaService, bloque, id, enunciado);
-            } else {
-                exito = editarPregunta(pregunta, preguntaService, bloque, id, enunciado);
-            }
+            boolean exito = crearPregunta(pregunta, preguntaService, bloque, id, enunciado);
 
-            if(exito){
-                siguiente.getUI().ifPresent(ui -> ui.navigate("preguntas/seleccionar-opciones/"+id));
+            if (exito) {
+                siguiente.getUI().ifPresent(ui -> ui.navigate("preguntas/seleccionar-opciones/" + id));
             }
         });
         camposLayout.add(idField, enunciadoField, bloqueComboBox);
@@ -80,7 +149,7 @@ public class GestionPregunta {
      */
     public static Grid<Pregunta> createGrid(PreguntaService preguntaService,
             Specification<Pregunta> filters) {
-        Grid <Pregunta> grid = new Grid<>(Pregunta.class, false);
+        Grid<Pregunta> grid = new Grid<>(Pregunta.class, false);
         grid.addColumn("id").setAutoWidth(true);
         grid.addColumn("enunciado").setAutoWidth(true);
         grid.addColumn("tipo").setAutoWidth(true);
@@ -94,37 +163,30 @@ public class GestionPregunta {
         return grid;
     }
 
-    private static boolean crearPregunta(PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
+    private static boolean crearPregunta(Pregunta pregunta, PreguntaService preguntaService, Bloque bloque, String id,
+            String enunciado) {
         if (id.isBlank() || enunciado.isBlank() || bloque == null) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
             return false;
-        } else if (preguntaService.get(id).isPresent()) {
+        } else if (OtrasConfig.comprobarId(id, preguntaService, pregunta)) {
             NotificacionesConfig.crearNotificacionError("El ID ya existe", "Introduzca un ID nuevo que sea único");
             return false;
         } else {
-            Pregunta p = new Pregunta();
-            p.setId(id);
-            p.setEnunciado(enunciado);
-            p.setBloque(bloque);
-            //Tipo 0 indica que la pregunta está siendo creada
-            p.setTipo(0);
-            preguntaService.save(p);
-            return true;
-        }
-    }
+            if (pregunta == null) {
+                Pregunta p = new Pregunta();
+                p.setId(id);
+                p.setEnunciado(enunciado);
+                p.setBloque(bloque);
+                // Tipo 0 indica que la pregunta está siendo creada
+                p.setTipo(0);
+                preguntaService.save(p);
+            } else {
+                pregunta.setId(id);
+                pregunta.setEnunciado(enunciado);
+                pregunta.setBloque(bloque);
+                preguntaService.save(pregunta);
+            }
 
-    private static boolean editarPregunta(Pregunta pregunta, PreguntaService preguntaService, Bloque bloque, String id, String enunciado) {
-        if (id.isBlank() || enunciado.isBlank() || bloque == null) {
-            NotificacionesConfig.crearNotificacionError("Campos vacíos", "Ninguno de los campos puede estar vacío");
-            return false;
-        } else if (preguntaService.get(id).isPresent() && !id.equals(pregunta.getId())) {
-            NotificacionesConfig.crearNotificacionError("El ID ya existe", "Introduzca un ID nuevo que sea único");
-            return false;
-        } else {
-            pregunta.setId(id);
-            pregunta.setEnunciado(enunciado);
-            pregunta.setBloque(bloque);
-            preguntaService.save(pregunta);
             return true;
         }
     }

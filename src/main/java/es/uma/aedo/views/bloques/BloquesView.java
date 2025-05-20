@@ -73,8 +73,7 @@ public class BloquesView extends Div {
 
         verPreguntas.addClickListener(e -> {
             if(bloqueSeleccionado != null){
-                VaadinSession.getCurrent().setAttribute("bloquePregunta", bloqueSeleccionado);
-                getUI().ifPresent(ui -> ui.navigate("preguntas-bloque"));
+                getUI().ifPresent(ui -> ui.navigate("preguntas-bloque/"+bloqueSeleccionado.getId()));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona un bloque", "No hay ningún bloque seleccionado");
             }

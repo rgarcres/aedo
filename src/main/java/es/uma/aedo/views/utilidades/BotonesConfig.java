@@ -45,4 +45,13 @@ public class BotonesConfig {
         boton.getStyle().set("color", "#6654ff");
         return boton;
     }
+
+    public static Button crearBotonError(String nombre){
+        Button boton = new Button(nombre);
+        boton.setWidth("min-content");
+        boton.getStyle().set("cursor", "pointer");
+
+        boton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        return boton;
+    }
 }
