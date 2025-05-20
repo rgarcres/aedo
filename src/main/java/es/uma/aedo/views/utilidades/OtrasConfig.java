@@ -41,4 +41,14 @@ public class OtrasConfig {
     public static boolean comprobarFecha(LocalDate date){
         return date.isBefore(LocalDate.now());
     }
+
+    /*
+     * Cuando se edita una entidad, en algunas ocasiones se crea una nueva entidad con el mismo ID
+     * pero con el sufijo "-editar" al final para diferenciar
+     */
+    public static String limpiarID(String id){
+        String sufijo = "-editar";
+
+        return id.substring(0, (id.length() - sufijo.length()));
+    }
 }

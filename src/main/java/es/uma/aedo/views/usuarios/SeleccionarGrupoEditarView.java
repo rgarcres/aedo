@@ -14,6 +14,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 import es.uma.aedo.data.entidades.Grupo;
 import es.uma.aedo.data.entidades.Usuario;
@@ -26,8 +27,8 @@ import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
 
 @PageTitle("Seleccionar Grupo")
-@Route("usuarios/crear-usuario/seleccionar-grupos")
-public class SeleccionarGrupoView extends Div implements HasUrlParameter<String> {
+@Route("usuarios/editar-usuario/seleccionar-grupos")
+public class SeleccionarGrupoEditarView extends Div implements HasUrlParameter<String> {
 
     private Grid<Grupo> grid;
     private List<Grupo> gruposSeleccionados;
@@ -36,7 +37,7 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
     private final UsuarioService usuarioService;
     private final GrupoService grupoService;
 
-    public SeleccionarGrupoView(UsuarioService uService, GrupoService gService) {
+    public SeleccionarGrupoEditarView(UsuarioService uService, GrupoService gService) {
         this.usuarioService = uService;
         this.grupoService = gService;
     }
@@ -51,8 +52,14 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
             grid = GestionGrupo.createGrid(grupoService, filters);
             grid.setSelectionMode(SelectionMode.MULTI);
 
+            if(!usuario.getGrupo().isEmpty()){
+                for(Grupo g: usuario.getGrupo()){
+                    grid.select(g);
+                }
+            }
+
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Seleccionar grupo: " + id, "usuarios/crear-usuario/seleccionar-region/" + id),
+                LayoutConfig.createTituloLayout("Seleccionar grupo: " + id, "usuarios/editar-usuario/seleccionar-region/" + id),
                 filters,
                 grid,
                 crearBotonesLayout()
@@ -70,14 +77,15 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
     private HorizontalLayout crearBotonesLayout() {
         HorizontalLayout layout = new HorizontalLayout();
 
-        Button crear = BotonesConfig.crearBotonPrincipal("Crear");
+        Button editar = BotonesConfig.crearBotonPrincipal("Editar");
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar");
 
-        crear.addClickListener(e -> {
+        editar.addClickListener(e -> {
             gruposSeleccionados = new ArrayList<>(grid.getSelectedItems());
             if (!gruposSeleccionados.isEmpty()) {
                 usuario.setGrupo(gruposSeleccionados);
                 usuarioService.save(usuario);
+                VaadinSession.getCurrent().setAttribute("usuarioEditar", null);
                 NotificacionesConfig.crearNotificacionExito("¡Usuario creado!", "El usuario: "+usuario.getId()+" se ha creado con éxito");
                 getUI().ifPresent(ui -> ui.navigate("usuarios"));
             } else {
@@ -87,10 +95,14 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
 
         cancelar.addClickListener(e -> {
             usuarioService.delete(usuario.getId());
+            if(VaadinSession.getCurrent().getAttribute("usuarioEditar") != null){
+                Usuario user = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioEditar");
+                usuarioService.save(user);
+            }
             getUI().ifPresent(ui -> ui.navigate("usuarios"));
         });
 
-        layout.add(crear, cancelar);
+        layout.add(editar, cancelar);
         return layout;
     }
 

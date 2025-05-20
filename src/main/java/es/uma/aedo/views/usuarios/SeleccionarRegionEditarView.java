@@ -11,6 +11,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 import es.uma.aedo.data.entidades.Region;
 import es.uma.aedo.data.entidades.Usuario;
@@ -22,10 +23,9 @@ import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
 
-@PageTitle("Seleccionar Region")
-@Route("usuarios/crear-usuario/seleccionar-region")
-public class SeleccionarRegionView extends Div implements HasUrlParameter<String> {
-
+@PageTitle("Seleccionar Grupo")
+@Route("usuarios/editar-usuario/seleccionar-region")
+public class SeleccionarRegionEditarView extends Div implements HasUrlParameter<String> {
     private Grid<Region> grid;
 
     private Usuario usuario;
@@ -33,7 +33,7 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
     private final UsuarioService usuarioService;
     private final RegionService regionService;
 
-    public SeleccionarRegionView(UsuarioService uService, RegionService rService) {
+    public SeleccionarRegionEditarView(UsuarioService uService, RegionService rService) {
         this.usuarioService = uService;
         this.regionService = rService;
     }
@@ -52,12 +52,12 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
                 regionSeleccionada = e.getItem();
             });
 
-            if(usuario.getRegion() != null){
+            if (usuario.getRegion() != null) {
                 grid.select(usuario.getRegion());
             }
 
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Seleccionar region", "usuarios/crear-usuario/" + id),
+                LayoutConfig.createTituloLayout("Seleccionar region", "usuarios/editar-usuario/" + id),
                 filters,
                 grid,
                 crearBotonesLayout()
@@ -83,7 +83,7 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
                 usuario.setRegion(regionSeleccionada);
                 usuarioService.save(usuario);
                 siguiente.getUI()
-                        .ifPresent(ui -> ui.navigate("usuarios/crear-usuario/seleccionar-grupos/" + usuario.getId()));
+                        .ifPresent(ui -> ui.navigate("usuarios/editar-usuario/seleccionar-grupos/" + usuario.getId()));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona una región",
                         "No hay ninguna región seleccionada");
@@ -92,6 +92,10 @@ public class SeleccionarRegionView extends Div implements HasUrlParameter<String
 
         cancelar.addClickListener(e -> {
             usuarioService.delete(usuario.getId());
+            if (VaadinSession.getCurrent().getAttribute("usuarioEditar") != null) {
+                Usuario user = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioEditar");
+                usuarioService.save(user);
+            }
             cancelar.getUI().ifPresent(ui -> ui.navigate("usuarios"));
         });
 

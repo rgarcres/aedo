@@ -41,7 +41,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 public class GestionUsuario {
-
+    // ------------------------------------MÉTODOS PÚBLICOS------------------------------------
     public static class Filters extends Div implements Specification<Usuario> {
         // ------------Componentes------------
         private final TextField aliasField = new TextField("Alias");
@@ -150,7 +150,7 @@ public class GestionUsuario {
         }
     }
 
-    public static VerticalLayout crearCamposLayout(UsuarioService usuarioService, Usuario usuario) {
+    public static VerticalLayout crearCamposLayout(UsuarioService usuarioService, Usuario usuario, boolean editar) {
         // ------------Layouts------------
         VerticalLayout layout = new VerticalLayout();
         FormLayout camposLayout = new FormLayout();
@@ -183,7 +183,8 @@ public class GestionUsuario {
         laboralBox.setItems(ESituacionLaboral.values());
         personalBox.setItems(ESituacionPersonal.values());
 
-        // ------------Instanciar valores si hay que editar------------
+        // ------------Instanciar valores si hay que editar o si se ha vuelto
+        // atrás------------
         if (usuario != null) {
             idField.setValue(usuario.getId());
             aliasField.setValue(usuario.getAlias());
@@ -208,7 +209,11 @@ public class GestionUsuario {
                     personal);
 
             if (exito) {
-                siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/seleccionar-region/" + id));
+                if (!editar) {
+                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/crear-usuario/seleccionar-region/" + id));
+                } else {
+                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/editar-usuario/seleccionar-region/" + id));
+                }
             }
         });
 
@@ -239,9 +244,12 @@ public class GestionUsuario {
         return grid;
     }
 
+
+    // ------------------------------------MÉTODOS PRIVADOS------------------------------------
+
     private static boolean crearUsuario(Usuario usuario, UsuarioService usuarioService, String id, String alias,
-            LocalDate nacimiento,
-            EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal) {
+            LocalDate nacimiento, EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral,
+            ESituacionPersonal personal) {
 
         if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal)) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Los campos no pueden estar vacíos");

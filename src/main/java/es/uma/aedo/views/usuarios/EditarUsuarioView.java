@@ -7,6 +7,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.services.UsuarioService;
@@ -29,9 +30,12 @@ public class EditarUsuarioView extends Div implements HasUrlParameter<String>{
         usuario = (Usuario) OtrasConfig.getEntidadPorParametro(id, usuarioService);
         if(usuario != null){
             setWidthFull();
+            Usuario aux = usuario;
+            VaadinSession.getCurrent().setAttribute("usuarioEditar", aux);
+            
             VerticalLayout layout = new VerticalLayout(
                 LayoutConfig.createTituloLayout("Editar usuario: "+usuario.getAlias(), "usuarios"),
-                GestionUsuario.crearCamposLayout(usuarioService, usuario)
+                GestionUsuario.crearCamposLayout(usuarioService, usuario, true)
             );
             
             layout.setAlignItems(Alignment.CENTER);
