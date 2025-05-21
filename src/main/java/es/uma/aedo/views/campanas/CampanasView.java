@@ -1,4 +1,4 @@
-package es.uma.aedo.views.campañas;
+package es.uma.aedo.views.campanas;
 
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
@@ -20,14 +20,14 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @Route("campañas")
 @Menu(order = 1, icon = LineAwesomeIconUrl.CHART_BAR)
 @Uses(Icon.class)
-public class CampañasView extends Div {
+public class CampanasView extends Div {
 
     private Grid<Campanya> grid;
 
     private final CampanyaService campService;
     private Campanya campSeleccionada;
 
-    public CampañasView(CampanyaService cService) {
+    public CampanasView(CampanyaService cService) {
         this.campService = cService;
 
         GestionCamp.Filters filters = new GestionCamp.Filters(() -> refreshGrid());
