@@ -150,7 +150,7 @@ public class GestionUsuario {
         }
     }
 
-    public static VerticalLayout crearCamposLayout(UsuarioService usuarioService, Usuario usuario, boolean editar) {
+    public static VerticalLayout crearCamposLayout(UsuarioService usuarioService, RegionService regionService, Usuario usuario, boolean editar) {
         // ------------Layouts------------
         VerticalLayout layout = new VerticalLayout();
         FormLayout camposLayout = new FormLayout();
@@ -164,14 +164,7 @@ public class GestionUsuario {
         ComboBox<ENivelEstudios> estudiosBox = new ComboBox<>("Nivel de Estudios");
         ComboBox<ESituacionLaboral> laboralBox = new ComboBox<>("Situación Laboral");
         ComboBox<ESituacionPersonal> personalBox = new ComboBox<>("Situación Personal");
-
-        // ------------Div para centrar la personalBox------------
-        Div personalDiv = new Div();
-        personalDiv.getStyle()
-                .set("width", "100%")
-                .set("display", "flex")
-                .set("justify-content", "center");
-        personalDiv.add(personalBox);
+        ComboBox<Region> regionBox = new ComboBox<>("Region");
 
         // ------------Botones------------
         Button siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
@@ -182,9 +175,9 @@ public class GestionUsuario {
         estudiosBox.setItems(ENivelEstudios.values());
         laboralBox.setItems(ESituacionLaboral.values());
         personalBox.setItems(ESituacionPersonal.values());
+        regionBox.setItems(regionService.getAll());
 
-        // ------------Instanciar valores si hay que editar o si se ha vuelto
-        // atrás------------
+        // ------------Instanciar valores si hay que editar o si se ha vuelto atrás------------
         if (usuario != null) {
             idField.setValue(usuario.getId());
             aliasField.setValue(usuario.getAlias());
@@ -193,6 +186,7 @@ public class GestionUsuario {
             estudiosBox.setValue(usuario.getNivelEstudios());
             laboralBox.setValue(usuario.getSituacionLaboral());
             personalBox.setValue(usuario.getSituacionPersonal());
+            regionBox.setValue(usuario.getRegion());
         }
 
         // ------------Comportamiento de botones------------
@@ -204,22 +198,21 @@ public class GestionUsuario {
             ENivelEstudios estudios = estudiosBox.getValue();
             ESituacionLaboral laboral = laboralBox.getValue();
             ESituacionPersonal personal = personalBox.getValue();
+            Region region = regionBox.getValue();
 
             Boolean exito = crearUsuario(usuario, usuarioService, id, alias, nacimiento, genero, estudios, laboral,
-                    personal);
-
+                    personal, region);
             if (exito) {
                 if (!editar) {
-                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/crear-usuario/seleccionar-region/" + id));
+                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/crear-usuario/seleccionar-grupos/" + id));
                 } else {
-                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/editar-usuario/seleccionar-region/" + id));
+                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/editar-usuario/seleccionar-grupos/" + id));
                 }
             }
         });
 
         // ------------Añadir componentes al layout------------
-        camposLayout.add(idField, aliasField, nacimientoPicker, generoBox, estudiosBox, laboralBox, personalDiv);
-        camposLayout.setColspan(personalDiv, 2);
+        camposLayout.add(idField, aliasField, nacimientoPicker, generoBox, estudiosBox, laboralBox, personalBox, regionBox);
         botonesLayout.add(siguiente, cancelar);
         layout.setAlignItems(Alignment.CENTER);
         layout.add(camposLayout, botonesLayout);
@@ -246,12 +239,11 @@ public class GestionUsuario {
 
 
     // ------------------------------------MÉTODOS PRIVADOS------------------------------------
-
     private static boolean crearUsuario(Usuario usuario, UsuarioService usuarioService, String id, String alias,
             LocalDate nacimiento, EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral,
-            ESituacionPersonal personal) {
+            ESituacionPersonal personal, Region region) {
 
-        if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal)) {
+        if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal, region)) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Los campos no pueden estar vacíos");
             return false;
         } else if (!OtrasConfig.comprobarFecha(nacimiento)) {
@@ -270,6 +262,7 @@ public class GestionUsuario {
                 nuevoUsuario.setNivelEstudios(estudios);
                 nuevoUsuario.setSituacionLaboral(laboral);
                 nuevoUsuario.setSituacionPersonal(personal);
+                nuevoUsuario.setRegion(region);
                 usuarioService.save(nuevoUsuario);
             } else {
                 usuario.setId(id);
@@ -279,6 +272,7 @@ public class GestionUsuario {
                 usuario.setNivelEstudios(estudios);
                 usuario.setSituacionLaboral(laboral);
                 usuario.setSituacionPersonal(personal);
+                usuario.setRegion(region);
                 usuarioService.save(usuario);
             }
             return true;
@@ -286,9 +280,9 @@ public class GestionUsuario {
     }
 
     private static boolean camposVacios(String id, String alias, LocalDate nacimiento,
-            EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal) {
+            EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral, ESituacionPersonal personal, Region region) {
         return id.isBlank() || alias.isBlank() || nacimiento == null || genero == null || estudios == null
                 || laboral == null
-                || personal == null;
+                || personal == null || region == null;
     }
 }

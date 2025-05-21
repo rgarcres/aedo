@@ -40,9 +40,10 @@ public class LayoutConfig {
         });
 
         buscar.addClickListener(e -> onSearch.run());
+
         
         Div actions = new Div(reset, buscar);
-        actions.addClassName(LumoUtility.Gap.SMALL);
+        actions.addClassNames(LumoUtility.Display.FLEX, LumoUtility.AlignItems.CENTER, LumoUtility.Gap.SMALL);
         actions.addClassName("actions");
 
         return actions;

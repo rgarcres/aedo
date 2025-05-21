@@ -14,6 +14,8 @@ public class Grupo extends AbstractEntity{
     private String descripcion;
     @ManyToMany(mappedBy="grupos")
     private List<Usuario> usuarios;
+    @ManyToMany(mappedBy="grupos")
+    private List<Campanya> camps;
 
     //------------Constructor------------
     public Grupo(){
@@ -28,6 +30,9 @@ public class Grupo extends AbstractEntity{
 
     public List<Usuario> getUsuarios() { return usuarios; }
     public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
+
+    public List<Campanya> getCampanyas() { return camps; }
+    public void setCampanyas(List<Campanya> camps) { this.camps = camps; }
 
     //------------Métodos------------
     @Override

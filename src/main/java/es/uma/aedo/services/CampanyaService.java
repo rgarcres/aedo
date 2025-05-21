@@ -8,48 +8,53 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import es.uma.aedo.data.entidades.Usuario;
-import es.uma.aedo.data.repositorios.UsuarioRepository;
+import es.uma.aedo.data.entidades.Campanya;
+import es.uma.aedo.data.repositorios.CampanyaRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UsuarioService implements IService<Usuario>{
-    private final UsuarioRepository repository;
+public class CampanyaService implements IService<Campanya>{
 
-    public UsuarioService(UsuarioRepository repo){
+    private final CampanyaRepository repository;
+
+    public CampanyaService(CampanyaRepository repo){
         this.repository = repo;
     }
 
-    public Optional<Usuario> get(String id){
+    @Override
+    public Optional<Campanya> get(String id) {
         return repository.findById(id);
     }
 
-    public Optional<Usuario> getConGrupo(String id){
-        return repository.findByIdConGrupos(id);
-    }
-
-    public List<Usuario> getAll(){
+    @Override
+    public List<Campanya> getAll() {
         return repository.findAll();
     }
 
-    @Transactional
-    public Usuario save(Usuario user){
-        return repository.save(user);
-    }
-
+    @Override
     public void delete(String id) {
         repository.deleteById(id);
     }
 
-    public Page<Usuario> list(Pageable pageable) {
+    @Override
+    @Transactional
+    public Campanya save(Campanya entity) {
+        return repository.save(entity);
+    }
+
+    @Override
+    public Page<Campanya> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Page<Usuario> list(Pageable pageable, Specification<Usuario> filters) {
+    @Override
+    public Page<Campanya> list(Pageable pageable, Specification<Campanya> filters) {
         return repository.findAll(filters, pageable);
-    }    
-    
+    }
+
+    @Override
     public int count() {
         return (int) repository.count();
     }
+    
 }

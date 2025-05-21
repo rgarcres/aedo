@@ -38,9 +38,6 @@ public class Usuario extends AbstractEntity{
     joinColumns = @JoinColumn(name="usuario_fk"),
     inverseJoinColumns = @JoinColumn(name="grupo_fk"))
     private List<Grupo> grupos;
-    @ManyToOne
-    @JoinColumn(name="camp_id")
-    private Campanya camp;
     @OneToMany
     private List<Respuesta> respuestas;
 

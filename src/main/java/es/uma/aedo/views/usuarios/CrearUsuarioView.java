@@ -10,6 +10,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import es.uma.aedo.data.entidades.Usuario;
+import es.uma.aedo.services.RegionService;
 import es.uma.aedo.services.UsuarioService;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
@@ -18,10 +19,12 @@ import es.uma.aedo.views.utilidades.OtrasConfig;
 @Route("usuarios/crear-usuario")
 public class CrearUsuarioView extends Div implements HasUrlParameter<String>{
     private final UsuarioService usuarioService;
+    private final RegionService regionService;
     private Usuario usuario;
     
-    public CrearUsuarioView(UsuarioService service) {
+    public CrearUsuarioView(UsuarioService service, RegionService rService) {
         this.usuarioService = service;
+        this.regionService = rService;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class CrearUsuarioView extends Div implements HasUrlParameter<String>{
 
         VerticalLayout layout = new VerticalLayout(
             LayoutConfig.createTituloLayout("Crear usuario", "usuarios"),
-            GestionUsuario.crearCamposLayout(usuarioService, usuario, false)
+            GestionUsuario.crearCamposLayout(usuarioService, regionService, usuario, false)
         );
         
         layout.setAlignItems(Alignment.CENTER);

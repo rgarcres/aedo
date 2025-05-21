@@ -53,7 +53,7 @@ public class SeleccionarGrupoEditarView extends Div implements HasUrlParameter<S
             grid.setSelectionMode(SelectionMode.MULTI);
 
             if(!usuario.getGrupo().isEmpty()){
-                for(Grupo g: usuario.getGrupo()){
+                for(Grupo g: new ArrayList<>(usuario.getGrupo())){
                     grid.select(g);
                 }
             }

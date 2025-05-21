@@ -5,6 +5,9 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -17,8 +20,11 @@ public class Campanya extends AbstractEntity {
     private LocalDate fin;
     private String objetivo;
     private String demografia;
-    @OneToMany(mappedBy = "camp")
-    private List<Usuario> usuarios;
+    @ManyToMany()
+    @JoinTable(name = "camp_grupo", 
+    joinColumns = @JoinColumn(name="camp_fk"),
+    inverseJoinColumns = @JoinColumn(name="grupo_fk"))
+    private List<Grupo> grupos;
     @OneToMany(mappedBy = "camp")
     private List<Bloque> bloques;
 
@@ -41,8 +47,8 @@ public class Campanya extends AbstractEntity {
     public String getDemografia() { return demografia; }
     public void setDemografia(String demografia) { this.demografia = demografia; }
     
-    public List<Usuario> getUsuarios() { return usuarios; }
-    public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
+    public List<Grupo> getGrupos() { return grupos; }
+    public void setGrupos(List<Grupo> grupos) { this.grupos = grupos; }
     
     public List<Bloque> getBloques() { return bloques; }
     public void setBloques(List<Bloque> bloques) { this.bloques = bloques; }   
