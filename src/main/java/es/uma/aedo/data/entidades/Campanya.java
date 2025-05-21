@@ -26,7 +26,7 @@ public class Campanya extends AbstractEntity {
     inverseJoinColumns = @JoinColumn(name="grupo_fk"))
     private List<Grupo> grupos;
     @OneToMany(mappedBy = "camp")
-    private List<Bloque> bloques;
+    private List<BloqueProgramado> bloques;
 
     //------------Constructor------------
     public Campanya() {}
@@ -50,8 +50,8 @@ public class Campanya extends AbstractEntity {
     public List<Grupo> getGrupos() { return grupos; }
     public void setGrupos(List<Grupo> grupos) { this.grupos = grupos; }
     
-    public List<Bloque> getBloques() { return bloques; }
-    public void setBloques(List<Bloque> bloques) { this.bloques = bloques; }   
+    public List<BloqueProgramado> getBloques() { return bloques; }
+    public void setBloques(List<BloqueProgramado> bloques) { this.bloques = bloques; }   
     
     //------------Métodos------------
     @Override

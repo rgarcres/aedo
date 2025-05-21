@@ -3,8 +3,6 @@ package es.uma.aedo.data.entidades;
 import java.util.List;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -14,9 +12,6 @@ public class Bloque extends AbstractEntity{
     private String descripcion;
     @OneToMany(mappedBy = "bloque")
     private List<Pregunta> preguntas;
-    @ManyToOne
-    @JoinColumn(name="camp_id")
-    private Campanya camp;
 
     //------------Constructor------------
     public Bloque() {}
