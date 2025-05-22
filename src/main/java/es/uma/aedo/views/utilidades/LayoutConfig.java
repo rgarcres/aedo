@@ -25,6 +25,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import es.uma.aedo.data.entidades.AbstractEntity;
 import es.uma.aedo.services.IService;
+import jakarta.validation.ConstraintViolationException;
 
 public class LayoutConfig {
 
@@ -163,11 +164,15 @@ public class LayoutConfig {
         confirmar.getStyle().set("background-color", "#fff799");
 
         confirmar.addClickListener(e -> {
-            service.delete(entity.getId());
-            grid.getDataProvider().refreshAll();
-            NotificacionesConfig.crearNotificacionExito("¡Entidad eliminada!",
-                    "La entidad " + entity.toString() + " ha sido eliminada con éxito");
-            noti.close();
+            try {
+                service.delete(entity.getId());
+                grid.getDataProvider().refreshAll();
+                NotificacionesConfig.crearNotificacionExito("¡Entidad eliminada!",
+                        "La entidad " + entity.toString() + " ha sido eliminada con éxito");
+                noti.close();
+            } catch (ConstraintViolationException ex){
+                NotificacionesConfig.crearNotificacionError("Error al borrar", "Esta entidad no se puede borrar debido debido a que otras entidades dependen de ésta");
+            }
         });
         cancelar.addClickListener(e -> {
             noti.close();

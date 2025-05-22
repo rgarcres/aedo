@@ -167,7 +167,7 @@ public class GestionUsuario {
         ComboBox<Region> regionBox = new ComboBox<>("Region");
 
         // ------------Botones------------
-        Button siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
+        Button guardar = BotonesConfig.crearBotonPrincipal("Guardar");
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "usuarios");
 
         // ------------Instanciar comboBox------------
@@ -190,7 +190,7 @@ public class GestionUsuario {
         }
 
         // ------------Comportamiento de botones------------
-        siguiente.addClickListener(e -> {
+        guardar.addClickListener(e -> {
             String id = idField.getValue();
             String alias = aliasField.getValue();
             LocalDate nacimiento = nacimientoPicker.getValue();
@@ -201,19 +201,15 @@ public class GestionUsuario {
             Region region = regionBox.getValue();
 
             Boolean exito = crearUsuario(usuario, usuarioService, id, alias, nacimiento, genero, estudios, laboral,
-                    personal, region);
+                    personal, region, editar);
             if (exito) {
-                if (!editar) {
-                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/crear-usuario/seleccionar-grupos/" + id));
-                } else {
-                    siguiente.getUI().ifPresent(ui -> ui.navigate("usuarios/editar-usuario/seleccionar-grupos/" + id));
-                }
+                guardar.getUI().ifPresent(ui -> ui.navigate("usuarios"));
             }
         });
 
         // ------------Añadir componentes al layout------------
         camposLayout.add(idField, aliasField, nacimientoPicker, generoBox, estudiosBox, laboralBox, personalBox, regionBox);
-        botonesLayout.add(siguiente, cancelar);
+        botonesLayout.add(guardar, cancelar);
         layout.setAlignItems(Alignment.CENTER);
         layout.add(camposLayout, botonesLayout);
         return layout;
@@ -237,11 +233,10 @@ public class GestionUsuario {
         return grid;
     }
 
-
     // ------------------------------------MÉTODOS PRIVADOS------------------------------------
     private static boolean crearUsuario(Usuario usuario, UsuarioService usuarioService, String id, String alias,
             LocalDate nacimiento, EGenero genero, ENivelEstudios estudios, ESituacionLaboral laboral,
-            ESituacionPersonal personal, Region region) {
+            ESituacionPersonal personal, Region region, Boolean editar) {
 
         if (camposVacios(id, alias, nacimiento, genero, estudios, laboral, personal, region)) {
             NotificacionesConfig.crearNotificacionError("Campos vacíos", "Los campos no pueden estar vacíos");
@@ -253,7 +248,7 @@ public class GestionUsuario {
             NotificacionesConfig.crearNotificacionError("El ID ya existe", "Introduzca un ID nuevo que sea único");
             return false;
         } else {
-            if (usuario == null) {
+            if(usuario == null){
                 Usuario nuevoUsuario = new Usuario();
                 nuevoUsuario.setId(id);
                 nuevoUsuario.setAlias(alias);
@@ -264,6 +259,7 @@ public class GestionUsuario {
                 nuevoUsuario.setSituacionPersonal(personal);
                 nuevoUsuario.setRegion(region);
                 usuarioService.save(nuevoUsuario);
+                NotificacionesConfig.crearNotificacionExito("¡Usuario creado!", "El usuario: "+id+" se ha creado con éxito");
             } else {
                 usuario.setId(id);
                 usuario.setAlias(alias);
@@ -274,6 +270,7 @@ public class GestionUsuario {
                 usuario.setSituacionPersonal(personal);
                 usuario.setRegion(region);
                 usuarioService.save(usuario);
+                NotificacionesConfig.crearNotificacionExito("¡Usuario editado!", "El usuario: "+id+" se ha editado con éxito");
             }
             return true;
         }

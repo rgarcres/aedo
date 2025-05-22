@@ -1,7 +1,5 @@
 package es.uma.aedo.views.usuarios;
 
-import java.util.ArrayList;
-
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -31,18 +29,19 @@ public class EditarUsuarioView extends Div implements HasUrlParameter<String> {
 
     @Override
     public void setParameter(BeforeEvent event, String id) {
-        // usuario = (Usuario) OtrasConfig.getEntidadPorParametro(id, usuarioService); 
-        //Cambio el método get, por getConGrupo, que hace FETCH con el grupo del usuario
+        // usuario = (Usuario) OtrasConfig.getEntidadPorParametro(id, usuarioService);
+        // Cambio el método get, por getConGrupo, que hace FETCH con el grupo del
+        // usuario
         if (id != null) {
             usuario = usuarioService.getConGrupo(id).get();
             if (usuario != null) {
                 setWidthFull();
-                Usuario aux = clonarUsuario(usuario);
-                VaadinSession.getCurrent().setAttribute("usuarioEditar", aux);
+                
+                VaadinSession.getCurrent().setAttribute("usuarioMedioEditado", usuario);
 
                 VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Editar usuario: " + usuario.getAlias(), "usuarios"),
-                    GestionUsuario.crearCamposLayout(usuarioService, regionService, aux, true)
+                        LayoutConfig.createTituloLayout("Editar usuario: " + usuario.getAlias(), "usuarios"),
+                        GestionUsuario.crearCamposLayout(usuarioService, regionService, usuario, true)
                 );
 
                 layout.setAlignItems(Alignment.CENTER);
@@ -55,20 +54,4 @@ public class EditarUsuarioView extends Div implements HasUrlParameter<String> {
         }
 
     }
-
-    private Usuario clonarUsuario(Usuario original) {
-        Usuario copia = new Usuario();
-        copia.setId(original.getId());
-        copia.setAlias(original.getAlias());
-        copia.setFechaNacimiento(original.getFechaNacimiento());
-        copia.setGenero(original.getGenero());
-        copia.setNivelEstudios(original.getNivelEstudios());
-        copia.setSituacionLaboral(original.getSituacionLaboral());
-        copia.setSituacionPersonal(original.getSituacionPersonal());
-        copia.setRegion(original.getRegion());
-        copia.setGrupo(new ArrayList<>(original.getGrupo()));
-
-        return copia;
-    }
-
 }

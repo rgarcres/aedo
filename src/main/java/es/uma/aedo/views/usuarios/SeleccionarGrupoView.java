@@ -23,11 +23,10 @@ import es.uma.aedo.views.grupos.GestionGrupo;
 import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
-import es.uma.aedo.views.utilidades.OtrasConfig;
 
 @PageTitle("Seleccionar Grupo")
-@Route("usuarios/crear-usuario/seleccionar-grupos")
-public class SeleccionarGrupoView extends Div implements HasUrlParameter<String> {
+@Route("usuarios/seleccionar-grupos")
+public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>{
 
     private Grid<Grupo> grid;
     private List<Grupo> gruposSeleccionados;
@@ -43,42 +42,54 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
 
     @Override
     public void setParameter(BeforeEvent event, String id) {
-        usuario = (Usuario) OtrasConfig.getEntidadPorParametro(id, usuarioService);
-        if (usuario != null) {
-            setWidthFull();
+        if(id != null){
+            usuario = usuarioService.getConGrupo(id).get();
+            if (usuario != null) {
+                setWidthFull();
 
-            GestionGrupo.Filters filters = new GestionGrupo.Filters(() -> refreshGrid());
-            grid = GestionGrupo.createGrid(grupoService, filters);
-            grid.setSelectionMode(SelectionMode.MULTI);
+                GestionGrupo.Filters filters = new GestionGrupo.Filters(() -> refreshGrid());
+                grid = GestionGrupo.createGrid(grupoService, filters);
+                grid.setSelectionMode(SelectionMode.MULTI);
 
-            VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Seleccionar grupo: " + id, "usuarios/crear-usuario/seleccionar-region/" + id),
-                filters,
-                grid,
-                crearBotonesLayout()
-            );
+                if(usuario.getGrupo() != null){
+                    for(Grupo g: usuario.getGrupo()){
+                        grid.select(g);
+                    }
+                }
 
-            layout.setAlignItems(Alignment.CENTER);
-            layout.setPadding(true);
-            layout.setSpacing(true);
-            add(layout);
+                VerticalLayout layout = new VerticalLayout(
+                    LayoutConfig.createTituloLayout("Seleccionar grupo", "usuarios"),
+                    filters,
+                    grid,
+                    crearBotonesLayout()
+                );
+
+                layout.setAlignItems(Alignment.CENTER);
+                layout.setPadding(true);
+                layout.setSpacing(true);
+                add(layout);
+            } else {
+                add(LayoutConfig.createNotFoundLayout());
+            }
         } else {
             add(LayoutConfig.createNotFoundLayout());
         }
     }
 
+
     private HorizontalLayout crearBotonesLayout() {
         HorizontalLayout layout = new HorizontalLayout();
 
-        Button crear = BotonesConfig.crearBotonPrincipal("Crear");
+        Button aplicar = BotonesConfig.crearBotonPrincipal("Aplicar");
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar");
 
-        crear.addClickListener(e -> {
+        aplicar.addClickListener(e -> {
             gruposSeleccionados = new ArrayList<>(grid.getSelectedItems());
+
             if (!gruposSeleccionados.isEmpty()) {
                 usuario.setGrupo(gruposSeleccionados);
                 usuarioService.save(usuario);
-                NotificacionesConfig.crearNotificacionExito("¡Usuario creado!", "El usuario: "+usuario.getId()+" se ha creado con éxito");
+                NotificacionesConfig.crearNotificacionExito("¡Grupos asignados!", "Los cambios se han aplicado con éxito");
                 getUI().ifPresent(ui -> ui.navigate("usuarios"));
             } else {
                 NotificacionesConfig.crearNotificacionError("Selecciona un grupo", "No hay ningún grupo seleccionado");
@@ -86,11 +97,11 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
         });
 
         cancelar.addClickListener(e -> {
-            usuarioService.delete(usuario.getId());
+            NotificacionesConfig.notificar("No se han aplicado los cambios");
             getUI().ifPresent(ui -> ui.navigate("usuarios"));
         });
 
-        layout.add(crear, cancelar);
+        layout.add(aplicar, cancelar);
         return layout;
     }
 

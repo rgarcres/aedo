@@ -6,6 +6,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import es.uma.aedo.services.BloqueService;
+import es.uma.aedo.views.utilidades.LayoutConfig;
 
 @PageTitle("Crear Bloque")
 @Route("bloques/crear-bloque")
@@ -16,7 +17,10 @@ public class CrearBloqueView extends Div{
         this.bloqueService = service;
         setSizeFull();
         addClassNames("crear-bloque-view");
-        VerticalLayout layout = new VerticalLayout(GestionBloque.crearCamposLayout(null, bloqueService));
+        VerticalLayout layout = new VerticalLayout(
+            LayoutConfig.createTituloLayout("Crear bloque", ""),
+            GestionBloque.crearCamposLayout(null, bloqueService)
+        );
 
         layout.setSizeFull();
         add(layout);

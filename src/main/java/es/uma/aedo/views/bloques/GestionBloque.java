@@ -105,6 +105,7 @@ public class GestionBloque {
             String id = idField.getValue();
             String nombre = nombreField.getValue();
             String descripcion = descripcionField.getValue();
+            
             boolean exito = crearBloque(bloqueService, bloque, id, nombre, descripcion);
 
             if(exito) {

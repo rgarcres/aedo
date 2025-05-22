@@ -1,9 +1,11 @@
 package es.uma.aedo.views.usuarios;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.BeforeEvent;
@@ -18,6 +20,7 @@ import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.services.GrupoService;
 import es.uma.aedo.services.RegionService;
 import es.uma.aedo.services.UsuarioService;
+import es.uma.aedo.views.utilidades.BotonesConfig;
 import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
@@ -49,16 +52,17 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String> {
             usuarioSeleccionado = e.getItem();
         });
         VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Usuarios", ""),
-                filters,
-                grid,
-                LayoutConfig.createButtons(
-                    () -> usuarioSeleccionado,
-                    "usuario",
-                    "usuarios",
-                    usuarioService,
-                    grid
-                )
+            LayoutConfig.createTituloLayout("Usuarios", ""),
+            filters,
+            grid,
+            LayoutConfig.createButtons(
+                () -> usuarioSeleccionado,
+                "usuario",
+                "usuarios",
+                usuarioService,
+                grid
+            ),
+            crearBotonesGrupoLayout()
         );
 
         layout.setAlignItems(Alignment.CENTER);
@@ -72,6 +76,19 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String> {
         grupo = (Grupo) OtrasConfig.getEntidadPorParametro(id, grupoService);
     }
 
+    private HorizontalLayout crearBotonesGrupoLayout(){
+        HorizontalLayout layout = new HorizontalLayout();
+
+        Button grupos = BotonesConfig.crearBotonPrincipal("Ver grupos");
+
+        grupos.addClickListener(e -> {
+            if(usuarioSeleccionado != null){
+                getUI().ifPresent(ui -> ui.navigate("usuarios/seleccionar-grupos/"+usuarioSeleccionado.getId()));
+            }
+        });
+        layout.add(grupos);
+        return layout;
+    }
     private void refreshGrid() {
         grid.getDataProvider().refreshAll();
     }
