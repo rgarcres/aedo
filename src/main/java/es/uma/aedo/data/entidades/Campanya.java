@@ -3,6 +3,7 @@ package es.uma.aedo.data.entidades;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -25,7 +26,7 @@ public class Campanya extends AbstractEntity {
     joinColumns = @JoinColumn(name="camp_fk"),
     inverseJoinColumns = @JoinColumn(name="grupo_fk"))
     private List<Grupo> grupos;
-    @OneToMany(mappedBy = "camp")
+    @OneToMany(mappedBy = "camp", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BloqueProgramado> bloques;
 
     //------------Constructor------------
@@ -52,6 +53,14 @@ public class Campanya extends AbstractEntity {
     
     public List<BloqueProgramado> getBloques() { return bloques; }
     public void setBloques(List<BloqueProgramado> bloques) { this.bloques = bloques; }   
+    public void addBloque(BloqueProgramado bp) {
+        bp.setCamp(this);
+        bloques.add(bp);
+    }
+    public void removeBloque(BloqueProgramado bp){
+        bp.setCamp(null);
+        bloques.remove(bp);
+    }
     
     //------------Métodos------------
     @Override

@@ -26,6 +26,14 @@ public class CampanyaService implements IService<Campanya>{
         return repository.findById(id);
     }
 
+    public Optional<Campanya> getConGrupo(String id){
+        return repository.findWithGrupo(id);
+    }
+
+    public Optional<Campanya> getConBloque(String id){
+        return repository.findWithBloque(id);
+    }
+
     @Override
     public List<Campanya> getAll() {
         return repository.findAll();

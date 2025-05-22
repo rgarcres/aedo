@@ -31,12 +31,11 @@ public class EditarCampanaView extends Div implements HasUrlParameter<String>{
 
         if(camp != null){
             setWidthFull();
-            Campanya clon = clonarCampanya(camp);
             VaadinSession.getCurrent().setAttribute("campSinEditar", camp);
             
             VerticalLayout layout = new VerticalLayout(
                 LayoutConfig.createTituloLayout("Editar campaña", "campañas"),
-                GestionCamp.crearCamposLayout(campService, clon, false)
+                GestionCamp.crearCamposLayout(campService, camp)
             );
 
             layout.setAlignItems(Alignment.CENTER);
@@ -45,23 +44,4 @@ public class EditarCampanaView extends Div implements HasUrlParameter<String>{
             add(LayoutConfig.createNotFoundLayout());
         }
     }
-
-    private Campanya clonarCampanya(Campanya original) {
-        Campanya clon = new Campanya();
-
-        clon.setNombre(original.getNombre() + " (Copia)");
-        clon.setInicio(original.getInicio());
-        clon.setFin(original.getFin());
-        clon.setObjetivo(original.getObjetivo());
-        clon.setDemografia(original.getDemografia());
-        
-        // Copia superficial de los grupos (mismos objetos Grupo referenciados)
-        clon.setGrupos(original.getGrupos());
-
-        // No copiamos los bloques para evitar conflictos o duplicados innecesarios
-        clon.setBloques(null); // o Collections.emptyList() si prefieres evitar nulls
-
-        return clon;
-    }
-
 }
