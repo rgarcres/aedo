@@ -68,8 +68,8 @@ public class BloquesView extends Div {
      */
     private HorizontalLayout crearBotonesPregunta(){
         HorizontalLayout layout = new HorizontalLayout();
-        Button verPreguntas = BotonesConfig.crearBotonPrincipal("Ver preguntas");
-        Button todasPreguntas = BotonesConfig.crearBotonSecundario("Ver todas las preguntas");
+        Button verPreguntas = BotonesConfig.crearBotonExtra("Ver preguntas");
+        Button todasPreguntas = BotonesConfig.crearBotonExtraSecundario("Ver todas las preguntas");
 
         verPreguntas.addClickListener(e -> {
             if(bloqueSeleccionado != null){
@@ -88,7 +88,7 @@ public class BloquesView extends Div {
             VaadinSession.getCurrent().setAttribute("crudPregunta", true);
             todasPreguntas.getUI().ifPresent(ui -> ui.navigate("preguntas"));
         });
-        verPreguntas.getStyle().set("background-color", "#6654ff");
+        
         layout.add(verPreguntas, todasPreguntas);
 
         return layout;

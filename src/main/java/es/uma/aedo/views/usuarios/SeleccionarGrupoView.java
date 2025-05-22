@@ -51,8 +51,8 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
                 grid = GestionGrupo.createGrid(grupoService, filters);
                 grid.setSelectionMode(SelectionMode.MULTI);
 
-                if(usuario.getGrupo() != null){
-                    for(Grupo g: usuario.getGrupo()){
+                if(usuario.getGrupos() != null){
+                    for(Grupo g: usuario.getGrupos()){
                         grid.select(g);
                     }
                 }
@@ -87,7 +87,7 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
             gruposSeleccionados = new ArrayList<>(grid.getSelectedItems());
 
             if (!gruposSeleccionados.isEmpty()) {
-                usuario.setGrupo(gruposSeleccionados);
+                usuario.setGrupos(gruposSeleccionados);
                 usuarioService.save(usuario);
                 NotificacionesConfig.crearNotificacionExito("¡Grupos asignados!", "Los cambios se han aplicado con éxito");
                 getUI().ifPresent(ui -> ui.navigate("usuarios"));

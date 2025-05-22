@@ -218,7 +218,7 @@ public class GestionUsuario {
         grid.addColumn("situacionLaboral").setAutoWidth(true);
         grid.addColumn("situacionPersonal").setAutoWidth(true);
         grid.addColumn("region").setAutoWidth(true);
-        grid.addColumn(u -> u.getGrupo().stream().map(Grupo::toString).reduce((g1, g2) -> g1 + ", " + g2).orElse("")).setHeader("Grupos").setAutoWidth(true);
+        grid.addColumn(u -> u.getGrupos().stream().map(Grupo::toString).reduce((g1, g2) -> g1 + ", " + g2).orElse("")).setHeader("Grupos").setAutoWidth(true);
 
         grid.setItems(query -> usuarioService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
                 .stream());

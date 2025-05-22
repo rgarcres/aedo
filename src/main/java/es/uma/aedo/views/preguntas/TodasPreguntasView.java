@@ -115,7 +115,7 @@ public class TodasPreguntasView extends Div implements HasUrlParameter<String>{
     private HorizontalLayout crearBotonTipo(){
         HorizontalLayout layout = new HorizontalLayout();
 
-        Button tipo = BotonesConfig.crearBotonPrincipal("Ver tipo y respuestas");
+        Button tipo = BotonesConfig.crearBotonExtra("Ver tipo y respuestas");
 
         tipo.addClickListener(e -> {
             if(preguntaSeleccionada != null){

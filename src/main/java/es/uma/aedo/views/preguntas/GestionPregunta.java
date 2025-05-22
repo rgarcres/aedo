@@ -18,6 +18,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -46,11 +47,11 @@ public class GestionPregunta {
 
         public Filters(Runnable onSearch, Bloque b, BloqueService bloqueService) {
             this.bloqueSeleccionado = b;
-
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
+            HorizontalLayout filtersLayout = new HorizontalLayout();
 
             tipo.setItems(1, 2, 3, 4);
             bloque.setItems(bloqueService.getAll());
@@ -64,11 +65,15 @@ public class GestionPregunta {
 
             Div actions = LayoutConfig.crearBotonesFiltros(onSearch, fields);
 
-            add(enunciado, tipo);
+            filtersLayout.add(enunciado, tipo);
             if (bloqueSeleccionado == null) {
-                add(bloque);
+                filtersLayout.add(bloque);
             }
-            add(actions);
+            filtersLayout.setAlignItems(Alignment.CENTER);
+            filtersLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+            filtersLayout.add(actions);
+
+            add(filtersLayout);
         }
 
         @Override

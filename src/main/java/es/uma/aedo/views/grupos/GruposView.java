@@ -64,8 +64,8 @@ public class GruposView extends Div {
     private HorizontalLayout crearBotonesUsuarios() {
         HorizontalLayout layout = new HorizontalLayout();
 
-        Button anadir = BotonesConfig.crearBotonPrincipal("Añadir usuarios al grupo");
-        Button verTodos = BotonesConfig.crearBotonSecundario("Ver todos los usuarios", "usuarios");
+        Button anadir = BotonesConfig.crearBotonExtra("Añadir usuarios al grupo");
+        Button verTodos = BotonesConfig.crearBotonExtraSecundario("Ver todos los usuarios", "usuarios");
 
         anadir.addClickListener(e -> {
             if (grupoSeleccionado != null) {

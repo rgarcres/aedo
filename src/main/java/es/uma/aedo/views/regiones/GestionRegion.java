@@ -14,6 +14,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -129,6 +130,7 @@ public class GestionRegion {
         camposLayout.add(idField, localidadField, provinciaField, comunidadField);
         botonesLayout.add(crearButton, cancelarButton);
         mainLayout.add(camposLayout, botonesLayout);
+        mainLayout.setAlignItems(Alignment.CENTER);
         return mainLayout;
     }
 

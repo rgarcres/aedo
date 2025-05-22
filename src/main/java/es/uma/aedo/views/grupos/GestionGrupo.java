@@ -38,6 +38,8 @@ public class GestionGrupo {
 
             setWidthFull();
             addClassName("filter-layout");
+            HorizontalLayout layout = new HorizontalLayout();
+
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
                     LumoUtility.BoxSizing.BORDER);
 
@@ -46,7 +48,8 @@ public class GestionGrupo {
 
             Div actions = LayoutConfig.crearBotonesFiltros(onSearch, fields);
 
-            add(nombre, actions);
+            layout.add(nombre, actions);
+            add(layout);
         }
 
         @Override

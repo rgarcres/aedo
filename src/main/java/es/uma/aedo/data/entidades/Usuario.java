@@ -66,8 +66,11 @@ public class Usuario extends AbstractEntity{
     public Region getRegion() { return region; }
     public void setRegion(Region region) { this.region = region; }
 
-    public List<Grupo> getGrupo() { return grupos; }
-    public void setGrupo(List<Grupo> grupos) { this.grupos = grupos; }
+    public List<Grupo> getGrupos() { return grupos; }
+    public void setGrupos(List<Grupo> grupos) { this.grupos = grupos; }
+    public void addGrupo(){
+
+    }
     
     public List<Respuesta> getRespuestas() { return respuestas; }
     public void setRespuestas(List<Respuesta> respuestas) { this.respuestas = respuestas; }

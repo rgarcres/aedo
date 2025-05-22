@@ -14,10 +14,12 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -78,12 +80,29 @@ public class LayoutConfig {
 
     public static HorizontalLayout createTituloLayout(String titulo, String route) {
         HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidthFull();
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN); // Distribuye extremos
+
+        Button back = BotonesConfig.crearBotonSecundario("", route);
+        back.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
+
         H2 h2 = new H2(titulo);
-        Button back = BotonesConfig.crearBotonSecundario("<", route);
+        h2.setWidthFull();
+        h2.getStyle().set("margin", "0 auto"); // Centrado absoluto si no hay más contenido
 
-        layout.add(back, h2);
+        // Espaciador vacío que empuja el título al centro
+        Div spacer = new Div();
+        spacer.setWidthFull();
 
+        layout.add(back, spacer, h2, spacer());
         return layout;
+    }
+
+    private static Component spacer() {
+        Div spacer = new Div();
+        spacer.setWidthFull();
+        return spacer;
     }
 
     public static HorizontalLayout createMobileFilters(Div filters) {
@@ -146,6 +165,7 @@ public class LayoutConfig {
         });
 
         buttonsLayout.setAlignItems(Alignment.CENTER);
+        buttonsLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonsLayout.add(crearButton, editarButton, borrarButton);
         return buttonsLayout;
     }

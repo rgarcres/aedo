@@ -38,7 +38,7 @@ public class RegionesView extends Div {
 
         VerticalLayout layout = 
         new VerticalLayout(
-            LayoutConfig.createMobileFilters(filters), 
+            LayoutConfig.createTituloLayout("Regiones", ""), 
             filters, 
             grid, 
             LayoutConfig.createButtons(
@@ -49,9 +49,10 @@ public class RegionesView extends Div {
                 grid
             )
         );
+
         layout.setSizeFull();
-        layout.setPadding(false);
-        layout.setSpacing(false);
+        layout.setPadding(true);
+        layout.setSpacing(true);
         add(layout);
     }
 

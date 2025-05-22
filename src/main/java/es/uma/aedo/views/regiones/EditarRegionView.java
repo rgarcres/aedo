@@ -31,7 +31,7 @@ public class EditarRegionView extends Div implements HasUrlParameter<String> {
             addClassName("editar-regiones-view");
 
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Editar región: "+regionEditar.toString(), "regiones"),
+                LayoutConfig.createTituloLayout("Editar región: "+regionEditar.getLocalidad(), "regiones"),
                 GestionRegion.crearCamposLayout(regionEditar, regionService)
             );
 

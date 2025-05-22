@@ -6,3 +6,39 @@
 @import url('./views/preguntas-view.css');
 @import url('./views/bloques-view.css');
 @import url('./views/regiones-view.css');
+
+.boton-principal {
+    background-color: #6654ff;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    width: min-content;
+}
+
+.boton-principal:hover {
+    background-color: #9990ff;
+}
+
+.boton-extra {
+    background-color: #ffd000;
+    color: rgb(46, 46, 46);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    width: min-content;
+}
+
+.boton-extra:hover{
+    background-color: #f7f1a6;
+}
+
+.boton-extra-secundario {
+    background-color: #fff896;
+    color: rgb(46, 46, 46);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    width: min-content;
+}
+
+.boton-extra-secundario:hover{
+    background-color: #b8b484;
+}
