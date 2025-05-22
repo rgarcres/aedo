@@ -25,6 +25,10 @@ public class GrupoService implements IService<Grupo>{
         return repository.findById(id);
     }
 
+    public Optional<Grupo> getConUsuarios(String id){
+        return repository.findWithUsuarios(id);
+    }
+
     @Override
     public List<Grupo> getAll() {
         return repository.findAll();

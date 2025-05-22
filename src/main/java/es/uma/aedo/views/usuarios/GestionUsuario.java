@@ -54,11 +54,9 @@ public class GestionUsuario {
         private final MultiSelectComboBox<ESituacionPersonal> personalBox = new MultiSelectComboBox<>(
                 "Situación Personal");
         private final MultiSelectComboBox<Region> regionBox = new MultiSelectComboBox<>("Region");
-        private final Grupo grupoFiltro;
 
         // ------------Constructor------------
-        public Filters(Runnable onSearch, RegionService rService, Grupo g) {
-            this.grupoFiltro = g;
+        public Filters(Runnable onSearch, RegionService rService) {
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
@@ -140,11 +138,6 @@ public class GestionUsuario {
 
             if (!regionBox.isEmpty()) {
                 predicates.add(root.get("region").in(regionBox.getValue()));
-            }
-
-            if (grupoFiltro != null) {
-                predicates.add(criteriaBuilder.literal(grupoFiltro).in(root.get("grupos")));
-                System.out.println(root.get("grupos"));
             }
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
