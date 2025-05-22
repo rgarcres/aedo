@@ -46,10 +46,15 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
     @Override
     public void setParameter(BeforeEvent event, String id) {
         pregunta = (Pregunta) OtrasConfig.getEntidadPorParametro(id, preguntaService);
-
+        
         if (pregunta != null) {
             pregunta = preguntaService.getConOpciones(id).get();
-            add(crearLayout());
+            VerticalLayout layout = new VerticalLayout(
+                LayoutConfig.createTituloLayout("Tipo y respuestas", "preguntas"),
+                crearLayout()
+            );
+
+            add(layout);
         } else {
             add(LayoutConfig.createNotFoundLayout());
         }
@@ -64,7 +69,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         // ------------ComboBox------------
         ComboBox<Integer> tipoBox = new ComboBox<>("Tipo");
         // ------------Botones------------
-        Button crear = BotonesConfig.crearBotonPrincipal("Crear pregunta");
+        Button aplicar = BotonesConfig.crearBotonPrincipal("Aplicar");
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar");
 
         // ------------Comportamiento tipoBox------------
@@ -95,12 +100,12 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
             cancelar();
         });
 
-        crear.addClickListener(e -> {
+        aplicar.addClickListener(e -> {
             Integer t = tipoBox.getValue();
             crear(t);
         });
         // ------------Añadir componentes al layout------------
-        botonesLayout.add(crear, cancelar);
+        botonesLayout.add(aplicar, cancelar);
         layout.setAlignItems(Alignment.CENTER);
         layout.add(tipoBox, contenido, botonesLayout);
 
@@ -138,6 +143,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
         Button eliminar = BotonesConfig.crearBotonError("Eliminar");
 
         respuestasField.setPlaceholder("Introduzca una posible respuesta...");
+        respuestasField.setWidthFull();
         crearGrid();
 
         anadir.addClickListener(e -> {
@@ -204,7 +210,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
             // Guardar la pregunta en la BD
             preguntaService.save(pregunta);
             // Notificar y navegar
-            NotificacionesConfig.crearNotificacionExito("¡Pregunta creada!", "La pregunta se ha creado con éxito");
+            NotificacionesConfig.crearNotificacionExito("¡Respuestas asignadas!", "Las respuestas se han asignado con éxito");
             getUI().ifPresent(ui -> ui.navigate("preguntas"));
         } else {
             // Notificar error

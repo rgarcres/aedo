@@ -17,6 +17,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -108,38 +109,41 @@ public class GestionPregunta {
 
         TextField idField = new TextField("ID*");
         TextField enunciadoField = new TextField("Enunciado*");
-        ComboBox<Bloque> bloqueComboBox = new ComboBox<>("Bloque*");
+        ComboBox<Bloque> bloqueBox = new ComboBox<>("Bloque*");
 
-        Button siguiente = BotonesConfig.crearBotonPrincipal("Siguiente");
+        Button aplicar = BotonesConfig.crearBotonPrincipal("Aplicar");
         
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "preguntas");
 
-        bloqueComboBox.setItems(bloqueService.getAll());
+        bloqueBox.setItems(bloqueService.getAll());
 
         if (pregunta != null) {
             idField.setValue(pregunta.getId());
             enunciadoField.setValue(pregunta.getEnunciado());
-            bloqueComboBox.setValue(pregunta.getBloque());
+            bloqueBox.setValue(pregunta.getBloque());
         }
 
         camposLayout.setResponsiveSteps(
                 new ResponsiveStep("0", 1),
                 new ResponsiveStep("500px", 2));
 
-        siguiente.addClickListener(e -> {
+        aplicar.addClickListener(e -> {
             String id = idField.getValue();
-            Bloque bloque = bloqueComboBox.getValue();
+            Bloque bloque = bloqueBox.getValue();
             String enunciado = enunciadoField.getValue();
 
             boolean exito = crearPregunta(pregunta, preguntaService, bloque, id, enunciado);
 
             if (exito) {
-                siguiente.getUI().ifPresent(ui -> ui.navigate("preguntas/seleccionar-opciones/" + id));
+                aplicar.getUI().ifPresent(ui -> ui.navigate("preguntas"));
             }
         });
-        camposLayout.add(idField, enunciadoField, bloqueComboBox);
-        botonesLayout.add(siguiente, cancelar);
-        layout.add(camposLayout, botonesLayout);
+
+        camposLayout.add(idField, enunciadoField);
+        botonesLayout.add(aplicar, cancelar);
+        layout.setAlignItems(Alignment.CENTER);
+        bloqueBox.setWidthFull();
+        layout.add(camposLayout, bloqueBox, botonesLayout);
 
         return layout;
     }
@@ -180,11 +184,13 @@ public class GestionPregunta {
                 // Tipo 0 indica que la pregunta está siendo creada
                 p.setTipo(0);
                 preguntaService.save(p);
+                NotificacionesConfig.crearNotificacionExito("¡Pregunta creada!", "La pregunta se ha creado con éxito");
             } else {
                 pregunta.setId(id);
                 pregunta.setEnunciado(enunciado);
                 pregunta.setBloque(bloque);
                 preguntaService.save(pregunta);
+                NotificacionesConfig.crearNotificacionExito("¡Pregunta editada!", "La pregunta se ha editado con éxito");
             }
 
             return true;

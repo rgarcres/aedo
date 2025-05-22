@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Menu;
@@ -84,7 +85,11 @@ public class TodasPreguntasView extends Div implements HasUrlParameter<String>{
             grid,
             botonesLayout
         );
+        if(!bloqueUnico){
+            layout.add(crearBotonTipo());
+        }
 
+        layout.setAlignItems(Alignment.CENTER);
         layout.setPadding(true);
         layout.setSpacing(true);
         return layout;
@@ -104,6 +109,21 @@ public class TodasPreguntasView extends Div implements HasUrlParameter<String>{
         });
 
         layout.add(anadir, cancelar);
+        return layout;
+    }
+
+    private HorizontalLayout crearBotonTipo(){
+        HorizontalLayout layout = new HorizontalLayout();
+
+        Button tipo = BotonesConfig.crearBotonPrincipal("Ver tipo y respuestas");
+
+        tipo.addClickListener(e -> {
+            if(preguntaSeleccionada != null){
+                getUI().ifPresent(ui -> ui.navigate("preguntas/seleccionar-opciones/"+preguntaSeleccionada.getId()));
+            }
+        });
+
+        layout.add(tipo);
         return layout;
     }
 
