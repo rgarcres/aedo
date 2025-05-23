@@ -68,9 +68,6 @@ public class Usuario extends AbstractEntity{
 
     public List<Grupo> getGrupos() { return grupos; }
     public void setGrupos(List<Grupo> grupos) { this.grupos = grupos; }
-    public void addGrupo(){
-
-    }
     
     public List<Respuesta> getRespuestas() { return respuestas; }
     public void setRespuestas(List<Respuesta> respuestas) { this.respuestas = respuestas; }

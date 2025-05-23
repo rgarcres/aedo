@@ -1,6 +1,7 @@
 package es.uma.aedo.views.usuarios;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,8 @@ import es.uma.aedo.views.utilidades.NotificacionesConfig;
 import es.uma.aedo.views.utilidades.OtrasConfig;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -53,7 +56,9 @@ public class GestionUsuario {
                 "Situación Laboral");
         private final MultiSelectComboBox<ESituacionPersonal> personalBox = new MultiSelectComboBox<>(
                 "Situación Personal");
-        private final MultiSelectComboBox<Region> regionBox = new MultiSelectComboBox<>("Region");
+        private final MultiSelectComboBox<String> localidadBox = new MultiSelectComboBox<>("Localidad");
+        private final MultiSelectComboBox<String> provinciaBox = new MultiSelectComboBox<>("Provincia");
+        private final MultiSelectComboBox<String> comunidadBox = new MultiSelectComboBox<>("Comunidad");
 
         // ------------Constructor------------
         public Filters(Runnable onSearch, RegionService rService) {
@@ -67,11 +72,16 @@ public class GestionUsuario {
             estudiosBox.setItems(ENivelEstudios.values());
             laboralBox.setItems(ESituacionLaboral.values());
             personalBox.setItems(ESituacionPersonal.values());
-            regionBox.setItems(rService.getAll());
+            localidadBox.setItems(rService.getAllLocalidades());
+            provinciaBox.setItems(rService.getAllProvincias());
+            comunidadBox.setItems(rService.getAllComunidades());
 
+            // ------------Configurar los DatePicker------------
             desdePicker.addValueChangeListener(e -> {
                 hastaPicker.setMin(desdePicker.getValue().plusDays(1));
             });
+
+            // ------------Inicializar lista de componentes------------
             List<HasValue<?, ?>> fields = new ArrayList<>();
             fields.add(aliasField);
             fields.add(desdePicker);
@@ -80,19 +90,24 @@ public class GestionUsuario {
             fields.add(estudiosBox);
             fields.add(laboralBox);
             fields.add(personalBox);
-            fields.add(regionBox);
+            fields.add(localidadBox);
+            fields.add(provinciaBox);
+            fields.add(comunidadBox);
 
             Div actions = LayoutConfig.crearBotonesFiltros(onSearch, fields);
 
             add(
-                    aliasField,
-                    LayoutConfig.crearRangoFechas(desdePicker, hastaPicker),
-                    generoBox,
-                    estudiosBox,
-                    laboralBox,
-                    personalBox,
-                    regionBox,
-                    actions);
+                aliasField,
+                LayoutConfig.crearRangoFechas(desdePicker, hastaPicker),
+                generoBox,
+                estudiosBox,
+                laboralBox,
+                personalBox,
+                localidadBox,
+                provinciaBox,
+                comunidadBox,
+                actions
+            );
         }
 
         @Override
@@ -133,11 +148,22 @@ public class GestionUsuario {
             }
 
             if (!personalBox.isEmpty()) {
-                predicates.add(root.get("situacionPersonal").in(laboralBox.getValue()));
+                predicates.add(root.get("situacionPersonal").in(personalBox.getValue()));
             }
 
-            if (!regionBox.isEmpty()) {
-                predicates.add(root.get("region").in(regionBox.getValue()));
+            //Clase que nos permite hacer un Join entra las entidades Usuario y Region
+            Join<Usuario, Region> regionJoin = root.join("region", JoinType.INNER);
+
+            if(!localidadBox.isEmpty()){
+                predicates.add(regionJoin.get("localidad").in(localidadBox.getValue()));
+            }
+
+            if(!provinciaBox.isEmpty()){
+                predicates.add(regionJoin.get("provincia").in(provinciaBox.getValue()));
+            }
+
+            if(!comunidadBox.isEmpty()){
+                predicates.add(regionJoin.get("comunidadAutonoma").in(comunidadBox.getValue()));
             }
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
@@ -170,6 +196,9 @@ public class GestionUsuario {
         laboralBox.setItems(ESituacionLaboral.values());
         personalBox.setItems(ESituacionPersonal.values());
         regionBox.setItems(regionService.getAll());
+
+        // ------------Configurar DatePicker------------
+        nacimientoPicker.setMax(LocalDate.now());
 
         // ------------Instanciar valores si hay que editar o si se ha vuelto atrás------------
         if (usuario != null) {
@@ -213,11 +242,16 @@ public class GestionUsuario {
         Grid<Usuario> grid = new Grid<>(Usuario.class, false);
         grid.addColumn("id").setAutoWidth(true);
         grid.addColumn("alias").setAutoWidth(true);
+
+        grid.addColumn(u -> Period.between(u.getFechaNacimiento(), LocalDate.now()).getYears())
+        .setHeader("Edad").setAutoWidth(true);
+
         grid.addColumn("genero").setAutoWidth(true);
         grid.addColumn("nivelEstudios").setAutoWidth(true);
         grid.addColumn("situacionLaboral").setAutoWidth(true);
         grid.addColumn("situacionPersonal").setAutoWidth(true);
         grid.addColumn("region").setAutoWidth(true);
+
         grid.addColumn(u -> u.getGrupos().stream().map(Grupo::toString).reduce((g1, g2) -> g1 + ", " + g2).orElse("")).setHeader("Grupos").setAutoWidth(true);
 
         grid.setItems(query -> usuarioService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
@@ -277,4 +311,5 @@ public class GestionUsuario {
                 || laboral == null
                 || personal == null || region == null;
     }
+
 }

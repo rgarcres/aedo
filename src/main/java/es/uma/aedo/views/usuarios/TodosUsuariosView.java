@@ -143,7 +143,7 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
     private HorizontalLayout crearBotonesSinGrupoLayout(){
         HorizontalLayout layout = new HorizontalLayout();
 
-        Button grupos = BotonesConfig.crearBotonPrincipal("Ver grupos");
+        Button grupos = BotonesConfig.crearBotonExtra("Ver grupos");
 
         grupos.addClickListener(e -> {
             if(usuarioSeleccionado != null){
