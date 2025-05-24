@@ -1,5 +1,6 @@
 package es.uma.aedo.data.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -15,6 +16,7 @@ public class PreguntaGamificacion extends AbstractEntity {
 
     //------------Constructor------------
     public PreguntaGamificacion(){
+        this.posiblesRespuestas = new ArrayList<>();
     }
 
     //------------Getters y Setters------------

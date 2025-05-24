@@ -82,14 +82,14 @@ public class LayoutConfig {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN); // Distribuye extremos
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Button back = BotonesConfig.crearBotonSecundario("", route);
         back.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
 
         H2 h2 = new H2(titulo);
         h2.setWidthFull();
-        h2.getStyle().set("margin", "0 auto"); // Centrado absoluto si no hay más contenido
+        h2.getStyle().set("margin", "0 auto"); 
 
         // Espaciador vacío que empuja el título al centro
         Div spacer = new Div();
