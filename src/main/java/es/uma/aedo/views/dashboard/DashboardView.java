@@ -1,90 +1,88 @@
 package es.uma.aedo.views.dashboard;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.board.Board;
-import com.vaadin.flow.component.charts.model.style.FontWeight;
+import com.storedobject.chart.Alignment;
+import com.storedobject.chart.BarChart;
+import com.storedobject.chart.CategoryData;
+import com.storedobject.chart.Chart;
+import com.storedobject.chart.Color;
+import com.storedobject.chart.Data;
+import com.storedobject.chart.RectangularCoordinate;
+import com.storedobject.chart.RichTextStyle;
+import com.storedobject.chart.SOChart;
+import com.storedobject.chart.TextStyle;
+import com.storedobject.chart.XAxis;
+import com.storedobject.chart.YAxis;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.board.Board;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.*;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Main;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
-import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
-import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
-import es.uma.aedo.views.dashboard.ServiceHealth.Status;
+
+import java.util.Random;
+
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("AEDO Inicio")
 @Route("")
 @Menu(order = 0, icon = LineAwesomeIconUrl.CHART_AREA_SOLID)
-public class DashboardView extends Main {
+public class DashboardView extends Div {
 
     public DashboardView() {
+        setWidthFull();
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.setWidthFull();
         H1 titulo = new H1("AEDO ADMIN");
-        add(titulo);
         addClassName("dashboard-view");
+        // Construcción directa del gráfico
+        SOChart chart = new SOChart();
+        chart.setSize("800px", "500px");
 
-        // Board board = new Board();
-        // board.addRow(createHighlight("Usuarios", "4", 65.1));
-        // board.addRow(createHighlight("Current users", "745", 33.7),
-        // createHighlight("View events", "54.6k", -112.45),
-        // createHighlight("Conversion rate", "18%", 3.9), createHighlight("Custom
-        // metric", "-123.45", 0.0));
-        // board.addRow(createViewEvents());
-        // board.addRow(createServiceHealth(), createResponseTimes());
-        //add(board);
-    }
+        Random random = new Random();
+        CategoryData xValues = new CategoryData();
+        Data yValues1 = new Data(), yValues2 = new Data();
 
-    private Component createHighlight(String title, String value, Double percentage) {
-        VaadinIcon icon = VaadinIcon.ARROW_UP;
-        String prefix = "";
-        String theme = "badge";
-
-        if (percentage == 0) {
-            prefix = "±";
-        } else if (percentage > 0) {
-            prefix = "+";
-            theme += " success";
-        } else if (percentage < 0) {
-            icon = VaadinIcon.ARROW_DOWN;
-            theme += " error";
+        for (int x = 0; x <= 11; x++) {
+            xValues.add("" + (2010 + x));
+            yValues1.add(random.nextInt(100));
+            yValues2.add(random.nextInt(100));
         }
 
-        H2 h2 = new H2(title);
+        XAxis xAxis = new XAxis(xValues);
+        xAxis.setMinAsMinData();
+        YAxis yAxis1 = new YAxis(yValues1), yAxis2 = new YAxis(yValues2);
 
-        Span span = new Span(value);
+        BarChart barChart1 = new BarChart(xValues, yValues1);
+        barChart1.setName("Wheat");
+        BarChart barChart2 = new BarChart(xValues, yValues2);
+        barChart2.setName("Rice");
+        barChart2.setBarGap(0);
 
-        Icon i = icon.create();
-        i.addClassNames(BoxSizing.BORDER, Padding.XSMALL);
+        Chart.Label label = barChart1.getLabel(true);
+        label.setFormatter("{1} {black|{chart}}");
+        label.setInside(true);
+        label.setGap(15);
+        label.setRotation(90);
+        label.getPosition().bottom();
+        Alignment alignment = label.getAlignment(true);
+        alignment.alignCenter();
+        alignment.justifyLeft();
 
-        Span badge = new Span(i, new Span(prefix + percentage.toString()));
-        badge.getElement().getThemeList().add(theme);
+        RichTextStyle rich = label.getRichTextStyle(true);
+        TextStyle richText = rich.get("black", true);
+        richText.setColor(new Color("black"));
 
-        VerticalLayout layout = new VerticalLayout(h2, span, badge);
-        layout.addClassName(Padding.LARGE);
-        layout.setPadding(false);
-        layout.setSpacing(false);
-        return layout;
+        barChart2.setLabel(label);
+
+        RectangularCoordinate rc = new RectangularCoordinate();
+        barChart1.plotOn(rc, xAxis, yAxis1);
+        barChart2.plotOn(rc, xAxis, yAxis2);
+        chart.add(rc);
+
+        layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
+        layout.add(titulo, chart);
+        add(layout);
     }
 
     // private Component createViewEvents() {
