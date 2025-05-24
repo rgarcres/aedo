@@ -82,27 +82,14 @@ public class LayoutConfig {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Button back = BotonesConfig.crearBotonSecundario("", route);
         back.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
 
         H2 h2 = new H2(titulo);
-        h2.setWidthFull();
-        h2.getStyle().set("margin", "0 auto"); 
 
-        // Espaciador vacío que empuja el título al centro
-        Div spacer = new Div();
-        spacer.setWidthFull();
-
-        layout.add(back, spacer, h2, spacer());
+        layout.add(back, h2);
         return layout;
-    }
-
-    private static Component spacer() {
-        Div spacer = new Div();
-        spacer.setWidthFull();
-        return spacer;
     }
 
     public static HorizontalLayout createMobileFilters(Div filters) {

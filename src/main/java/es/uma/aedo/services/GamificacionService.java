@@ -25,6 +25,10 @@ public class GamificacionService implements IService<PreguntaGamificacion>{
         return repository.findById(id);
     }
 
+    // public Optional<PreguntaGamificacion> getConRespuestas(String id){
+    //     return repository.findWithRespuestas(id);
+    // }
+
     @Override
     public List<PreguntaGamificacion> getAll() {
         return repository.findAll();

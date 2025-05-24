@@ -25,6 +25,13 @@ public class PreguntaGamificacion extends AbstractEntity {
     
     public List<String> getPosiblesRespuestas() { return posiblesRespuestas; }
     public void setPosiblesRespuestas(List<String> posiblesRespuestas) { this.posiblesRespuestas = posiblesRespuestas; }
+    public void addRespuesta(String res){
+        posiblesRespuestas.add(res);
+    }
+    public void removeRespuesta(String res){
+        posiblesRespuestas.remove(res);
+    }
+
     
     public String getRespuestaCorrecta() { return respuestaCorrecta; }
     public void setRespuestaCorrecta(String respuestaCorrecta) { this.respuestaCorrecta = respuestaCorrecta; }
