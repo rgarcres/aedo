@@ -6,12 +6,15 @@ import com.storedobject.chart.CategoryData;
 import com.storedobject.chart.Chart;
 import com.storedobject.chart.Color;
 import com.storedobject.chart.Data;
+import com.storedobject.chart.NightingaleRoseChart;
 import com.storedobject.chart.RectangularCoordinate;
 import com.storedobject.chart.RichTextStyle;
 import com.storedobject.chart.SOChart;
 import com.storedobject.chart.TextStyle;
+import com.storedobject.chart.Toolbox;
 import com.storedobject.chart.XAxis;
 import com.storedobject.chart.YAxis;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -47,28 +50,35 @@ public class DashboardView extends Div {
         this.preguntaService = pService;
         this.regionService = rService;
         this.usuarioService = uService;
-
-        add(crearGrafico());
-    }
-
-    private VerticalLayout crearGrafico(){
         setWidthFull();
+        addClassName("dashboard-view");
 
         VerticalLayout layout = new VerticalLayout();
-        layout.setWidthFull();
         H1 titulo = new H1("AEDO ADMIN");
-        addClassName("dashboard-view");
+        FormLayout graficosLayout = new FormLayout();
+
+        graficosLayout.add(
+            crearGraficoCantidades(), 
+            crearGraficoCircular(), 
+            crearGraficoCantidades(), 
+            crearGraficoCantidades()
+        );
+        
+        layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
+        layout.setPadding(true);
+        layout.setSpacing(true);
+        layout.add(titulo, graficosLayout);
+        add(layout);
+    }
+
+    private VerticalLayout crearGraficoCantidades(){
+        VerticalLayout layout = new VerticalLayout();
+        layout.setWidthFull();
         
         SOChart chart = new SOChart();
-        chart.setSize("800px", "500px");
+        chart.setSize("600px", "500px");
 
-        CategoryData entidades = new CategoryData();
-        entidades.add("Bloques");
-        entidades.add("Campañas");
-        entidades.add("Grupos");
-        entidades.add("Preguntas");
-        entidades.add("Regiones");
-        entidades.add("Usuarios");
+        CategoryData entidades = new CategoryData("Bloques", "Campañas","Grupos","Preguntas", "Regiones","Usuarios");
 
         Data cantidad = new Data();
         cantidad.add(bloqueService.count());
@@ -107,7 +117,46 @@ public class DashboardView extends Div {
         chart.add(rc);
         
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
-        layout.add(titulo, chart);
+        layout.add(chart);
+        return layout;
+    }
+
+    private VerticalLayout crearGraficoCircular(){
+        VerticalLayout layout = new VerticalLayout();
+        
+        SOChart chart = new SOChart();
+        chart.setSize("600px", "500px");
+        
+        CategoryData entidades = new CategoryData("Bloques", "Campañas","Grupos","Preguntas", "Regiones","Usuarios");
+        Data cantidad = new Data();
+        cantidad.add(bloqueService.count());
+        cantidad.add(campService.count());
+        cantidad.add(grupoService.count());
+        cantidad.add(preguntaService.count());
+        cantidad.add(regionService.count());
+        cantidad.add(usuarioService.count());
+        // We are going to create a couple of charts. So, each chart should be positioned appropriately
+        // Create a self-positioning chart
+        NightingaleRoseChart nc = new NightingaleRoseChart(entidades, cantidad);
+
+        // Second chart to add
+        // BarChart bc = new BarChart(entidades, cantidad);
+        // RectangularCoordinate coordinate =
+        //     new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
+        // p = new Position();
+        // p.setBottom(Size.percentage(55));
+        // coordinate.setPosition(p); // Position it leaving 55% space at the bottom
+        // bc.plotOn(coordinate); // Bar chart needs to be plotted on a coordinate system
+
+        // Just to demonstrate it, we are creating a "Download" and a "Zoom" toolbox button
+        Toolbox toolbox = new Toolbox();
+        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
+
+
+        // Add the chart components to the chart display area
+        chart.add(nc, toolbox);
+        layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
+        layout.add(chart);
         return layout;
     }
         // Random random = new Random();
