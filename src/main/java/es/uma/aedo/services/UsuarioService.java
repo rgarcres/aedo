@@ -52,4 +52,8 @@ public class UsuarioService implements IService<Usuario>{
     public int count() {
         return (int) repository.count();
     }
+
+    public int countPorProvincia(String provincia){
+        return (int) repository.countPorProvincia(provincia);
+    }
 }

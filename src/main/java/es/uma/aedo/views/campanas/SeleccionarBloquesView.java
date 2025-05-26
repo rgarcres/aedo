@@ -1,6 +1,8 @@
 package es.uma.aedo.views.campanas;
 
 
+import java.time.LocalDateTime;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -142,6 +144,7 @@ public class SeleccionarBloquesView extends Div implements HasUrlParameter<Strin
 
         H3 titulo = new H3("Seleccionar fecha y hora");
         DateTimePicker fechaHoraPicker = new DateTimePicker("Fecha y hora");
+        fechaHoraPicker.setMin(LocalDateTime.now());
         fechaHoraPicker.addValueChangeListener(e -> {
             bp.setFechaHora(fechaHoraPicker.getValue());
         });

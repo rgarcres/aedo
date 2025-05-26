@@ -23,4 +23,7 @@ public interface UsuarioRepository
     @EntityGraph(attributePaths = {"grupos", "region"})
     @Override
     Page<Usuario> findAll(Specification<Usuario> spec, Pageable pageable);
+
+    @Query("SELECT COUNT(u) FROM Usuario u WHERE u.region.provincia = :provincia")
+    long countPorProvincia(@Param("provincia") String provincia);
 }

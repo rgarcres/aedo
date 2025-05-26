@@ -1,22 +1,17 @@
 package es.uma.aedo.views.dashboard;
 
-import com.storedobject.chart.Alignment;
 import com.storedobject.chart.BarChart;
 import com.storedobject.chart.CategoryData;
-import com.storedobject.chart.Chart;
-import com.storedobject.chart.Color;
 import com.storedobject.chart.Data;
 import com.storedobject.chart.NightingaleRoseChart;
 import com.storedobject.chart.RectangularCoordinate;
-import com.storedobject.chart.RichTextStyle;
 import com.storedobject.chart.SOChart;
-import com.storedobject.chart.TextStyle;
-import com.storedobject.chart.Toolbox;
 import com.storedobject.chart.XAxis;
 import com.storedobject.chart.YAxis;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -75,6 +70,7 @@ public class DashboardView extends Div {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidthFull();
         
+        H4 titulo = new H4("Número de entidades de cada tipo");
         SOChart chart = new SOChart();
         chart.setSize("600px", "500px");
 
@@ -93,23 +89,22 @@ public class DashboardView extends Div {
         YAxis ejeY = new YAxis(cantidad);
 
         BarChart barChart = new BarChart(entidades, cantidad);
-        barChart.setName("Número de entidades");
 
-        Chart.Label label = barChart.getLabel(true);
-        label.setFormatter("{1} {black|{chart}}");
-        label.setInside(true);
-        label.setGap(15);
-        label.setRotation(90);
-        label.getPosition().bottom();
-        Alignment alignment = label.getAlignment(true);
-        alignment.alignCenter();
-        alignment.justifyLeft();
+        // Chart.Label label = barChart.getLabel(true);
+        // label.setFormatter("{1} {black|{chart}}");
+        // label.setInside(true);
+        // label.setGap(15);
+        // label.setRotation(90);
+        // label.getPosition().bottom();
+        // Alignment alignment = label.getAlignment(true);
+        // alignment.alignCenter();
+        // alignment.justifyLeft();
 
-        RichTextStyle rich = label.getRichTextStyle(true);
-        TextStyle richText = rich.get("black", true);
-        richText.setColor(new Color("black"));
+        // RichTextStyle rich = label.getRichTextStyle(true);
+        // TextStyle richText = rich.get("black", true);
+        // richText.setColor(new Color("black"));
 
-        barChart.setLabel(label);
+        // barChart.setLabel(label);
 
         RectangularCoordinate rc = new RectangularCoordinate();
         barChart.plotOn(rc, ejeX, ejeY);
@@ -117,46 +112,32 @@ public class DashboardView extends Div {
         chart.add(rc);
         
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
-        layout.add(chart);
+        layout.add(titulo, chart);
         return layout;
     }
 
     private VerticalLayout crearGraficoCircular(){
         VerticalLayout layout = new VerticalLayout();
-        
+
         SOChart chart = new SOChart();
         chart.setSize("600px", "500px");
         
-        CategoryData entidades = new CategoryData("Bloques", "Campañas","Grupos","Preguntas", "Regiones","Usuarios");
+        H4 titulo = new H4("Usuarios por provincia");
+        
+        CategoryData provincias = new CategoryData();
         Data cantidad = new Data();
-        cantidad.add(bloqueService.count());
-        cantidad.add(campService.count());
-        cantidad.add(grupoService.count());
-        cantidad.add(preguntaService.count());
-        cantidad.add(regionService.count());
-        cantidad.add(usuarioService.count());
-        // We are going to create a couple of charts. So, each chart should be positioned appropriately
-        // Create a self-positioning chart
-        NightingaleRoseChart nc = new NightingaleRoseChart(entidades, cantidad);
 
-        // Second chart to add
-        // BarChart bc = new BarChart(entidades, cantidad);
-        // RectangularCoordinate coordinate =
-        //     new RectangularCoordinate(new XAxis(DataType.CATEGORY), new YAxis(DataType.NUMBER));
-        // p = new Position();
-        // p.setBottom(Size.percentage(55));
-        // coordinate.setPosition(p); // Position it leaving 55% space at the bottom
-        // bc.plotOn(coordinate); // Bar chart needs to be plotted on a coordinate system
+        // Contar usuarios por provincia
+        for(String pro: regionService.getAllProvincias()){
+            provincias.add(pro);
+            cantidad.add(usuarioService.countPorProvincia(pro));
+        }
 
-        // Just to demonstrate it, we are creating a "Download" and a "Zoom" toolbox button
-        Toolbox toolbox = new Toolbox();
-        toolbox.addButton(new Toolbox.Download(), new Toolbox.Zoom());
+        NightingaleRoseChart nc = new NightingaleRoseChart(provincias, cantidad);
 
-
-        // Add the chart components to the chart display area
-        chart.add(nc, toolbox);
+        chart.add(nc);
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
-        layout.add(chart);
+        layout.add(titulo, chart);
         return layout;
     }
         // Random random = new Random();
