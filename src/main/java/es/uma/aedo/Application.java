@@ -3,7 +3,7 @@ package es.uma.aedo;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 
-import es.uma.aedo.data.repositorios.SamplePersonRepository;
+import es.uma.aedo.data.repositorios.UsuarioRepository;
 
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +28,7 @@ public class Application implements AppShellConfigurator {
     }
     @Bean
     SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
-            SqlInitializationProperties properties, SamplePersonRepository repository) {
+            SqlInitializationProperties properties, UsuarioRepository repository) {
         // This bean ensures the database is only initialized when empty
         return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
             @Override

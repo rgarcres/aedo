@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import es.uma.aedo.data.entidades.Region;
 
-public interface RegionRepository extends JpaRepository<Region, String>, JpaSpecificationExecutor<Region>  {
+public interface RegionRepository 
+        extends JpaRepository<Region, String>, 
+                JpaSpecificationExecutor<Region>  {
     @Query("SELECT DISTINCT r.localidad FROM Region r")
     List<String> findAllLocalidades();
     @Query("SELECT DISTINCT r.provincia FROM Region r")
