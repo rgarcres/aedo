@@ -2,7 +2,10 @@ package es.uma.aedo.views.dashboard;
 
 import com.storedobject.chart.BarChart;
 import com.storedobject.chart.CategoryData;
+import com.storedobject.chart.Color;
 import com.storedobject.chart.Data;
+import com.storedobject.chart.DataType;
+import com.storedobject.chart.LineChart;
 import com.storedobject.chart.NightingaleRoseChart;
 import com.storedobject.chart.RectangularCoordinate;
 import com.storedobject.chart.SOChart;
@@ -55,7 +58,7 @@ public class DashboardView extends Div {
         graficosLayout.add(
             crearGraficoCantidades(), 
             crearGraficoCircular(), 
-            crearGraficoCantidades(), 
+            crearGraficoLineas(), 
             crearGraficoCantidades()
         );
         
@@ -89,7 +92,7 @@ public class DashboardView extends Div {
         YAxis ejeY = new YAxis(cantidad);
 
         BarChart barChart = new BarChart(entidades, cantidad);
-
+        barChart.setName("Nº entidades");
         // Chart.Label label = barChart.getLabel(true);
         // label.setFormatter("{1} {black|{chart}}");
         // label.setInside(true);
@@ -107,6 +110,7 @@ public class DashboardView extends Div {
         // barChart.setLabel(label);
 
         RectangularCoordinate rc = new RectangularCoordinate();
+        barChart.setColors(new Color("#6654ff"));
         barChart.plotOn(rc, ejeX, ejeY);
 
         chart.add(rc);
@@ -136,6 +140,54 @@ public class DashboardView extends Div {
         NightingaleRoseChart nc = new NightingaleRoseChart(provincias, cantidad);
 
         chart.add(nc);
+        layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
+        layout.add(titulo, chart);
+        return layout;
+    }
+
+    private VerticalLayout crearGraficoLineas(){
+        VerticalLayout layout = new VerticalLayout();
+
+        SOChart chart = new SOChart();
+        chart.setSize("600px", "500px");
+        
+        H4 titulo = new H4("Campañas por fechas de inicio y fin");
+        
+        CategoryData fechas = new CategoryData();
+        Data numCampInicio = new Data();
+        Data numCampFin = new Data();
+
+        for(Integer anio: campService.getAllAnios()){
+            for(int i = 1; i <= 12; i++){
+                if(i < 10){
+                    fechas.add("0"+i+"/"+anio);
+                } else {
+                    fechas.add(i+"/"+anio);
+                }
+                numCampInicio.add(campService.countInicio(i, anio));
+                numCampFin.add(campService.countFin(i, anio));
+            }
+        }
+
+        XAxis ejeX = new XAxis(DataType.CATEGORY);
+        YAxis ejeY = new YAxis(DataType.NUMBER);
+
+        RectangularCoordinate rc = new RectangularCoordinate(ejeX, ejeY);
+
+        //----------------Crear gráficos de líneas----------------
+        // Inicio
+        LineChart lineInicio = new LineChart(fechas, numCampInicio);
+        lineInicio.setName("Campañas iniciadas");
+        lineInicio.setColors(new Color("#6654ff"));
+        lineInicio.plotOn(rc);
+
+        // Fin
+        LineChart lineFin = new LineChart(fechas, numCampFin);
+        lineFin.setName("Campañas finalizadas");
+        lineFin.setColors(new Color("#ffd000"));
+        lineFin.plotOn(rc);
+
+        chart.add(lineInicio, lineFin);
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
         layout.add(titulo, chart);
         return layout;

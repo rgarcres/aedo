@@ -39,6 +39,10 @@ public class CampanyaService implements IService<Campanya>{
         return repository.findAll();
     }
 
+    public List<Integer> getAllAnios() {
+        return repository.findAniosInicio();
+    }
+
     @Override
     public void delete(String id) {
         repository.deleteById(id);
@@ -64,5 +68,12 @@ public class CampanyaService implements IService<Campanya>{
     public int count() {
         return (int) repository.count();
     }
-    
+
+    public int countInicio(int mes, int ano){
+        return (int) repository.countByInicio(mes, ano);
+    }
+
+    public int countFin(int mes, int ano) {
+        return (int) repository.countByFin(mes, ano);
+    }
 }
