@@ -12,7 +12,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -33,10 +32,7 @@ public class Usuario extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "region_id")
     private Region region;
-    @ManyToMany
-    @JoinTable(name = "grupo_usuario", 
-    joinColumns = @JoinColumn(name="usuario_fk"),
-    inverseJoinColumns = @JoinColumn(name="grupo_fk"))
+    @ManyToMany(mappedBy = "usuarios")
     private List<Grupo> grupos;
     @OneToMany
     private List<Respuesta> respuestas;

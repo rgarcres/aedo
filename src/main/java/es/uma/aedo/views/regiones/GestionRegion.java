@@ -108,6 +108,7 @@ public class GestionRegion {
 
         // ------------Instanciar valores de los TextField y botones------------
         if (region != null) {
+            idField.setReadOnly(true);
             idField.setValue(region.getId());
             localidadField.setValue(region.getLocalidad());
             provinciaField.setValue(region.getProvincia());
@@ -170,7 +171,6 @@ public class GestionRegion {
                 NotificacionesConfig.crearNotificacionExito("¡Región creada!",
                         "La región se ha creado con éxito.\nNueva región: " + nuevaRegion);
             } else {
-                region.setId(id);
                 region.setLocalidad(localidad);
                 region.setProvincia(provincia);
                 region.setComunidadAutonoma(comunidad);

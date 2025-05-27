@@ -123,6 +123,7 @@ public class GestionPregunta {
         bloqueBox.setItems(bloqueService.getAll());
 
         if (pregunta != null) {
+            idField.setReadOnly(true);
             idField.setValue(pregunta.getId());
             enunciadoField.setValue(pregunta.getEnunciado());
             bloqueBox.setValue(pregunta.getBloque());
@@ -191,7 +192,6 @@ public class GestionPregunta {
                 preguntaService.save(p);
                 NotificacionesConfig.crearNotificacionExito("¡Pregunta creada!", "La pregunta se ha creado con éxito");
             } else {
-                pregunta.setId(id);
                 pregunta.setEnunciado(enunciado);
                 pregunta.setBloque(bloque);
                 preguntaService.save(pregunta);

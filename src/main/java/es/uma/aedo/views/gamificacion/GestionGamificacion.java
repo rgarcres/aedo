@@ -80,6 +80,7 @@ public class GestionGamificacion {
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "gamificacion");
 
         if(pg != null){
+            idField.setReadOnly(true);
             idField.setValue(pg.getId());
             enunciadoField.setValue(pg.getEnunciado());
         }
@@ -131,7 +132,6 @@ public class GestionGamificacion {
                 nuevaPg.setEnunciado(enunciado);
                 gamificacionService.save(nuevaPg);
             } else {
-                pg.setId(id);
                 pg.setEnunciado(enunciado);
                 gamificacionService.save(pg);
             }

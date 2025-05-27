@@ -82,6 +82,7 @@ public class GestionGrupo {
 
         // ------------Rellenar campos (solo edición)------------
         if (grupo != null) {
+            idField.setReadOnly(true);
             idField.setValue(grupo.getId());
             nombreField.setValue(grupo.getNombre());
             descripcionField.setValue(grupo.getDescripcion());
@@ -143,7 +144,6 @@ public class GestionGrupo {
                 NotificacionesConfig.crearNotificacionExito("¡Grupo creado!",
                         "El grupo se ha creado con éxito. Nuevo grupo: " + nuevoGrupo);
             } else {
-                grupo.setId(id);
                 grupo.setNombre(nombre);
                 grupo.setDescripcion(descripcion);
                 service.save(grupo);

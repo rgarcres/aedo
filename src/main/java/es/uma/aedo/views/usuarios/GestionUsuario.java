@@ -202,6 +202,7 @@ public class GestionUsuario {
 
         // ------------Instanciar valores si hay que editar o si se ha vuelto atrás------------
         if (usuario != null) {
+            idField.setReadOnly(true);
             idField.setValue(usuario.getId());
             aliasField.setValue(usuario.getAlias());
             nacimientoPicker.setValue(usuario.getFechaNacimiento());
@@ -290,7 +291,6 @@ public class GestionUsuario {
                 usuarioService.save(nuevoUsuario);
                 NotificacionesConfig.crearNotificacionExito("¡Usuario creado!", "El usuario: "+id+" se ha creado con éxito");
             } else {
-                usuario.setId(id);
                 usuario.setAlias(alias);
                 usuario.setFechaNacimiento(nacimiento);
                 usuario.setGenero(genero);

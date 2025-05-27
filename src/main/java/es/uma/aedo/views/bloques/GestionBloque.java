@@ -94,6 +94,7 @@ public class GestionBloque {
 
         // ------------Instanciar valores de los TextField y botones------------
         if (bloque != null) {
+            idField.setReadOnly(true);
             idField.setValue(bloque.getId());
             nombreField.setValue(bloque.getNombre());
             descripcionField.setValue(bloque.getDescripcion());
@@ -143,7 +144,6 @@ public class GestionBloque {
                 NotificacionesConfig.crearNotificacionExito("¡Bloque creado!",
                         "El bloque se ha creado con éxito.\nNuevo bloque: " + nuevoBloque);
             } else {
-                bloque.setId(id);
                 bloque.setNombre(nombre);
                 bloque.setDescripcion(descripcion);
                 service.save(bloque);

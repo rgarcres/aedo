@@ -128,6 +128,7 @@ public class GestionCamp {
         Button cancelar = BotonesConfig.crearBotonSecundario("Cancelar", "campañas");
 
         if(camp != null){
+            idField.setReadOnly(true);
             idField.setValue(camp.getId());
             nombreField.setValue(camp.getNombre());
             inicioPicker.setValue(camp.getInicio());
@@ -187,7 +188,6 @@ public class GestionCamp {
                 service.save(c);
                 NotificacionesConfig.crearNotificacionExito("¡Campaña creada!", "La campaña ha sido creada con éxito");
             } else {
-                camp.setId(id);
                 camp.setNombre(nombre);
                 camp.setInicio(inicio);
                 camp.setFin(fin);
