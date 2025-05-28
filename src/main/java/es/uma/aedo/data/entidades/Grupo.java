@@ -3,8 +3,6 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
 @Entity
@@ -14,12 +12,7 @@ public class Grupo extends AbstractEntity{
     private String nombre;
     @Column(name="descripcion",nullable = true)
     private String descripcion;
-    @ManyToMany
-    @JoinTable(
-        name = "grupo_usuario",
-        joinColumns = @JoinColumn(name = "grupo_id"),
-        inverseJoinColumns = @JoinColumn(name = "usuario_id")
-    )
+    @ManyToMany(mappedBy = "grupos")
     private List<Usuario> usuarios;
     @ManyToMany(mappedBy="grupos")
     private List<Campanya> camps;
@@ -37,6 +30,17 @@ public class Grupo extends AbstractEntity{
 
     public List<Usuario> getUsuarios() { return usuarios; }
     public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
+    public void addUsuario(Usuario usuario){
+        if(!usuarios.contains(usuario)){
+            usuarios.add(usuario);
+            usuario.getGrupos().add(this);
+        }
+    }
+    public void removeUsuario(Usuario usuario) {
+        if (usuarios.remove(usuario)) {
+            usuario.getGrupos().remove(this);
+        }
+    }
 
     public List<Campanya> getCampanyas() { return camps; }
     public void setCampanyas(List<Campanya> camps) { this.camps = camps; }

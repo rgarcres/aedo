@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -32,7 +33,12 @@ public class Usuario extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "region_id")
     private Region region;
-    @ManyToMany(mappedBy = "usuarios")
+    @ManyToMany
+    @JoinTable(
+        name = "usuario_grupos",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "grupo_id")
+    )
     private List<Grupo> grupos;
     @OneToMany
     private List<Respuesta> respuestas;
@@ -64,6 +70,17 @@ public class Usuario extends AbstractEntity{
 
     public List<Grupo> getGrupos() { return grupos; }
     public void setGrupos(List<Grupo> grupos) { this.grupos = grupos; }
+    public void addGrupo(Grupo grupo){
+        if(!grupos.contains(grupo)){
+            grupos.add(grupo);
+            grupo.getUsuarios().add(this);
+        }
+    }
+    public void removeGrupo(Grupo grupo){
+        if(grupos.remove(grupo)){
+            grupo.getUsuarios().remove(this);
+        }
+    }
     
     public List<Respuesta> getRespuestas() { return respuestas; }
     public void setRespuestas(List<Respuesta> respuestas) { this.respuestas = respuestas; }

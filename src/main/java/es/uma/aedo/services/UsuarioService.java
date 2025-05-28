@@ -8,16 +8,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import es.uma.aedo.data.entidades.Grupo;
 import es.uma.aedo.data.entidades.Usuario;
+import es.uma.aedo.data.repositorios.GrupoRepository;
 import es.uma.aedo.data.repositorios.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioService implements IService<Usuario>{
     private final UsuarioRepository repository;
+    private final GrupoRepository grupoRepository;
 
-    public UsuarioService(UsuarioRepository repo){
+    public UsuarioService(UsuarioRepository repo, GrupoRepository gRepo){
         this.repository = repo;
+        this.grupoRepository = gRepo;
     }
 
     public Optional<Usuario> get(String id){
@@ -35,6 +39,14 @@ public class UsuarioService implements IService<Usuario>{
     @Transactional
     public Usuario save(Usuario user){
         return repository.save(user);
+    }
+
+    @Transactional
+    public void addUsuarioAGrupo(String grupoId, String usuarioId){
+        Grupo grupo = grupoRepository.findWithUsuarios(grupoId).get();
+        Usuario usuario = repository.findByIdConGrupos(usuarioId).get();
+
+        grupo.addUsuario(usuario);
     }
 
     public void delete(String id) {

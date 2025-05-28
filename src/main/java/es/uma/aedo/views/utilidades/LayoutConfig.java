@@ -177,7 +177,7 @@ public class LayoutConfig {
                         "La entidad " + entity.toString() + " ha sido eliminada con éxito");
                 noti.close();
             } catch (Exception ex){
-                NotificacionesConfig.crearNotificacionError("Error al borrar", "Esta entidad no se puede borrar debido debido a que otras entidades dependen de ésta");
+                NotificacionesConfig.crearNotificacionError("Error al borrar", ex.getMessage());
             }
         });
         cancelar.addClickListener(e -> {

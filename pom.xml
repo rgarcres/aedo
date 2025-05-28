@@ -78,7 +78,6 @@
             <version>12.0.6</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -244,4 +243,19 @@
         </profile>
 
     </profiles>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.9.3.0</version>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <!-- Optional directory to put spotbugs xdoc xml report -->
+                    <xmlOutputDirectory>target/bugs</xmlOutputDirectory>
+                </configuration>            
+            </plugin>
+
+        </plugins>
+    </reporting>
 </project>

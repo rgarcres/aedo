@@ -26,7 +26,6 @@ import es.uma.aedo.views.utilidades.LayoutConfig;
 import es.uma.aedo.views.utilidades.NotificacionesConfig;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
@@ -100,7 +99,10 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
 
         aplicar.addClickListener(e -> {
             List<Usuario> selected = new ArrayList<>(grid.getSelectedItems());
-            grupo.setUsuarios(selected.isEmpty() ? Collections.emptyList() : selected);
+            for(Usuario u: selected){
+                usuarioService.addUsuarioAGrupo(grupo.getId(), u.getId());
+                usuarioService.save(u);
+            }
             grupoService.save(grupo);
             NotificacionesConfig.crearNotificacionExito("Usuarios añadidos", "Los usuarios seleccionados se han añadido con éxito");
             getUI().ifPresent(ui -> ui.navigate("grupos"));
@@ -153,7 +155,9 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
         layout.add(grupos);
         return layout;
     }
+
     private void refreshGrid() {
         grid.getDataProvider().refreshAll();
     }
+
 }

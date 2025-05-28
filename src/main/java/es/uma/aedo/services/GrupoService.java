@@ -9,15 +9,20 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import es.uma.aedo.data.entidades.Grupo;
+import es.uma.aedo.data.entidades.Usuario;
 import es.uma.aedo.data.repositorios.GrupoRepository;
+import es.uma.aedo.data.repositorios.UsuarioRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class GrupoService implements IService<Grupo>{
 
     private final GrupoRepository repository;
+    private final UsuarioRepository usuarioRepository;
 
-    public GrupoService(GrupoRepository repo){
+    public GrupoService(GrupoRepository repo, UsuarioRepository uRepo){
         this.repository = repo;
+        this.usuarioRepository = uRepo;
     }
 
     @Override
@@ -35,7 +40,18 @@ public class GrupoService implements IService<Grupo>{
     }
 
     @Override
+    @Transactional
     public void delete(String id) {
+        Grupo grupo = repository.findWithUsuarios(id).orElseThrow();
+
+        if(!grupo.getUsuarios().isEmpty()){
+            for(Usuario u: grupo.getUsuarios()){
+                Usuario usuario = usuarioRepository.findByIdConGrupos(u.getId()).orElseThrow();
+                usuario.removeGrupo(grupo);
+                usuarioRepository.save(usuario);
+            }
+        }
+
         repository.deleteById(id);
     }
 
