@@ -27,12 +27,9 @@ public class PreguntaService implements IService<Pregunta> {
 
     @Transactional
     public Optional<Pregunta> getConOpciones(String id){
-        Optional<Pregunta> pregunta = repository.findById(id);
-        if(pregunta.isPresent()){
-            pregunta.get().getOpciones().size();
-        }
-        return pregunta;
+        return repository.findWithOpciones(id);
     }
+
     public List<Pregunta> getAll(){
         return repository.findAll();
     }

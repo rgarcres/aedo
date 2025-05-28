@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class BloqueProgramado extends AbstractEntity{
-    
+    //------------Atributos------------
     @ManyToOne()
     @JoinColumn(name = "camp_id")
     private Campanya camp;
@@ -17,13 +17,20 @@ public class BloqueProgramado extends AbstractEntity{
     private Bloque bloque;
     private LocalDateTime fechaHora;
 
+    //------------Constructor------------
     public BloqueProgramado() {}
-    // Getters y setters
+    public BloqueProgramado(BloqueProgramado bp){
+        this.camp = new Campanya(bp.getCamp());
+        this.bloque = new Bloque(bp.getBloque());
+        this.fechaHora = bp.getFechaHora();
+    }
+    
+    //------------Getters y Setters------------
     public Campanya getCamp() { return camp; }
     public void setCamp(Campanya camp) { this.camp = camp; }
 
-    public Bloque getBloque() { return bloque; }
-    public void setBloque(Bloque bloque) { this.bloque = bloque; }
+    public Bloque getBloque() { return new Bloque(bloque); }
+    public void setBloque(Bloque bloque) { this.bloque = new Bloque(bloque); }
 
     public LocalDateTime getFechaHora() { return fechaHora; }
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }

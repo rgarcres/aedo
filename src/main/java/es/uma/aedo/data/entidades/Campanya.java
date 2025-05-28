@@ -1,6 +1,7 @@
 package es.uma.aedo.data.entidades;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -31,6 +32,15 @@ public class Campanya extends AbstractEntity {
 
     //------------Constructor------------
     public Campanya() {}
+    public Campanya(Campanya camp) {
+        this.nombre = camp.getNombre();
+        this.inicio = camp.getInicio();
+        this.fin = camp.getFin();
+        this.objetivo = camp.getObjetivo();
+        this.demografia = camp.getDemografia();
+        this.grupos = new ArrayList<>(camp.getGrupos());
+        this.bloques = new ArrayList<>(camp.getBloques());
+    }
     
     //------------Getters y Setters------------  
     public String getNombre() { return nombre; }

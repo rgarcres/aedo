@@ -47,17 +47,19 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
     public void setParameter(BeforeEvent event, String id) {
         pregunta = (Pregunta) OtrasConfig.getEntidadPorParametro(id, preguntaService);
         
-        if (pregunta != null) {
+        if(id != null && preguntaService.getConOpciones(id).isPresent()){
             pregunta = preguntaService.getConOpciones(id).get();
-            VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Tipo y respuestas", "preguntas"),
-                crearLayout()
-            );
-
-            add(layout);
-        } else {
-            add(LayoutConfig.createNotFoundLayout());
+            if (pregunta != null) {
+                VerticalLayout layout = new VerticalLayout(
+                    LayoutConfig.createTituloLayout("Tipo y respuestas", "preguntas"),
+                    crearLayout()
+                );
+                add(layout);
+            } else {
+                add(LayoutConfig.createNotFoundLayout());
+            }
         }
+
     }
 
     private VerticalLayout crearLayout() {

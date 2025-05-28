@@ -1,5 +1,6 @@
 package es.uma.aedo.data.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -15,6 +16,11 @@ public class Bloque extends AbstractEntity{
 
     //------------Constructor------------
     public Bloque() {}
+    public Bloque(Bloque bloque){
+        this.nombre = bloque.getNombre();
+        this.descripcion = bloque.getDescripcion();
+        this.preguntas = new ArrayList<>(bloque.getPreguntas());
+    }
 
     //------------Getters y Setters------------
     public String getNombre() { return nombre; }
@@ -23,8 +29,8 @@ public class Bloque extends AbstractEntity{
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     
-    public List<Pregunta> getPreguntas() { return preguntas; }
-    public void setPreguntas(List<Pregunta> preguntas) { this.preguntas = preguntas; }    
+    public List<Pregunta> getPreguntas() { return new ArrayList<>(preguntas); }
+    public void setPreguntas(List<Pregunta> preguntas) { this.preguntas = new ArrayList<>(preguntas); }    
 
     //------------Métodos------------
     @Override

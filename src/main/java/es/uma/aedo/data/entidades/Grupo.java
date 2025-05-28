@@ -1,4 +1,5 @@
 package es.uma.aedo.data.entidades;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -18,7 +19,12 @@ public class Grupo extends AbstractEntity{
     private List<Campanya> camps;
 
     //------------Constructor------------
-    public Grupo(){
+    public Grupo(){}
+    public Grupo(Grupo g){
+        this.nombre = g.getNombre();
+        this.descripcion = g.getDescripcion();
+        this.usuarios = new ArrayList<>(g.getUsuarios());
+        this.camps = new ArrayList<>(g.getCampanyas());
     }
 
     //------------Getters y Setters------------
@@ -28,8 +34,8 @@ public class Grupo extends AbstractEntity{
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public List<Usuario> getUsuarios() { return usuarios; }
-    public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
+    public List<Usuario> getUsuarios() { return new ArrayList<>(usuarios); }
+    public void setUsuarios(List<Usuario> usuarios) { this.usuarios = new ArrayList<>(usuarios); }
     public void addUsuario(Usuario usuario){
         if(!usuarios.contains(usuario)){
             usuarios.add(usuario);
@@ -42,8 +48,8 @@ public class Grupo extends AbstractEntity{
         }
     }
 
-    public List<Campanya> getCampanyas() { return camps; }
-    public void setCampanyas(List<Campanya> camps) { this.camps = camps; }
+    public List<Campanya> getCampanyas() { return new ArrayList<>(camps); }
+    public void setCampanyas(List<Campanya> camps) { this.camps = new ArrayList<>(camps); }
 
     //------------Métodos------------
     @Override
