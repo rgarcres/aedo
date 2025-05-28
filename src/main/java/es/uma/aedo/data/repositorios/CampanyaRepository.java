@@ -3,6 +3,7 @@ package es.uma.aedo.data.repositorios;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +28,10 @@ public interface CampanyaRepository
     @Query("SELECT COUNT(c) FROM Campanya c WHERE MONTH(c.fin) = :mes AND YEAR(c.fin) = :ano")
     long countByFin(@Param("mes") int mes, @Param("ano") int ano);
     
+    @EntityGraph(attributePaths = {"bloques", "grupos"})
+    @Override
+    List<Campanya> findAll();
+
     @Query("SELECT DISTINCT YEAR(c.inicio) FROM Campanya c WHERE c.inicio IS NOT NULL ORDER BY YEAR(c.inicio)")
     List<Integer> findAniosInicio();
 }

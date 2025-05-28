@@ -34,4 +34,10 @@ public class BloqueProgramado extends AbstractEntity{
 
     public LocalDateTime getFechaHora() { return fechaHora; }
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
+
+    //------------Métodos------------
+    @Override
+    public String toString(){
+        return bloque.getNombre();
+    }
 }

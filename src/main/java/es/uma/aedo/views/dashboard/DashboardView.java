@@ -41,6 +41,7 @@ public class DashboardView extends Div {
     private final RegionService regionService;
     private final UsuarioService usuarioService;
 
+
     public DashboardView(BloqueService bService, CampanyaService cService, GrupoService gService, PreguntaService pService, RegionService rService, UsuarioService uService) {
         this.bloqueService = bService;
         this.campService = cService;
@@ -55,13 +56,12 @@ public class DashboardView extends Div {
         H1 titulo = new H1("AEDO ADMIN");
         FormLayout graficosLayout = new FormLayout();
 
-        graficosLayout.add(
+        graficosLayout.add (
             crearGraficoCantidades(), 
             crearGraficoCircular(), 
-            crearGraficoLineas(), 
-            crearGraficoCantidades()
+            crearGraficoLineas()
         );
-        
+
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
         layout.setPadding(true);
         layout.setSpacing(true);
@@ -69,6 +69,10 @@ public class DashboardView extends Div {
         add(layout);
     }
 
+    /*
+     * Crea un gráfico de barras que muestra 
+     * el número que hay de cada entidad de la aplicación
+     */
     private VerticalLayout crearGraficoCantidades(){
         VerticalLayout layout = new VerticalLayout();
         layout.setWidthFull();
@@ -78,7 +82,7 @@ public class DashboardView extends Div {
         chart.setSize("600px", "500px");
 
         CategoryData entidades = new CategoryData("Bloques", "Campañas","Grupos","Preguntas", "Regiones","Usuarios");
-
+        
         Data cantidad = new Data();
         cantidad.add(bloqueService.count());
         cantidad.add(campService.count());
@@ -93,21 +97,6 @@ public class DashboardView extends Div {
 
         BarChart barChart = new BarChart(entidades, cantidad);
         barChart.setName("Nº entidades");
-        // Chart.Label label = barChart.getLabel(true);
-        // label.setFormatter("{1} {black|{chart}}");
-        // label.setInside(true);
-        // label.setGap(15);
-        // label.setRotation(90);
-        // label.getPosition().bottom();
-        // Alignment alignment = label.getAlignment(true);
-        // alignment.alignCenter();
-        // alignment.justifyLeft();
-
-        // RichTextStyle rich = label.getRichTextStyle(true);
-        // TextStyle richText = rich.get("black", true);
-        // richText.setColor(new Color("black"));
-
-        // barChart.setLabel(label);
 
         RectangularCoordinate rc = new RectangularCoordinate();
         barChart.setColors(new Color("#6654ff"));
@@ -120,6 +109,10 @@ public class DashboardView extends Div {
         return layout;
     }
 
+    /*
+     * Crea un gráfico circular en el que se muestra
+     * el número de usuarios que hay por provincias
+     */
     private VerticalLayout crearGraficoCircular(){
         VerticalLayout layout = new VerticalLayout();
 
@@ -145,18 +138,27 @@ public class DashboardView extends Div {
         return layout;
     }
 
+    /*
+     * Crea un gráfico de líneas que muestra
+     * dos líneas que representan las fechas en las que
+     *  empieza una campaña (morada)
+     *  termina una campaña (amarilla)
+     */
     private VerticalLayout crearGraficoLineas(){
+        //----------------Inicializar componentes----------------
         VerticalLayout layout = new VerticalLayout();
 
         SOChart chart = new SOChart();
         chart.setSize("600px", "500px");
         
         H4 titulo = new H4("Campañas por fechas de inicio y fin");
-        
+
+        //----------------Inicializar datos----------------
         CategoryData fechas = new CategoryData();
         Data numCampInicio = new Data();
         Data numCampFin = new Data();
 
+        //----------------Rellenar los datos----------------
         for(Integer anio: campService.getAllAnios()){
             for(int i = 1; i <= 12; i++){
                 if(i < 10){
@@ -168,10 +170,12 @@ public class DashboardView extends Div {
                 numCampFin.add(campService.countFin(i, anio));
             }
         }
-
+        
+        //----------------Definir ejes----------------
         XAxis ejeX = new XAxis(DataType.CATEGORY);
         YAxis ejeY = new YAxis(DataType.NUMBER);
 
+        //----------------Definir coordenadas----------------
         RectangularCoordinate rc = new RectangularCoordinate(ejeX, ejeY);
 
         //----------------Crear gráficos de líneas----------------
@@ -192,46 +196,4 @@ public class DashboardView extends Div {
         layout.add(titulo, chart);
         return layout;
     }
-        // Random random = new Random();
-
-        // CategoryData xValues = new CategoryData();
-        // Data yValues1 = new Data(), yValues2 = new Data();
-
-        // for (int x = 0; x <= 11; x++) {
-        //     xValues.add("" + (2010 + x));
-        //     yValues1.add(random.nextInt(100));
-        //     yValues2.add(random.nextInt(100));
-        // }
-
-        // XAxis xAxis = new XAxis(xValues);
-        // xAxis.setMinAsMinData();
-        // YAxis yAxis1 = new YAxis(yValues1), yAxis2 = new YAxis(yValues2);
-
-        // BarChart barChart1 = new BarChart(xValues, yValues1);
-        // barChart1.setName("Wheat");
-        // BarChart barChart2 = new BarChart(xValues, yValues2);
-        // barChart2.setName("Rice");
-        // barChart2.setBarGap(0);
-
-        // Chart.Label label = barChart1.getLabel(true);
-        // label.setFormatter("{1} {black|{chart}}");
-        // label.setInside(true);
-        // label.setGap(15);
-        // label.setRotation(90);
-        // label.getPosition().bottom();
-        // Alignment alignment = label.getAlignment(true);
-        // alignment.alignCenter();
-        // alignment.justifyLeft();
-
-        // RichTextStyle rich = label.getRichTextStyle(true);
-        // TextStyle richText = rich.get("black", true);
-        // richText.setColor(new Color("black"));
-
-        // barChart2.setLabel(label);
-
-        // RectangularCoordinate rc = new RectangularCoordinate();
-        // barChart1.plotOn(rc, xAxis, yAxis1);
-        // barChart2.plotOn(rc, xAxis, yAxis2);
-        // chart.add(rc);
-
 }
