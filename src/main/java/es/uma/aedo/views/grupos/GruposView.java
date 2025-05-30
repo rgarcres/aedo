@@ -41,7 +41,7 @@ public class GruposView extends Div {
             grupoSeleccionado = e.getItem();
         });
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Grupos", ""),
+            LayoutConfig.createTituloLayout("Grupos", "home"),
             LayoutConfig.createMobileFilters(filters),
             filters,
             grid,

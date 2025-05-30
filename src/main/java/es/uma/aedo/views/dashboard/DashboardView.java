@@ -30,7 +30,7 @@ import es.uma.aedo.services.UsuarioService;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("AEDO Inicio")
-@Route("")
+@Route("home")
 @Menu(order = 0, icon = LineAwesomeIconUrl.CHART_AREA_SOLID)
 public class DashboardView extends Div {
 
@@ -40,7 +40,6 @@ public class DashboardView extends Div {
     private final PreguntaService preguntaService;
     private final RegionService regionService;
     private final UsuarioService usuarioService;
-
 
     public DashboardView(BloqueService bService, CampanyaService cService, GrupoService gService, PreguntaService pService, RegionService rService, UsuarioService uService) {
         this.bloqueService = bService;

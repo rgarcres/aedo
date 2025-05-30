@@ -41,7 +41,7 @@ public class CampanasView extends Div {
         });
 
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Campañas", ""),
+            LayoutConfig.createTituloLayout("Campañas", "home"),
             filters,
             grid,
             LayoutConfig.createButtons(

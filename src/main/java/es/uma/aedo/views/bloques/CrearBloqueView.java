@@ -18,7 +18,7 @@ public class CrearBloqueView extends Div{
         setSizeFull();
         addClassNames("crear-bloque-view");
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Crear bloque", ""),
+            LayoutConfig.createTituloLayout("Crear bloque", "bloques"),
             GestionBloque.crearCamposLayout(null, bloqueService)
         );
 

@@ -69,7 +69,7 @@ public class LayoutConfig {
         VerticalLayout layout = new VerticalLayout();
         H2 h2 = new H2("Not Found");
         Div div = new Div("El recurso al que se intenta acceder no está disponible");
-        Button volver = BotonesConfig.crearBotonPrincipal("Volver", "");
+        Button volver = BotonesConfig.crearBotonPrincipal("Volver", "home");
 
         layout.setAlignItems(Alignment.CENTER);
         layout.setHorizontalComponentAlignment(Alignment.CENTER);

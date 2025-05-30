@@ -38,7 +38,7 @@ public class RegionesView extends Div {
 
         VerticalLayout layout = 
         new VerticalLayout(
-            LayoutConfig.createTituloLayout("Regiones", ""), 
+            LayoutConfig.createTituloLayout("Regiones", "home"), 
             filters, 
             grid, 
             LayoutConfig.createButtons(
