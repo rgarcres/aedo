@@ -91,6 +91,4 @@ public class BotonesConfig {
         boton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         return boton;
     }
-
-    
 }

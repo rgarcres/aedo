@@ -130,6 +130,18 @@
             <version>6.1.1</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.pac4j/j2e-pac4j -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>j2e-pac4j</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.pac4j/javaee-pac4j -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>javaee-pac4j</artifactId>
+            <version>7.1.0</version>
+        </dependency>
         
         <dependency>
         <groupId>org.springframework.security</groupId>
