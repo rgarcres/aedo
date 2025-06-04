@@ -1,6 +1,7 @@
 package es.uma.aedo.security;
 
-import org.pac4j.j2e.filter.SecurityFilter;
+
+import org.pac4j.jee.filter.SecurityFilter;
 
 import jakarta.servlet.annotation.WebFilter;
 

@@ -130,29 +130,23 @@
             <version>6.1.1</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.pac4j/j2e-pac4j -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>j2e-pac4j</artifactId>
-            <version>4.1.0</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.pac4j/javaee-pac4j -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>javaee-pac4j</artifactId>
             <version>7.1.0</version>
         </dependency>
-        
+
         <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
         <version>6.4.6</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-            <version>3.4.6</version>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.4.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->

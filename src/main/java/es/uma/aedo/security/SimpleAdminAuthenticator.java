@@ -29,5 +29,4 @@ public class SimpleAdminAuthenticator implements Authenticator{
             return Optional.empty();
         }
     }
-    
 }
