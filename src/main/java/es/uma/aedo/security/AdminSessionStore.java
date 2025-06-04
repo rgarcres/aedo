@@ -10,34 +10,30 @@ import jakarta.servlet.http.HttpSession;
 
 public class AdminSessionStore implements SessionStore{
     
-    private HttpServletRequest getRequest(WebContext context) {
-        if (context instanceof AdminWebContext adminContext) {
-            return adminContext.getRequest();
-        }
-        throw new IllegalArgumentException("Expected AdminWebContext");
-    }
-    
     @Override
     public Optional<String> getSessionId(WebContext context, boolean createSession) {
-        HttpSession session = getRequest(context).getSession(createSession);
-        return session != null ? Optional.of(session.getId()) : Optional.empty();
+        HttpServletRequest request = (HttpServletRequest) ((AdminWebContext) context).getRequest();
+        HttpSession session = request.getSession(createSession);
+        return Optional.ofNullable(session != null ? session.getId() : null);
     }
 
     @Override
     public Optional<Object> get(WebContext context, String key) {
-        HttpSession session = getRequest(context).getSession(false);
-        return session != null ? Optional.ofNullable(session.getAttribute(key)) : Optional.empty();
+        HttpSession session = getSession(((AdminWebContext) context).getRequest(), false);
+        return Optional.ofNullable(session != null ? session.getAttribute(key) : null);
     }
 
     @Override
     public void set(WebContext context, String key, Object value) {
-        HttpSession session = getRequest(context).getSession(true);
-        session.setAttribute(key, value);
+        HttpSession session = getSession(((AdminWebContext) context).getRequest(), true);
+        if (session != null) {
+            session.setAttribute(key, value);
+        }
     }
 
     @Override
     public boolean destroySession(WebContext context) {
-        HttpSession session = getRequest(context).getSession(false);
+        HttpSession session = getSession(((AdminWebContext) context).getRequest(), false);
         if (session != null) {
             session.invalidate();
             return true;
@@ -47,7 +43,7 @@ public class AdminSessionStore implements SessionStore{
 
     @Override
     public Optional<Object> getTrackableSession(WebContext context) {
-        return get(context, "TRACKABLE_SESSION");
+        return Optional.ofNullable(getSession(((AdminWebContext) context).getRequest(), false));
     }
 
     @Override
@@ -57,23 +53,18 @@ public class AdminSessionStore implements SessionStore{
 
     @Override
     public boolean renewSession(WebContext context) {
-        HttpServletRequest request = getRequest(context);
-        HttpSession oldSession = request.getSession(false);
-        if (oldSession != null) {
-            var attributes = oldSession.getAttributeNames();
-            var values = new java.util.HashMap<String, Object>();
-            while (attributes.hasMoreElements()) {
-                String name = attributes.nextElement();
-                values.put(name, oldSession.getAttribute(name));
-            }
-            oldSession.invalidate();
-            HttpSession newSession = request.getSession(true);
-            for (var entry : values.entrySet()) {
-                newSession.setAttribute(entry.getKey(), entry.getValue());
-            }
+        HttpServletRequest request = ((AdminWebContext) context).getRequest();
+        HttpSession session = getSession(request, false);
+        if (session != null) {
+            session.invalidate();
+            request.getSession(true);
             return true;
         }
         return false;
+    }
+
+    private HttpSession getSession(HttpServletRequest request, boolean create) {
+        return request.getSession(create);
     }
     
 }

@@ -1,5 +1,7 @@
 package es.uma.aedo.views.login;
 
+import java.util.Optional;
+
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.profile.UserProfile;
@@ -42,31 +44,30 @@ public class LoginView extends Div {
             try {
                 HttpServletRequest request = (HttpServletRequest) VaadinServletRequest.getCurrent().getHttpServletRequest();
                 HttpServletResponse response = (HttpServletResponse) VaadinServletResponse.getCurrent().getHttpServletResponse();
-                System.out.println("resquest y response creados");
 
                 AdminWebContext context = new AdminWebContext(request, response);
                 AdminSessionStore sessionStore = new AdminSessionStore();
-
-                System.out.println("context y session store creados");
 
                 CallContext callContext = new CallContext(context, sessionStore);
                 UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
                     usuarioField.getValue(), passField.getValue()
                 );
 
-                System.out.println("callcontext y credentials");
                 AdminFormClient client = new AdminFormClient();
                 client.init();
 
-                System.out.println("client");
                 client.validateCredentials(callContext, credentials);
-                var profile = client.getUserProfile(callContext, credentials);
+                Optional<UserProfile> profileOpt = client.getUserProfile(callContext, credentials);
 
-                System.out.println("profile");
-                sessionStore.set(context, UserProfile.class.getName(), profile);
+                if (profileOpt.isPresent()) {
+                    UserProfile profile = profileOpt.get();
+                    sessionStore.set(context, UserProfile.class.getName(), profile);
 
-                NotificacionesConfig.notificar("Credenciales correctas!");
-                getUI().ifPresent(ui -> ui.navigate("home"));
+                    NotificacionesConfig.notificar("Credenciales correctas!");
+                    getUI().ifPresent(ui -> ui.navigate(""));
+                } else {
+                    NotificacionesConfig.notificar("Credenciales incorrectas");
+                }
             } catch (Exception ex) {
                 NotificacionesConfig.notificar("Credenciales incorrectas");
                 System.out.println(ex.getMessage());
