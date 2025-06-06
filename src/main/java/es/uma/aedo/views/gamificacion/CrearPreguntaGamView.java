@@ -19,7 +19,7 @@ public class CrearPreguntaGamView extends Div{
 
         setWidthFull();
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Crear Pregunta de Gamificación", "gamificacion"),
+            LayoutConfig.crearTituloLayout("Crear Pregunta de Gamificación", "gamificacion"),
             GestionGamificacion.crearCamposLayout(gamificacionService, null)
         );
 

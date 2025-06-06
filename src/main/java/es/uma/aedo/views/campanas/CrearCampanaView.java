@@ -21,7 +21,7 @@ public class CrearCampanaView extends Div{
         setWidthFull();
         
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Crear campaña", "campañas"),
+            LayoutConfig.crearTituloLayout("Crear campaña", "campañas"),
             GestionCamp.crearCamposLayout(campService, camp)
         );
 

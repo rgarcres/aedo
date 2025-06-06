@@ -27,7 +27,7 @@ public class EditarPreguntaGamView extends Div implements HasUrlParameter<String
         if (pg != null) {
             setWidthFull();
             VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Crear Pregunta de Gamificación", "gamificacion"),
+                    LayoutConfig.crearTituloLayout("Crear Pregunta de Gamificación", "gamificacion"),
                     GestionGamificacion.crearCamposLayout(gamificacionService, pg));
 
             layout.setAlignItems(Alignment.CENTER);

@@ -77,7 +77,7 @@ public class LayoutConfig {
         return layout;
     }
 
-    public static HorizontalLayout createTituloLayout(String titulo, String route) {
+    public static HorizontalLayout crearTituloLayout(String titulo, String route) {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setAlignItems(FlexComponent.Alignment.CENTER);

@@ -34,7 +34,7 @@ public class EditarPreguntaView extends Div implements HasUrlParameter<String> {
             addClassName("editar-regiones-view");
 
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Editar pregunta "+preguntaEditar.getId(), "preguntas"),
+                LayoutConfig.crearTituloLayout("Editar pregunta "+preguntaEditar.getId(), "preguntas"),
                 GestionPregunta.crearCamposRellenar(preguntaService, bloqueService, preguntaEditar)
             );
 

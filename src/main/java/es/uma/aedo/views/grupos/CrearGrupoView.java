@@ -17,7 +17,7 @@ public class CrearGrupoView extends Div{
         this.grupoService = service;
 
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Crear grupo", "grupos"),
+            LayoutConfig.crearTituloLayout("Crear grupo", "grupos"),
             GestionGrupo.crearCamposRellenar(null, grupoService)
         );
         

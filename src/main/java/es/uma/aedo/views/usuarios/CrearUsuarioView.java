@@ -29,7 +29,7 @@ public class CrearUsuarioView extends Div {
         }
 
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Crear usuario", "usuarios"),
+            LayoutConfig.crearTituloLayout("Crear usuario", "usuarios"),
             GestionUsuario.crearCamposLayout(usuarioService, regionService, usuario, false)
         );
 

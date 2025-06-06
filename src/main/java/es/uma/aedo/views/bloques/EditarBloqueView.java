@@ -31,7 +31,7 @@ public class EditarBloqueView extends Div implements HasUrlParameter<String> {
             setSizeFull();
             addClassNames("editar-bloque-view");
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Editar bloque", "bloques"),
+                LayoutConfig.crearTituloLayout("Editar bloque", "bloques"),
                 GestionBloque.crearCamposLayout(bloque, bloqueService)
             );
 

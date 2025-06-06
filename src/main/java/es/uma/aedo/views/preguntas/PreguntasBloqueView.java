@@ -54,7 +54,7 @@ public class PreguntasBloqueView extends Div implements HasUrlParameter<String> 
                 preguntaSeleccionada = e.getItem();
             });
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Preguntas del " + bloqueSeleccionado.getNombre(), "bloques"),
+                LayoutConfig.crearTituloLayout("Preguntas del " + bloqueSeleccionado.getNombre(), "bloques"),
                 filters,
                 grid,
                 createButtons()

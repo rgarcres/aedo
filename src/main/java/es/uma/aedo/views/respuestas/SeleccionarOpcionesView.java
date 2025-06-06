@@ -51,7 +51,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
             pregunta = preguntaService.getConOpciones(id).get();
             if (pregunta != null) {
                 VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Tipo y respuestas", "preguntas"),
+                    LayoutConfig.crearTituloLayout("Tipo y respuestas", "preguntas"),
                     crearLayout()
                 );
                 add(layout);

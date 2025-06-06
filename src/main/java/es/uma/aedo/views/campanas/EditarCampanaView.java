@@ -34,7 +34,7 @@ public class EditarCampanaView extends Div implements HasUrlParameter<String>{
             VaadinSession.getCurrent().setAttribute("campSinEditar", camp);
             
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Editar campaña", "campañas"),
+                LayoutConfig.crearTituloLayout("Editar campaña", "campañas"),
                 GestionCamp.crearCamposLayout(campService, camp)
             );
 

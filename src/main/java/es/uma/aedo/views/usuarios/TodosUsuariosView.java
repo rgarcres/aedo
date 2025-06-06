@@ -82,7 +82,7 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
         }
 
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Seleccionar usuarios", "grupos"),
+            LayoutConfig.crearTituloLayout("Seleccionar usuarios", "grupos"),
             filters,
             grid,
             crearBotonesConGrupoLayout()
@@ -120,7 +120,7 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
             });
             
             VerticalLayout layout = new VerticalLayout(
-                LayoutConfig.createTituloLayout("Usuarios", ""),
+                LayoutConfig.crearTituloLayout("Usuarios", ""),
                 LayoutConfig.createMobileFilters(filters),
                 filters,
                 grid,

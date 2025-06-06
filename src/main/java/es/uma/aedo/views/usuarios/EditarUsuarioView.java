@@ -40,7 +40,7 @@ public class EditarUsuarioView extends Div implements HasUrlParameter<String> {
                 VaadinSession.getCurrent().setAttribute("usuarioMedioEditado", usuario);
 
                 VerticalLayout layout = new VerticalLayout(
-                        LayoutConfig.createTituloLayout("Editar usuario: " + usuario.getAlias(), "usuarios"),
+                        LayoutConfig.crearTituloLayout("Editar usuario: " + usuario.getAlias(), "usuarios"),
                         GestionUsuario.crearCamposLayout(usuarioService, regionService, usuario, true)
                 );
 

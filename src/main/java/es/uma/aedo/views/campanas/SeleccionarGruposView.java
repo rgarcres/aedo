@@ -58,7 +58,7 @@ public class SeleccionarGruposView extends Div implements HasUrlParameter<String
                 }
 
                 VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Seleccionar grupos", ruta),
+                    LayoutConfig.crearTituloLayout("Seleccionar grupos", ruta),
                     filters,
                     grid,
                     crearBotonesLayout()

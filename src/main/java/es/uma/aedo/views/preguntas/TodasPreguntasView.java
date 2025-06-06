@@ -70,10 +70,10 @@ public class TodasPreguntasView extends Div implements HasUrlParameter<String>{
         // Comprobar si hay que mostrar todos los bloques y los botones CRUD
         // o si solo hay que añadir y quitar del bloque
         if (!bloqueUnico) {
-            tituloLayout = LayoutConfig.createTituloLayout("Preguntas", "bloques");
+            tituloLayout = LayoutConfig.crearTituloLayout("Preguntas", "bloques");
             botonesLayout = LayoutConfig.createButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
         } else {
-            tituloLayout = LayoutConfig.createTituloLayout("Preguntas del bloque: " + bloque,
+            tituloLayout = LayoutConfig.crearTituloLayout("Preguntas del bloque: " + bloque,
                     "preguntas-bloque");
             botonesLayout = crearBotonesLayout();
         }

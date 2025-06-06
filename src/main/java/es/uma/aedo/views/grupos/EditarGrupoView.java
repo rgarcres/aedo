@@ -30,7 +30,7 @@ public class EditarGrupoView extends Div implements HasUrlParameter<String> {
         if (grupo != null) {
             setSizeFull();
             VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Editar grupo", "grupos"),
+                    LayoutConfig.crearTituloLayout("Editar grupo", "grupos"),
                     GestionGrupo.crearCamposRellenar(grupo, grupoService));
 
             layout.setSizeFull();

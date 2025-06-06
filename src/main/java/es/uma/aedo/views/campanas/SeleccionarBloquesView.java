@@ -68,7 +68,7 @@ public class SeleccionarBloquesView extends Div implements HasUrlParameter<Strin
                 H3 subtitulo = new H3("Bloques seleccionados");
 
                 VerticalLayout layout = new VerticalLayout(
-                    LayoutConfig.createTituloLayout("Seleccionar bloques", "campañas"),
+                    LayoutConfig.crearTituloLayout("Seleccionar bloques", "campañas"),
                     subtitulo,
                     crearGridSeleccionados(),
                     filters,

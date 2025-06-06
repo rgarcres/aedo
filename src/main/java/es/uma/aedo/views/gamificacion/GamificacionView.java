@@ -50,7 +50,7 @@ public class GamificacionView extends Div {
         });
 
         VerticalLayout layout = new VerticalLayout(
-            LayoutConfig.createTituloLayout("Preguntas de Gamificación", ""),
+            LayoutConfig.crearTituloLayout("Preguntas de Gamificación", ""),
             filters,
             grid,
             LayoutConfig.createButtons(

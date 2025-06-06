@@ -72,7 +72,7 @@ public class RespuestasGamificacionView extends Div implements HasUrlParameter<S
         });
 
         layout.add(
-            LayoutConfig.createTituloLayout("Respuestas " + pg.getId(), "gamificacion"),
+            LayoutConfig.crearTituloLayout("Respuestas " + pg.getId(), "gamificacion"),
             respuestaCorrecta,
             respuestaField,
             crearGrid(),
