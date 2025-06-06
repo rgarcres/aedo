@@ -12,7 +12,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -89,30 +88,6 @@ public class LayoutConfig {
 
         layout.add(back, h2);
         return layout;
-    }
-
-    public static HorizontalLayout createMobileFilters(Div filters) {
-        // Mobile version
-        HorizontalLayout mobileFilters = new HorizontalLayout();
-        mobileFilters.setWidthFull();
-        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
-                LumoUtility.AlignItems.CENTER);
-        mobileFilters.addClassName("mobile-filters");
-
-        Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
-        mobileFilters.add(mobileIcon, filtersHeading);
-        mobileFilters.setFlexGrow(1, filtersHeading);
-        mobileFilters.addClickListener(e -> {
-            if (filters.getClassNames().contains("visible")) {
-                filters.removeClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-            } else {
-                filters.addClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
-            }
-        });
-        return mobileFilters;
     }
 
     public static <T> HorizontalLayout createButtons(Supplier<? extends AbstractEntity> entitySupplier,

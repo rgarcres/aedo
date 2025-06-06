@@ -121,7 +121,6 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
             
             VerticalLayout layout = new VerticalLayout(
                 LayoutConfig.crearTituloLayout("Usuarios", ""),
-                LayoutConfig.createMobileFilters(filters),
                 filters,
                 grid,
                 LayoutConfig.createButtons(

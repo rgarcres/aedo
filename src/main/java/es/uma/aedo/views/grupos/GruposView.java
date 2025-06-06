@@ -42,7 +42,6 @@ public class GruposView extends Div {
         });
         VerticalLayout layout = new VerticalLayout(
             LayoutConfig.crearTituloLayout("Grupos", ""),
-            LayoutConfig.createMobileFilters(filters),
             filters,
             grid,
             LayoutConfig.createButtons(

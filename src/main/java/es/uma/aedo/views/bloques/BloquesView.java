@@ -45,7 +45,6 @@ public class BloquesView extends Div {
         
         VerticalLayout layout = new VerticalLayout(
             LayoutConfig.crearTituloLayout("Bloques", ""),
-            LayoutConfig.createMobileFilters(filters), 
             filters, 
             grid, 
             LayoutConfig.createButtons(() -> bloqueSeleccionado, "Bloque", 
