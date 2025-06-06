@@ -47,7 +47,7 @@ public class BloquesView extends Div {
             LayoutConfig.crearTituloLayout("Bloques", ""),
             filters, 
             grid, 
-            LayoutConfig.createButtons(() -> bloqueSeleccionado, "Bloque", 
+            LayoutConfig.crearButtons(() -> bloqueSeleccionado, "Bloque", 
             "bloques", this.bloqueService, grid), 
             crearBotonesPregunta()
         );

@@ -123,7 +123,7 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
                 LayoutConfig.crearTituloLayout("Usuarios", ""),
                 filters,
                 grid,
-                LayoutConfig.createButtons(
+                LayoutConfig.crearButtons(
                     () -> usuarioSeleccionado,
                     "usuario",
                     "usuarios",

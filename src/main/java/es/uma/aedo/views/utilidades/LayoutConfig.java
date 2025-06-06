@@ -90,7 +90,7 @@ public class LayoutConfig {
         return layout;
     }
 
-    public static <T> HorizontalLayout createButtons(Supplier<? extends AbstractEntity> entitySupplier,
+    public static <T> HorizontalLayout crearButtons(Supplier<? extends AbstractEntity> entitySupplier,
             String entityName, String mainRoute, IService<T> service, Grid<T> grid) {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setWidthFull();

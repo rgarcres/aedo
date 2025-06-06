@@ -44,7 +44,7 @@ public class GruposView extends Div {
             LayoutConfig.crearTituloLayout("Grupos", ""),
             filters,
             grid,
-            LayoutConfig.createButtons(
+            LayoutConfig.crearButtons(
                 () -> grupoSeleccionado,
                 "grupo",
                 "grupos",
