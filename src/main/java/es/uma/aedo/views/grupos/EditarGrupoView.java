@@ -36,7 +36,7 @@ public class EditarGrupoView extends Div implements HasUrlParameter<String> {
             layout.setSizeFull();
             add(layout);
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            add(LayoutConfig.crearNotFoundLayout());
         }
     }
 

@@ -69,10 +69,10 @@ public class SeleccionarGrupoView extends Div implements HasUrlParameter<String>
                 layout.setSpacing(true);
                 add(layout);
             } else {
-                add(LayoutConfig.createNotFoundLayout());
+                add(LayoutConfig.crearNotFoundLayout());
             }
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            add(LayoutConfig.crearNotFoundLayout());
         }
     }
 

@@ -65,7 +65,7 @@ public class LayoutConfig {
         return rangoFechas;
     }
 
-    public static VerticalLayout createNotFoundLayout() {
+    public static VerticalLayout crearNotFoundLayout() {
         VerticalLayout layout = new VerticalLayout();
         H2 h2 = new H2("Not Found");
         Div div = new Div("El recurso al que se intenta acceder no está disponible");

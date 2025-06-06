@@ -57,7 +57,7 @@ public class RespuestasGamificacionView extends Div implements HasUrlParameter<S
             }
             add(crearLayout());
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            add(LayoutConfig.crearNotFoundLayout());
         }
     }
 

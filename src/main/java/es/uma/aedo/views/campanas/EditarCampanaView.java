@@ -41,7 +41,7 @@ public class EditarCampanaView extends Div implements HasUrlParameter<String>{
             layout.setAlignItems(Alignment.CENTER);
             add(layout);
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            add(LayoutConfig.crearNotFoundLayout());
         }
     }
 }

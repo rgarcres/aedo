@@ -60,7 +60,7 @@ public class TodosUsuariosView extends Div implements HasUrlParameter<String>{
             if(grupo != null){
                 add(crearLayoutConGrupo());
             } else {
-                add(LayoutConfig.createNotFoundLayout());
+                add(LayoutConfig.crearNotFoundLayout());
             }
         } else {
             setSizeFull();

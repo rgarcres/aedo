@@ -56,7 +56,7 @@ public class SeleccionarOpcionesView extends Div implements HasUrlParameter<Stri
                 );
                 add(layout);
             } else {
-                add(LayoutConfig.createNotFoundLayout());
+                add(LayoutConfig.crearNotFoundLayout());
             }
         }
 

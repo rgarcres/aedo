@@ -79,10 +79,10 @@ public class SeleccionarBloquesView extends Div implements HasUrlParameter<Strin
                 layout.setAlignItems(Alignment.CENTER);
                 add(layout);
             } else {
-                add(LayoutConfig.createNotFoundLayout());
+                add(LayoutConfig.crearNotFoundLayout());
             }
         } else {
-            add(LayoutConfig.createNotFoundLayout());
+            add(LayoutConfig.crearNotFoundLayout());
         }
     }
 
