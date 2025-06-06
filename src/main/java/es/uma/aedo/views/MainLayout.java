@@ -15,6 +15,9 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+
+import es.uma.aedo.views.login.LoginView;
+
 import java.util.List;
 
 /**
@@ -25,6 +28,7 @@ import java.util.List;
 public class MainLayout extends AppLayout {
 
     private H1 viewTitle;
+    private SideNav sideNav;
 
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
@@ -53,18 +57,18 @@ public class MainLayout extends AppLayout {
     }
 
     private SideNav createNavigation() {
-        SideNav nav = new SideNav();
+        sideNav = new SideNav();
 
         List<MenuEntry> menuEntries = MenuConfiguration.getMenuEntries();
         menuEntries.forEach(entry -> {
             if (entry.icon() != null) {
-                nav.addItem(new SideNavItem(entry.title(), entry.path(), new SvgIcon(entry.icon())));
+                sideNav.addItem(new SideNavItem(entry.title(), entry.path(), new SvgIcon(entry.icon())));
             } else {
-                nav.addItem(new SideNavItem(entry.title(), entry.path()));
+                sideNav.addItem(new SideNavItem(entry.title(), entry.path()));
             }
         });
 
-        return nav;
+        return sideNav;
     }
 
     private Footer createFooter() {
@@ -76,6 +80,12 @@ public class MainLayout extends AppLayout {
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
+
+        if(getContent() instanceof LoginView){
+            sideNav.setVisible(false);
+        } else {
+            sideNav.setVisible(true);
+        }
         viewTitle.setText(getCurrentPageTitle());
     }
 

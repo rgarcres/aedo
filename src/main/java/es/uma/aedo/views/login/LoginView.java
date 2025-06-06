@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.profile.UserProfile;
 
 import com.storedobject.vaadin.TextField;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -40,42 +41,48 @@ public class LoginView extends Div {
         VerticalLayout layout = new VerticalLayout();
         H2 titulo = new H2("Iniciar Sesión");
 
-        login.addClickListener(e -> {
-            try {
-                HttpServletRequest request = (HttpServletRequest) VaadinServletRequest.getCurrent().getHttpServletRequest();
-                HttpServletResponse response = (HttpServletResponse) VaadinServletResponse.getCurrent().getHttpServletResponse();
+        login.addClickListener(e -> iniciarSesion());
 
-                AdminWebContext context = new AdminWebContext(request, response);
-                AdminSessionStore sessionStore = new AdminSessionStore();
-
-                CallContext callContext = new CallContext(context, sessionStore);
-                UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
-                    usuarioField.getValue(), passField.getValue()
-                );
-
-                AdminFormClient client = new AdminFormClient();
-                client.init();
-
-                client.validateCredentials(callContext, credentials);
-                Optional<UserProfile> profileOpt = client.getUserProfile(callContext, credentials);
-
-                if (profileOpt.isPresent()) {
-                    UserProfile profile = profileOpt.get();
-                    sessionStore.set(context, UserProfile.class.getName(), profile);
-
-                    NotificacionesConfig.notificar("Credenciales correctas!");
-                    getUI().ifPresent(ui -> ui.navigate(""));
-                } else {
-                    NotificacionesConfig.notificar("Credenciales incorrectas");
-                }
-            } catch (Exception ex) {
-                NotificacionesConfig.notificar("Credenciales incorrectas");
-                System.out.println(ex.getMessage());
-            }
-        });
+        usuarioField.addKeyPressListener(Key.ENTER, e -> iniciarSesion());
+        passField.addKeyPressListener(Key.ENTER, e -> iniciarSesion());
 
         layout.setAlignItems(Alignment.CENTER);
         layout.add(titulo, usuarioField, passField, login);
         add(layout);
+    }
+
+    private void iniciarSesion() {
+        try {
+            HttpServletRequest request = (HttpServletRequest) VaadinServletRequest.getCurrent()
+                    .getHttpServletRequest();
+            HttpServletResponse response = (HttpServletResponse) VaadinServletResponse.getCurrent()
+                    .getHttpServletResponse();
+
+            AdminWebContext context = new AdminWebContext(request, response);
+            AdminSessionStore sessionStore = new AdminSessionStore();
+
+            CallContext callContext = new CallContext(context, sessionStore);
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+                    usuarioField.getValue(), passField.getValue());
+
+            AdminFormClient client = new AdminFormClient();
+            client.init();
+
+            client.validateCredentials(callContext, credentials);
+            Optional<UserProfile> profileOpt = client.getUserProfile(callContext, credentials);
+
+            if (profileOpt.isPresent()) {
+                UserProfile profile = profileOpt.get();
+                sessionStore.set(context, UserProfile.class.getName(), profile);
+
+                NotificacionesConfig.notificar("Credenciales correctas!");
+                getUI().ifPresent(ui -> ui.navigate(""));
+            } else {
+                NotificacionesConfig.notificar("Credenciales incorrectas");
+            }
+        } catch (Exception ex) {
+            NotificacionesConfig.notificar("Credenciales incorrectas");
+            System.out.println(ex.getMessage());
+        }
     }
 }

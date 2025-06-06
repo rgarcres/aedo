@@ -22,25 +22,7 @@ public class SecurityConfig {
     @Bean
     public AdminFormClient adminFormClient() {
         AdminFormClient client = new AdminFormClient();
-        client.init(); // Aquí sí se llama una vez para inicializar correctamente
+        client.init();
         return client;
     }
-
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    //     http
-    //     .authorizeHttpRequests(auth -> auth
-    //         .requestMatchers("/iniciar-sesion", "/css/**", "/js/**").permitAll()
-    //         .anyRequest().authenticated()
-    //     )
-    //     .formLogin(form -> form
-    //         .loginPage("/iniciar-sesion") // <- Tu vista de login personalizada
-    //         .permitAll()
-    //     )
-    //     .logout(logout -> logout
-    //         .logoutSuccessUrl("/iniciar-sesion?logout").permitAll()
-    //     );
-
-    //     return http.build();
-    // }
 }

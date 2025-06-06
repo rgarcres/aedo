@@ -68,9 +68,10 @@ public class DashboardView extends Div implements BeforeEnterObserver {
         FormLayout graficosLayout = new FormLayout();
 
         graficosLayout.add(
-                crearGraficoCantidades(),
-                crearGraficoCircular(),
-                crearGraficoLineas());
+            crearGraficoCantidades(),
+            crearGraficoCircular(),
+            crearGraficoLineas()
+        );
 
         layout.setAlignItems(com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER);
         layout.setPadding(true);

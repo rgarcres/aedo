@@ -20,5 +20,4 @@ public class AdminFormExtractor implements CredentialsExtractor{
             return Optional.empty();
         }
     }
-    
 }
