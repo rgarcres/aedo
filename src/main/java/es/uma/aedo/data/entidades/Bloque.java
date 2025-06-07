@@ -29,8 +29,8 @@ public class Bloque extends AbstractEntity{
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     
-    public List<Pregunta> getPreguntas() { return new ArrayList<>(preguntas); }
-    public void setPreguntas(List<Pregunta> preguntas) { this.preguntas = new ArrayList<>(preguntas); }    
+    public List<Pregunta> getPreguntas() { return preguntas; }
+    public void setPreguntas(List<Pregunta> preguntas) { this.preguntas = preguntas; }    
 
     //------------Métodos------------
     @Override

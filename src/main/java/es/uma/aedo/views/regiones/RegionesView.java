@@ -41,7 +41,7 @@ public class RegionesView extends Div {
             LayoutConfig.crearTituloLayout("Regiones", ""), 
             filters, 
             grid, 
-            LayoutConfig.crearButtons(
+            LayoutConfig.crearBotones(
                 () -> regionSeleccionada, 
                 "Region", 
                 "regiones", 

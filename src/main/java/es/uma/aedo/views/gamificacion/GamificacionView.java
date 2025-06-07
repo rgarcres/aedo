@@ -53,7 +53,7 @@ public class GamificacionView extends Div {
             LayoutConfig.crearTituloLayout("Preguntas de Gamificación", ""),
             filters,
             grid,
-            LayoutConfig.crearButtons(
+            LayoutConfig.crearBotones(
                 () -> preguntaSeleccionada,
                 "pregunta", 
                 "gamificacion", 

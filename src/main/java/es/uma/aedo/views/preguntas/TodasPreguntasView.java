@@ -71,7 +71,7 @@ public class TodasPreguntasView extends Div implements HasUrlParameter<String>{
         // o si solo hay que añadir y quitar del bloque
         if (!bloqueUnico) {
             tituloLayout = LayoutConfig.crearTituloLayout("Preguntas", "bloques");
-            botonesLayout = LayoutConfig.crearButtons(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
+            botonesLayout = LayoutConfig.crearBotones(() -> preguntaSeleccionada, "pregunta", "preguntas", preguntaService, grid);
         } else {
             tituloLayout = LayoutConfig.crearTituloLayout("Preguntas del bloque: " + bloque,
                     "preguntas-bloque");

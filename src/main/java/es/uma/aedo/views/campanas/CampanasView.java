@@ -44,7 +44,7 @@ public class CampanasView extends Div {
             LayoutConfig.crearTituloLayout("Campañas", ""),
             filters,
             grid,
-            LayoutConfig.crearButtons(
+            LayoutConfig.crearBotones(
                 () -> campSeleccionada, 
                 "campaña", 
                 "campañas", 
