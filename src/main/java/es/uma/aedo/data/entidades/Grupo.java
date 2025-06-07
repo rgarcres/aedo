@@ -34,8 +34,8 @@ public class Grupo extends AbstractEntity{
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public List<Usuario> getUsuarios() { return new ArrayList<>(usuarios); }
-    public void setUsuarios(List<Usuario> usuarios) { this.usuarios = new ArrayList<>(usuarios); }
+    public List<Usuario> getUsuarios() { return usuarios; }
+    public void setUsuarios(List<Usuario> usuarios) { this.usuarios = usuarios; }
     public void addUsuario(Usuario usuario){
         if(!usuarios.contains(usuario)){
             usuarios.add(usuario);
@@ -48,8 +48,8 @@ public class Grupo extends AbstractEntity{
         }
     }
 
-    public List<Campanya> getCampanyas() { return new ArrayList<>(camps); }
-    public void setCampanyas(List<Campanya> camps) { this.camps = new ArrayList<>(camps); }
+    public List<Campanya> getCampanyas() { return camps; }
+    public void setCampanyas(List<Campanya> camps) { this.camps = camps; }
 
     //------------Métodos------------
     @Override

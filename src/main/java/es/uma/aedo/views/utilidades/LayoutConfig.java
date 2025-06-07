@@ -112,6 +112,9 @@ public class LayoutConfig {
             AbstractEntity entity = entitySupplier.get();
             if (entity != null) {
                 editarButton.getUI().ifPresent(ui -> ui.navigate(mainRoute + "/editar-" + name + "/" + entity.getId()));
+            } else {
+                NotificacionesConfig.crearNotificacionError("Seleccione una fila",
+                        "No hay ninguna entidad seleccionada, seleccione una para poder editarla");                
             }
         });
 
